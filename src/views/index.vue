@@ -8,14 +8,14 @@
               <img
                 height="70px"
                 style="margin: 20px 0"
-                src="../assets/jwbc.png"
+                src="../assets/wads.png"
               />
             </div>
           </el-col>
           <el-col :span="12">
             <div class="hasRole ? search1 : search2">
               <el-input
-                placeholder="给孩子的第一本编程书籍"
+                placeholder="给孩子的第一本书籍"
                 v-model="input"
                 style="width: 500px"
               >
@@ -35,7 +35,7 @@
           </el-col>
           <el-col :span="6" v-if="hasRole">
             <div style="margin-left: 20px">
-              <el-row class="shopping">
+              <el-row class="collection">
                 <el-col :span="10">
                   <el-badge
                     :max="99"
@@ -54,9 +54,9 @@
                         color: white;
                       "
                       size="meduim"
-                      icon="el-icon-shopping-cart-2"
+                      icon="el-icon-star-on"
                       @click.native="gotoShopCar"
-                      >我的购物车</el-button
+                      >我的收藏</el-button
                     >
                   </el-badge>
                 </el-col>
@@ -71,7 +71,7 @@
                   >
                 </el-col>
                 <el-col @click.native="loginOut" style="margin-left: 10px">
-                  <i class="iconfont-tuichu" style="font-size: 20px" />
+                  <i class="icon-tuichu" style="font-size: 20px" />
                 </el-col>
               </el-row>
             </div>
@@ -99,76 +99,101 @@
           <el-aside width="18%">
             <el-row class="rowStyle1">
               <el-col class="colStyle" @click.native="showAll"
-                ><p>全部商品分类</p></el-col
+                ><p>全部书籍分类</p></el-col
               >
             </el-row>
             <el-menu>
-              <div v-for="item in categoryList" :key="item.main_id" >
-                <div style="background-color: #f7f7f7;">
-                <el-menu-item
-                  style="
-                    color: rgb(250, 128, 114);
-                    font-weight: 1000;
-                    font-size: 20px;
-                    border-left:solid 1px #e6e6e6;
-                  "
-                  :index="item.main_id"
-                  @click.native="getMainClassBook(item.main_id)"
-                  ><span
-                    style="padding-bottom: 5px; "
-                    >{{ item.main_name }}</span
+              <el-menu-item
+                index="2022"
+                @click.native="getYearBook('2022')"
+                style="
+                  color: rgb(233, 150, 122);
+                  font-weight: 1000;
+                  border-left: solid 1px #e6e6e6;
+                "
+                >图书</el-menu-item
+              >
+              <el-menu-item
+                index="2022"
+                @click.native="getYearBook('2022')"
+                style="
+                  color: rgb(233, 150, 122);
+                  font-weight: 1000;
+                  border-left: solid 1px #e6e6e6;
+                "
+                >期刊</el-menu-item
+              >
+              <el-menu-item
+                index="2022"
+                @click.native="getYearBook('2022')"
+                style="
+                  color: rgb(233, 150, 122);
+                  font-weight: 1000;
+                  border-left: solid 1px #e6e6e6;
+                "
+                >外文书籍</el-menu-item
+              >
+              <el-menu-item
+                index="2022"
+                @click.native="getYearBook('2022')"
+                style="color: rgb(233, 150, 122); font-weight: 1000;border-left:solid 1px #e6e6e6;"
+                >更多分类</el-menu-item
+              > 
+              </el-menu
+            ><el-menu>
+              <div style="background-color: #f7f7f7">
+                <el-menu-item style="border-left: solid 1px #e6e6e6">
+                  <span
+                    slot="title"
+                    style="
+                      color: rgb(250, 128, 114);
+                      font-weight: 1000;
+                      font-size: 20px;
+                    "
+                    >按出版时间分</span
                   >
                 </el-menu-item>
-                </div>
-                <div
-                  v-for="littleitem in item.second_category"
-                  :key="littleitem.second_id"
-                >
-                  <el-menu-item
-                    style="color: rgb(233, 150, 122); font-weight: 1000;border-left:solid 1px #e6e6e6;"
-                    :index="littleitem.second_id"
-                    @click.native="getSecondClassBook(littleitem.second_id)"
-                    >{{ littleitem.second_name }}
-                  </el-menu-item>
-                </div>
-              </div> </el-menu
-            ><el-menu>
-              <div style="background-color: #f7f7f7;">
-              <el-menu-item style="border-left:solid 1px #e6e6e6;">
-                <span
-                  slot="title"
-                  style="
-                    color: rgb(250, 128, 114);
-                    font-weight: 1000;
-                    font-size: 20px;
-                  "
-                  >按出版时间分</span
-                >
-              </el-menu-item>
               </div>
+              <el-menu-item
+                index="2022"
+                @click.native="getYearBook('2022')"
+                style="
+                  color: rgb(233, 150, 122);
+                  font-weight: 1000;
+                  border-left: solid 1px #e6e6e6;
+                "
+                >2022年出版</el-menu-item
+              >
               <el-menu-item
                 index="2021"
                 @click.native="getYearBook('2021')"
-                style="color: rgb(233, 150, 122); font-weight: 1000;border-left:solid 1px #e6e6e6;"
+                style="
+                  color: rgb(233, 150, 122);
+                  font-weight: 1000;
+                  border-left: solid 1px #e6e6e6;
+                "
                 >2021年出版</el-menu-item
               >
               <el-menu-item
                 index="2020"
                 @click.native="getYearBook('2020')"
-                style="color: rgb(233, 150, 122); font-weight: 1000;border-left:solid 1px #e6e6e6;"
+                style="
+                  color: rgb(233, 150, 122);
+                  font-weight: 1000;
+                  border-left: solid 1px #e6e6e6;
+                "
                 >2020年出版</el-menu-item
               >
               <el-menu-item
                 index="2019"
-                @click.native="getYearBook('2019')"
-                style="color: rgb(233, 150, 122); font-weight: 1000;border-left:solid 1px #e6e6e6;"
-                >2019年出版</el-menu-item
-              >
-              <el-menu-item
-                index="2018"
-                @click.native="getYearBeforeBook('2018')"
-                style="color: rgb(233, 150, 122); font-weight: 1000;border-left:solid 1px #e6e6e6;border-bottom:solid 1px #e6e6e6;"
-                >2018年及以前出版</el-menu-item
+                @click.native="getYearBeforeBook('2029')"
+                style="
+                  color: rgb(233, 150, 122);
+                  font-weight: 1000;
+                  border-left: solid 1px #e6e6e6;
+                  border-bottom: solid 1px #e6e6e6;
+                "
+                >2019年及以前出版</el-menu-item
               >
             </el-menu>
           </el-aside>
@@ -658,7 +683,7 @@ export default {
 </script>
 
 <style acoped>
-body{
+body {
   background-color: f7f7f7;
 }
 .el-pagination {
@@ -729,7 +754,7 @@ body{
   margin-left: 5%;
   margin-right: 5%;
 }
-.shopping {
+.collection {
   display: flex;
   justify-content: center;
   align-items: center;
