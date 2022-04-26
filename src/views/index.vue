@@ -79,9 +79,6 @@
           <el-col :span="6" v-else>
             <div style="margin-left: 150px">
               <el-row class="hasNoRole">
-                <el-col>
-                  <el-button size="meduim" @click="gotoSign">注册</el-button>
-                </el-col>
                 <el-col style="margin: 20px 0">
                   <el-button size="meduim" class="pageperson" @click="gotoLogin"
                     >登录</el-button
@@ -221,7 +218,7 @@
                 >
                   <el-row style="height: 40px; margin: 0% 5% 5%"
                     ><el-col :span="4"
-                      ><i class="iconfont-guanjun" style="font-size: 40px"></i
+                      ><i class="icon-guanjum" style="font-size: 40px"></i
                     ></el-col>
                     <el-col :span="14" style="text-align: center; height: 40px"
                       ><p
@@ -233,7 +230,7 @@
                           line-height: 40px;
                         "
                       >
-                        今日销量冠军
+                        本周借阅冠军
                       </p></el-col
                     >
                   </el-row>
