@@ -7,7 +7,7 @@
             <div class="logo">
               <img
                 height="70px"
-                style="margin: 20px 0"
+                style="margin: 30px 0"
                 src="../assets/wads.png"
               />
             </div>
@@ -77,15 +77,16 @@
             </div>
           </el-col>
           <el-col :span="6" v-else>
-            <div style="margin-left: 150px">
+            <div style="margin-left: 80px">
               <el-row class="hasNoRole">
                 <el-col style="margin: 20px 0">
                   <el-button
+                    type="text"
                     style="margin-left: 30px"
                     size="meduim"
-                    class="pageperson"
+                    class="loginword"
                     @click="gotoLogin"
-                    >登录</el-button
+                    >亲爱的会员，进行操作前请先登录</el-button
                   >
                 </el-col>
               </el-row>
@@ -137,10 +138,13 @@
               <el-menu-item
                 index="2022"
                 @click.native="getYearBook('2022')"
-                style="color: rgb(233, 150, 122); font-weight: 1000;border-left:solid 1px #e6e6e6;"
+                style="
+                  color: rgb(233, 150, 122);
+                  font-weight: 1000;
+                  border-left: solid 1px #e6e6e6;
+                "
                 >更多分类</el-menu-item
-              > 
-              </el-menu
+              > </el-menu
             ><el-menu>
               <div style="background-color: #f7f7f7">
                 <el-menu-item style="border-left: solid 1px #e6e6e6">
@@ -773,10 +777,19 @@ body {
   justify-content: center;
   margin: 20px;
 }
-.logo {
+.loginword:hover {
   display: flex;
   justify-content: center;
-  margin: 20px;
+  margin: 22px;
+  font-size: 15px;
+  color: #409eff;
+}
+.loginword {
+  display: flex;
+  justify-content: center;
+  margin: 22px;
+  font-size: 15px;
+  color: rgb(86, 85, 87);
 }
 .searchButton {
   display: inline-block;
