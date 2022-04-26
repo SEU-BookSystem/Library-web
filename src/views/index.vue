@@ -80,7 +80,11 @@
             <div style="margin-left: 150px">
               <el-row class="hasNoRole">
                 <el-col style="margin: 20px 0">
-                  <el-button size="meduim" class="pageperson" @click="gotoLogin"
+                  <el-button
+                    style="margin-left: 30px"
+                    size="meduim"
+                    class="pageperson"
+                    @click="gotoLogin"
                     >登录</el-button
                   >
                 </el-col>

@@ -2,9 +2,9 @@
   font-family: "iconfont"; /* Project id 3360381 */
   /* Color fonts */
   src: 
-       url('iconfont.woff2?t=1650960851493') format('woff2'),
-       url('iconfont.woff?t=1650960851493') format('woff'),
-       url('iconfont.ttf?t=1650960851493') format('truetype');
+       url('iconfont.woff2?t=1650961700666') format('woff2'),
+       url('iconfont.woff?t=1650961700666') format('woff'),
+       url('iconfont.ttf?t=1650961700666') format('truetype');
 }
 
 .iconfont ,[class^="icon"],[class*=" icon"]{
@@ -16,7 +16,7 @@
 }
 
 .icon-denglu:before {
-  content: "\e67c";
+  content: "\e653";
 }
 
 .icon-xitongquanxian:before {
