@@ -14,7 +14,7 @@
           <div>
             <h2 class="login-title">我爱读书图书商城</h2>
             <el-form :model="form" status-icon :rules="rules" ref="form">
-              <el-form-item prop="phonenum">
+              <el-form-item prop="username">
                 <el-row class="inputContent">
                   <el-col :span="2">
                     <i class="el-icon-user" style="font-size: 20px" />
@@ -22,7 +22,7 @@
                   <el-col :span="10">
                     <el-input
                       class="Myinput"
-                      v-model="form.phonenum "
+                      v-model="form.username "
                       placeholder="手机号"
                       clearable
                     >
@@ -83,11 +83,11 @@ export default {
   data() {
     return {
       form: {
-        phonenum: "",
+        username: "",
         password: "",
       },
       rules: {
-        phonenum: [
+        username: [
          { required: true, message: '手机号不能为空!' },
           { type: 'number',
             message: '手机号格式不正确!',
@@ -117,7 +117,7 @@ export default {
         url: this.$store.state.yuming+"/login",
         method: "POST",
         params: {
-          username: this.form.phonenum,
+          username: this.form.username,
           password: this.form.password,
         },
       })
