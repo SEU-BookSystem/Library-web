@@ -2,7 +2,7 @@
   <div v-loading="isLoading">
     <div class="header">
       <div class="logo">
-        <img height="70px" style="margin: 20px 0" src="../assets/jwbc.png" />
+        <img height="70px" style="margin: 20px 0" src="../assets/wads.png" />
       </div>
       <el-page-header
         @back="gotoIndex"
@@ -13,7 +13,48 @@
     <div class="tab">
       <el-tabs v-model="activeName">
         <el-tab-pane label="首页" name="first">
-          <div class="personCard">
+           <div
+            style="display: flex; justify-content: center; align-items: center"
+          >
+            <el-form
+              ref="personInfo"
+              :model="personInfo"
+              label-width="80px"
+              label-position="left"
+            >
+              <el-row style="margin-top: 30px">
+                <el-col>
+                  <el-form-item label="姓名" prop="name">
+                    <span>{{ personInfo.name }}</span>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col>
+                  <el-form-item label="性别" prop="gentle">
+                    <span>{{ personInfo.gentle }}</span>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col>
+                  <el-form-item label="年龄" prop="shopper_name">
+                    <span>{{ personInfo.age }}</span>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col>
+                  <el-form-item>
+                    <el-button type="text" @click="gotoShopManager"
+                      >点击管理我的商铺</el-button
+                    >
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </el-form>
+          </div>
+          <!-- <div class="personCard">
             <div class="up">
               <el-card class="personDetail">
                 <el-row>
@@ -241,9 +282,9 @@
                 </el-row>
               </div>
             </div>
-          </div>
+          </div> -->
         </el-tab-pane>
-        <el-tab-pane label="我的收货地址" name="second">
+        <el-tab-pane label="我的预约" name="second">
           <el-row v-loading="addressLoading">
             <div style="margin-bottom: 20px">
               <el-row>
@@ -430,16 +471,15 @@
           </el-row>
         </el-tab-pane>
         <el-tab-pane
-          v-if="this.userInfo.identity == 0"
-          label="申请成为商家"
+          label="我的预约"
           name="third"
         >
           <div
             style="display: flex; justify-content: center; align-items: center"
           >
             <el-form
-              ref="applyShopInfo"
-              :model="applyShopInfo"
+              ref="applypersonInfo"
+              :model="applypersonInfo"
               label-width="80px"
               :rules="applyRules"
               label-position="left"
@@ -465,11 +505,11 @@
                       :show-file-list="false"
                       :on-change="changePhotoFile"
                       :auto-upload="false"
-                      :name="this.applyShopInfo.img"
+                      :name="this.applypersonInfo.img"
                     >
                       <img
-                        v-if="this.applyShopInfo.img"
-                        :src="this.applyShopInfo.img"
+                        v-if="this.applypersonInfo.img"
+                        :src="this.applypersonInfo.img"
                         class="avatar"
                       />
                       <img v-else :src="this.imgUrl" class="avatar" />
@@ -494,7 +534,7 @@
                   <el-form-item label="店铺名称" prop="shop_name">
                     <el-input
                       type="text"
-                      v-model="applyShopInfo.shop_name"
+                      v-model="applypersonInfo.shop_name"
                       maxlength="10"
                       show-word-limit
                       style="width: 250px"
@@ -507,7 +547,7 @@
                   <el-form-item label="店主名" prop="shopper_name">
                     <el-input
                       type="text"
-                      v-model="applyShopInfo.shopper_name"
+                      v-model="applypersonInfo.shopper_name"
                       maxlength="10"
                       show-word-limit
                       style="width: 250px"
@@ -527,7 +567,7 @@
                   <el-form-item label="申请理由" prop="apply_reason">
                     <el-input
                       type="textarea"
-                      v-model="applyShopInfo.apply_reason"
+                      v-model="applypersonInfo.apply_reason"
                       maxlength="100"
                       show-word-limit
                       clearable
@@ -550,8 +590,7 @@
           </div>
         </el-tab-pane>
         <el-tab-pane
-          v-if="this.userInfo.identity == 0"
-          label="申请历史"
+          label="我的借阅"
           name="fourth"
         >
           <el-table
@@ -672,68 +711,8 @@
             </el-row>
           </div>
         </el-tab-pane>
-        <el-tab-pane v-else label="我的店铺" name="fifth">
-          <div
-            style="display: flex; justify-content: center; align-items: center"
-          >
-            <el-form
-              ref="shopInfo"
-              :model="shopInfo"
-              label-width="80px"
-              label-position="left"
-            >
-              <el-row style="margin-top: 30px">
-                <el-col>
-                  <el-form-item label="店铺封面" prop="img">
-                    <img
-                      v-if="this.shopInfo.avatar_b"
-                      :src="this.shopInfo.avatar_b"
-                      class="avatar"
-                    />
-                    <img v-else src="../assets/avatar.jpg" class="avatar" />
-                  </el-form-item>
-                </el-col>
-              </el-row>
-              <el-row>
-                <el-col>
-                  <el-form-item label="店铺名称" prop="shop_name">
-                    <span>{{ shopInfo.shop_name }}</span>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-              <el-row>
-                <el-col>
-                  <el-form-item label="店主名" prop="shopper_name">
-                    <span>{{ shopInfo.shopper_name }}</span>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-              <el-row>
-                <el-col>
-                  <el-form-item label="评分" prop="apply_reason">
-                    <el-rate
-                      v-model="value"
-                      disabled
-                      show-score
-                      text-color="#ff9900"
-                      score-template="{value}"
-                      style="margin-top: 10px"
-                    >
-                    </el-rate>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-              <el-row>
-                <el-col>
-                  <el-form-item>
-                    <el-button type="text" @click="gotoShopManager"
-                      >点击管理我的商铺</el-button
-                    >
-                  </el-form-item>
-                </el-col>
-              </el-row>
-            </el-form>
-          </div>
+        <el-tab-pane label="消息" name="fifth">
+          
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -767,14 +746,14 @@ export default {
         identity: "",
       },
       //申请店铺
-      applyShopInfo: {
+      applypersonInfo: {
         img: "",
         shopper_name: "",
         shop_name: "",
         apply_reason: "",
       },
       //店铺信息
-      shopInfo: {
+      personInfo: {
         apply_status: "",
         shopper_name: "",
         shop_name: "",
@@ -1060,14 +1039,14 @@ export default {
     confirmApply() {
       if (this.hasShopAvatar == false) {
         this.$message.error("必须上传店铺头像哦~");
-        this.applyShopInfo.img = "";
-        this.applyShopInfo.shopper_name = "";
-        this.applyShopInfo.shop_name = "";
-        this.applyShopInfo.apply_reason = "";
+        this.applypersonInfo.img = "";
+        this.applypersonInfo.shopper_name = "";
+        this.applypersonInfo.shop_name = "";
+        this.applypersonInfo.apply_reason = "";
       } else {
-        this.formdata.append("shopper_name", this.applyShopInfo.shopper_name);
-        this.formdata.append("shop_name", this.applyShopInfo.shop_name);
-        this.formdata.append("apply_reason", this.applyShopInfo.apply_reason);
+        this.formdata.append("shopper_name", this.applypersonInfo.shopper_name);
+        this.formdata.append("shop_name", this.applypersonInfo.shop_name);
+        this.formdata.append("apply_reason", this.applypersonInfo.apply_reason);
         axios({
           url: this.$store.state.yuming + "/registerShop",
           method: "POST",
@@ -1081,10 +1060,10 @@ export default {
               message: "申请成功",
               type: "success",
             });
-            this.applyShopInfo.img = "";
-            this.applyShopInfo.shopper_name = "";
-            this.applyShopInfo.shop_name = "";
-            this.applyShopInfo.apply_reason = "";
+            this.applypersonInfo.img = "";
+            this.applypersonInfo.shopper_name = "";
+            this.applypersonInfo.shop_name = "";
+            this.applypersonInfo.apply_reason = "";
           } else {
             this.$message.error("申请失败，请重试");
           }
@@ -1145,7 +1124,7 @@ export default {
         });
     },
     //获取店铺信息
-    getShopInfo() {
+    getpersonInfo() {
       axios({
         url: this.$store.state.yuming + "/shop/getPassed",
         method: "GET",
@@ -1156,8 +1135,8 @@ export default {
         .then((res) => {
           const { code, data } = res.data;
           if (code == "200") {
-            this.shopInfo = data;
-            this.value = this.shopInfo.rate;
+            this.personInfo = data;
+            this.value = this.personInfo.rate;
           } else if (code == "17") {
             this.$message("已有店铺申请正在审核");
           } else {
@@ -1175,7 +1154,7 @@ export default {
     },
     async isLoadShop() {
       if (this.$store.state.role == 1) {
-        await this.getShopInfo();
+        await this.getpersonInfo();
       }
     },
     //上传图片触发
@@ -1192,7 +1171,7 @@ export default {
       this.formdata.append("img", file);
       this.hasShopAvatar = true;
       // 获取上传图片的本地URL，用于上传前的本地预览
-      this.applyShopInfo.img = window.URL.createObjectURL(file);
+      this.applypersonInfo.img = window.URL.createObjectURL(file);
       this.$refs.myCropper.close();
     },
     // 提取文件后缀名

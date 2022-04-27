@@ -8,14 +8,14 @@
               <img
                 height="70px"
                 style="margin: 20px 0"
-                src="../assets/jwbc.png"
+                src="../assets/wads.png"
               />
             </div>
           </el-col>
           <el-col :span="12">
             <div class="hasRole ? search1 : search2">
               <el-input
-                placeholder="给孩子的第一本编程书籍"
+                placeholder="给孩子的第一本书籍"
                 v-model="input"
                 style="width: 500px"
               >
@@ -35,7 +35,7 @@
           </el-col>
           <el-col :span="6" v-if="hasRole">
             <div style="margin-left: 20px">
-              <el-row class="shopping">
+              <el-row class="collection">
                 <el-col :span="10">
                   <el-badge
                     :max="99"
@@ -54,9 +54,9 @@
                         color: white;
                       "
                       size="meduim"
-                      icon="el-icon-shopping-cart-2"
-                      @click.native="gotoShopCar"
-                      >我的购物车</el-button
+                      icon="el-icon-star-on"
+                      @click.native="gotoCollection"
+                      >我的收藏</el-button
                     >
                   </el-badge>
                 </el-col>
@@ -71,20 +71,22 @@
                   >
                 </el-col>
                 <el-col @click.native="loginOut" style="margin-left: 10px">
-                  <i class="iconfont-tuichu" style="font-size: 20px" />
+                  <i class="icon-tuichu" style="font-size: 20px" />
                 </el-col>
               </el-row>
             </div>
           </el-col>
           <el-col :span="6" v-else>
-            <div style="margin-left: 150px">
+            <div style="margin-left: 80px">
               <el-row class="hasNoRole">
-                <el-col>
-                  <el-button size="meduim" @click="gotoSign">注册</el-button>
-                </el-col>
                 <el-col style="margin: 20px 0">
-                  <el-button size="meduim" class="pageperson" @click="gotoLogin"
-                    >登陆</el-button
+                  <el-button
+                    type="text"
+                    style="margin-left: 30px"
+                    size="meduim"
+                    class="loginword"
+                    @click="gotoLogin"
+                    >亲爱的会员，进行操作前请先登录</el-button
                   >
                 </el-col>
               </el-row>
@@ -99,7 +101,7 @@
           <el-header style="padding: 0; height: 100%">
             <el-row class="rowStyle1">
               <el-col class="colStyle3" @click.native="goToIndex"
-                >全部商品分类</el-col
+                >全部书籍分类</el-col
               >
               <el-col>
                 <el-menu
@@ -537,6 +539,20 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.loginword:hover {
+  display: flex;
+  justify-content: center;
+  margin: 22px;
+  font-size: 15px;
+  color: #409eff;
+}
+.loginword {
+  display: flex;
+  justify-content: center;
+  margin: 22px;
+  font-size: 15px;
+  color: rgb(86, 85, 87);
 }
 .rowStyle1 {
   display: flex;

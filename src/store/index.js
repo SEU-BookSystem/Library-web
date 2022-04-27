@@ -21,7 +21,7 @@ export default new Vuex.Store({
     phonenum: "",
     setToken: {},
     detToken: {},
-    yuming:"http://47.94.131.208:8088",
+    yuming:"http://47.100.78.158:8088",
     hasClassChange: false,
   },
   mutations: {
