@@ -268,7 +268,7 @@ export default {
 }
 
 .login {
-  background: url("../assets/login.jpg") no-repeat;
+  background: url("../assets/login.png") no-repeat;
   background-position: center;
   height: 70%;
   width: 100%;

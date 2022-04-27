@@ -2,7 +2,7 @@
   <div>
     <div class="header">
       <div class="logo">
-        <img width="250px" src="../assets/jwbc.png" />
+        <img width="250px" src="../assets/wads.png" />
       </div>
     </div>
     <div>
@@ -12,9 +12,9 @@
       >
         <el-card shadow="always" class="loginCard">
           <div>
-            <h2 class="login-title">教我编程图书商城</h2>
+            <h2 class="login-title">我爱读书图书商城</h2>
             <el-form :model="form" status-icon :rules="rules" ref="form">
-              <el-form-item prop="username">
+              <el-form-item prop="phonenum">
                 <el-row class="inputContent">
                   <el-col :span="2">
                     <i class="el-icon-user" style="font-size: 20px" />
@@ -22,8 +22,8 @@
                   <el-col :span="10">
                     <el-input
                       class="Myinput"
-                      v-model="form.username"
-                      placeholder="邮箱"
+                      v-model="form.phonenum "
+                      placeholder="手机号"
                       clearable
                     >
                     </el-input>
@@ -83,17 +83,24 @@ export default {
   data() {
     return {
       form: {
-        username: "",
+        phonenum: "",
         password: "",
       },
       rules: {
-        username: [
-          {
-            required: true,
-            message: "邮箱格式不正确！",
-            trigger: "blur",
-            type: "email",
-          },
+        phonenum: [
+         { required: true, message: '手机号不能为空!' },
+          { type: 'number',
+            message: '手机号格式不正确!',
+            trigger: 'blur',
+            transform(value) {
+              var phonereg = 11 && /^((13|14|15|16|17|18|19)[0-9]{1}\d{8})$/
+              if (!phonereg.test(value)) {
+                return false
+              } else {
+                return Number(value)
+              }
+            }
+          }
         ],
       },
     };
@@ -110,7 +117,7 @@ export default {
         url: this.$store.state.yuming+"/login",
         method: "POST",
         params: {
-          username: this.form.username,
+          username: this.form.phonenum,
           password: this.form.password,
         },
       })
@@ -138,7 +145,7 @@ export default {
                 message: "登陆成功",
                 type: "success",
               });
-              if (res.data.identity != 2) {
+              if (res.data.identity != 1) {
                 this.$router.push("/");
               } else {
                 this.$router.push("/adminManage");
@@ -167,7 +174,7 @@ export default {
   padding: 30px;
 }
 .login {
-  background: url("../assets/login.jpg") no-repeat;
+  background: url("../assets/login.png") no-repeat;
   background-position: center;
   height: 70%;
   width: 100%;
@@ -214,5 +221,7 @@ export default {
   justify-content: center;
   align-items: center;
 }
-
+.el-form-item__error{
+   margin-left: 100px;
+}
 </style> 

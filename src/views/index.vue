@@ -55,7 +55,7 @@
                       "
                       size="meduim"
                       icon="el-icon-star-on"
-                      @click.native="gotoShopCar"
+                      @click.native="gotoCollection"
                       >我的收藏</el-button
                     >
                   </el-badge>
@@ -473,17 +473,17 @@ export default {
       this.$store.commit("gobalSearchText", this.input);
       this.$router.push("/searchBook");
     },
-    gotoSign() {
-      this.$router.push("/sign");
-    },
+    // gotoSign() {
+    //   this.$router.push("/sign");
+    // },
     gotoLogin() {
       this.$router.push("/login");
     },
     gotoPersonPage() {
       this.$router.push("/person");
     },
-    gotoShopCar() {
-      this.$router.push("/shopping/0/0");
+    gotoCollection() {
+      this.$router.push("/collection");
     },
     loginOut() {
       this.isLoading = true;

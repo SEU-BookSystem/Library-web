@@ -18,7 +18,7 @@ export default new Vuex.Store({
     unfinishedRoute: {},
     roleHasLoad: false,
     role: {},
-    username: "",
+    phonenum: "",
     setToken: {},
     detToken: {},
     yuming:"http://47.94.131.208:8088",
@@ -48,7 +48,7 @@ export default new Vuex.Store({
       state.role = {}
       state.gobalSearchText = ""
       state.gobalSearchType = ""
-      state.username = ""
+      state.phonenum = ""
       state.roleHasLoad = false
     },
     clearCacheWithoutRoute(state) {
@@ -61,8 +61,8 @@ export default new Vuex.Store({
     token(state, payload) {
       state.token = payload
     },
-    username(state, payload) {
-      state.username = payload
+    phonenum(state, payload) {
+      state.phonenum = payload
     },
     roleHasLoad(state, payload) {
       state.roleHasLoad = payload

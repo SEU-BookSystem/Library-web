@@ -11,16 +11,22 @@ const routes = [
     name: 'login',
     component: () => import('../views/login.vue')
   },
-  {
-    path: '/sign',
-    name: 'sign',
-    component: () => import('../views/sign.vue')
-  },
+  // {
+  //   path: '/sign',
+  //   name: 'sign',
+  //   component: () => import('../views/sign.vue')
+  // },
   {
     path: '/person',
     name: 'person',
     //meta: { userAuth: true },//登录鉴权
     component: () => import('../components/personPage.vue')
+  },
+  {
+    path: '/collection',
+    name: 'collection',
+    //meta: { userAuth: true },//登录鉴权
+    component: () => import('../components/collection.vue')
   },
   {
     path: '/change',
@@ -103,12 +109,12 @@ const routes = [
     //meta: { adminAuth: true },//登录鉴权
     component: () => import('../components/admin/dataVisual.vue')
   },
-  {
-    path: '/shopping/:bookid/:num',
-    name: 'shopping',
-    //meta: { userAuth: true },//登录鉴权
-    component: () => import('../components/shopping.vue')
-  },
+  // {
+  //   path: '/shopping/:bookid/:num',
+  //   name: 'shopping',
+  //   //meta: { userAuth: true },//登录鉴权
+  //   component: () => import('../components/shopping.vue')
+  // },
   {
     path: '/refundM',
     name: 'refundM',
