@@ -11,34 +11,47 @@
       ></el-page-header>
     </div>
     <div class="tab">
-      <el-tabs v-model="activeName">
+      <el-tabs v-model="activeName" :tab-position="tabPosition">
         <el-tab-pane label="首页" name="first">
-           <div
+          <div
             style="display: flex; justify-content: center; align-items: center"
           >
             <el-form
               ref="personInfo"
               :model="personInfo"
-              label-width="80px"
+              label-width="100px"
               label-position="left"
             >
               <el-row style="margin-top: 30px">
                 <el-col>
-                  <el-form-item label="姓名" prop="name">
+                  <el-form-item label="姓名：" prop="name">
                     <span>{{ personInfo.name }}</span>
                   </el-form-item>
                 </el-col>
               </el-row>
               <el-row>
                 <el-col>
-                  <el-form-item label="性别" prop="gentle">
+                  <el-form-item label="性别：" prop="gentle">
                     <span>{{ personInfo.gentle }}</span>
                   </el-form-item>
                 </el-col>
               </el-row>
               <el-row>
                 <el-col>
-                  <el-form-item label="年龄" prop="shopper_name">
+                  <el-form-item label="年龄：" prop="shopper_name">
+                    <span>{{ personInfo.age }}</span>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col>
+                  <el-form-item label="身份证号：" prop="shopper_name">
+                    <span>{{ personInfo.age }}</span>
+                  </el-form-item>
+                </el-col> </el-row
+              ><el-row>
+                <el-col>
+                  <el-form-item label="手机号：" prop="shopper_name">
                     <span>{{ personInfo.age }}</span>
                   </el-form-item>
                 </el-col>
@@ -46,656 +59,73 @@
               <el-row>
                 <el-col>
                   <el-form-item>
-                    <el-button type="text" @click="gotoShopManager"
-                      >点击管理我的商铺</el-button
+                    <el-button type="text" @click="changePassword = true"
+                      >点击修改我的密码</el-button
                     >
                   </el-form-item>
                 </el-col>
               </el-row>
             </el-form>
-          </div>
-          <!-- <div class="personCard">
-            <div class="up">
-              <el-card class="personDetail">
-                <el-row>
-                  <div
-                    style="
-                      display: flex;
-                      justify-content: center;
-                      align-items: center;
-                      flex-wrap: wrap;
-                      margin: 20px;
-                    "
-                  >
-                    <img
-                      v-if="this.userInfo.avatar_b"
-                      style="
-                        height: 150px;
-                        width: 150px;
-                        border-radius: 50%;
-                        margin: 5%;
-                      "
-                      :src="this.userInfo.avatar_b"
-                    />
-                    <img
-                      v-else
-                      style="
-                        height: 150px;
-                        width: 150px;
-                        border-radius: 50%;
-                        margin: 5%;
-                      "
-                      src="../assets/avatar.jpg"
-                    />
-                  </div>
-                </el-row>
-                <el-row style="margin: 10px" class="all">
-                  <div
-                    style="
-                      font-size: 20px;
-                      display: flex;
-                      justify-content: center;
-                      align-items: center;
-                    "
-                  >
-                    {{ this.userInfo.name }}
-                  </div>
-                </el-row>
-                <el-row style="margin: 10px" class="all">
-                  <div
-                    style="
-                      font-size: 15px;
-                      color: #909399;
-                      display: flex;
-                      justify-content: center;
-                      align-items: center;
-                    "
-                  >
-                    {{ this.userInfo.username }}
-                  </div>
-                </el-row>
-                <el-row
-                  style="margin: 20px 10px; margin-bottom: 0px"
-                  class="all"
-                >
-                  <el-button
-                    type="text"
-                    style="font-size: 15px"
-                    @click="gotoAddress"
-                    >我的收货地址</el-button
-                  >
-                </el-row>
-                <el-row style="margin: 0px 10px" class="all">
-                  <el-button
-                    type="text"
-                    style="font-size: 15px"
-                    @click="gotoChange"
-                    >修改资料</el-button
-                  >
-                </el-row>
-              </el-card>
-              <div
+            <el-dialog title="修改密码" :visible.sync="changePassword">
+              <el-form
+                ref="userInfo"
+                :model="userInfo"
+                label-width="100px"
+                :rules="passwordRules"
                 style="
                   display: flex;
-                  justify-content: space-around;
+                  justify-content: center;
                   align-items: center;
                   flex-wrap: wrap;
-                  margin-left: 5%;
                 "
               >
-                <el-row
-                  style="
-                    margin-top: 50px;
-                    display: flex;
-                    justify-content: space-between;
-                  "
-                >
-                  <el-col :span="8">
-                    <el-card
-                      shadow="never"
-                      class="noCard"
-                      @click.native="gotoAllOrder"
-                    >
-                      <i
-                        class="iconfont-dingdanlan-copy"
-                        style="font-size: 50px; margin: 50px"
-                      />
-                      <el-button
-                        type="text"
-                        style="
-                          font-size: 15px;
-                          margin: 20px 50px;
-                          color: #3d678a;
-                        "
-                        >全部订单</el-button
-                      >
-                    </el-card>
-                  </el-col>
-                  <el-col :span="8">
-                    <el-card
-                      class="cccard"
-                      shadow="never"
-                      @click.native="gotoDaifukuan"
-                    >
-                      <i
-                        class="iconfont-daifukuan"
-                        style="font-size: 50px; margin: 50px"
-                      />
-                      <el-button
-                        type="text"
-                        style="
-                          font-size: 15px;
-                          margin: 20px 50px;
-                          color: #fffff0;
-                        "
-                        >待付款</el-button
-                      >
-                    </el-card>
-                  </el-col>
-                  <el-col :span="8">
-                    <el-card
-                      shadow="never"
-                      class="noCard"
-                      @click.native="gotoDaifahuo"
-                    >
-                      <i
-                        class="iconfont-daifahuoL"
-                        style="font-size: 50px; margin: 50px"
-                      />
-                      <el-button
-                        type="text"
-                        style="
-                          font-size: 15px;
-                          margin: 20px 50px;
-                          color: #3d678a;
-                        "
-                        >待发货</el-button
-                      >
-                    </el-card>
-                  </el-col>
+                <el-row>
+                  <el-form-item label="原密码" prop="checkOrignPass">
+                    <el-input
+                      v-model="userInfo.checkOrignPass"
+                      type="password"
+                      placeholder="请输入原密码"
+                      style="width: 400px"
+                      clearable
+                    ></el-input>
+                  </el-form-item>
                 </el-row>
                 <el-row>
-                  <el-col :span="8">
-                    <el-card
-                      class="cccard"
-                      shadow="never"
-                      @click.native="gotoDaishouhuo"
+                  <el-form-item label="新密码" prop="newpass">
+                    <el-input
+                      v-model="userInfo.newpass"
+                      placeholder="请输入新密码"
+                      prop="newpass"
+                      type="password"
+                      style="width: 400px"
+                      clearable
                     >
-                      <i
-                        class="iconfont-daishouhuoW"
-                        style="font-size: 50px; margin: 50px"
-                      />
-                      <el-button
-                        type="text"
-                        style="
-                          font-size: 15px;
-                          margin: 20px 50px;
-                          color: #fffff0;
-                        "
-                        >待收货</el-button
-                      >
-                    </el-card>
-                  </el-col>
-                  <el-col :span="8">
-                    <el-card
-                      shadow="never"
-                      class="noCard"
-                      @click.native="gotoDaipingjia"
-                    >
-                      <i
-                        class="iconfont-fankuiL"
-                        style="font-size: 50px; margin: 50px"
-                      />
-                      <el-button
-                        type="text"
-                        style="
-                          font-size: 15px;
-                          margin: 20px 50px;
-                          color: #3d678a;
-                        "
-                        >待评价</el-button
-                      >
-                    </el-card>
-                  </el-col>
-                  <el-col :span="8">
-                    <el-card
-                      class="cccard"
-                      shadow="never"
-                      @click.native="gotoTuikuan"
-                    >
-                      <i
-                        class="iconfont-shouhouW"
-                        style="font-size: 50px; margin: 50px"
-                      />
-                      <el-button
-                        type="text"
-                        style="
-                          font-size: 15px;
-                          margin: 20px 60px;
-                          color: #fffff0;
-                        "
-                      >
-                        退款</el-button
-                      >
-                    </el-card>
-                  </el-col>
+                    </el-input>
+                  </el-form-item>
                 </el-row>
+                <el-row>
+                  <el-form-item label="确认新密码" prop="checkpass">
+                    <el-input
+                      v-model="userInfo.checkpass"
+                      placeholder="请确认新密码"
+                      prop="checkpass"
+                      type="password"
+                      clearable
+                      style="width: 400px"
+                    >
+                    </el-input>
+                  </el-form-item>
+                </el-row>
+              </el-form>
+              <div slot="footer" class="dialog-footer">
+                <el-button @click="changePassword = false">取 消</el-button>
+                <el-button type="primary" @click="confirmPass">确 定</el-button>
               </div>
-            </div>
-          </div> -->
-        </el-tab-pane>
-        <el-tab-pane label="我的预约" name="second">
-          <el-row v-loading="addressLoading">
-            <div style="margin-bottom: 20px">
-              <el-row>
-                <el-col :key="item.id" v-for="item in myAddressList" :span="6">
-                  <el-card class="addressCard">
-                    <el-form ref="item" :v-model="item" label-width="80px">
-                      <el-form-item label="姓名" prop="name">
-                        <div style="display: flex; justify-content: flex-start">
-                          {{ item.name }}
-                        </div>
-                      </el-form-item>
-                      <el-form-item label="电话号码" prop="phone">
-                        <div style="display: flex; justify-content: flex-start">
-                          {{ item.phone }}
-                        </div>
-                      </el-form-item>
-                      <el-form-item label="详细地址" prop="name">
-                        <div
-                          style="
-                            display: flex;
-                            justify-content: flex-start;
-                            flex-wrap: wrap;
-                            word-break: break-all;
-                            text-overflow: ellipsis;
-                            overflow: hidden;
-                            display: -webkit-box;
-                            -webkit-line-clamp: 1;
-                            -webkit-box-orient: vertical;
-                          "
-                          :title="item.address"
-                        >
-                          {{ item.address }}
-                        </div>
-                      </el-form-item>
-                      <el-form-item>
-                        <el-row
-                          style="display: flex; justify-content: flex-start"
-                        >
-                          <el-col>
-                            <el-button
-                              type="text"
-                              style="margin: 0 5px"
-                              v-if="item.status == 0"
-                              @click="setDefaultAddress(item)"
-                              >设为默认地址
-                            </el-button>
-                            <el-button
-                              type="text"
-                              style="margin: 0 5px"
-                              v-else
-                              disabled
-                              >默认地址
-                            </el-button>
-                          </el-col>
-                          <el-col>
-                            <el-button
-                              type="text"
-                              style="margin: 0 5px"
-                              @click="eidtAddress(item)"
-                              >编辑
-                            </el-button>
-                            <el-button
-                              type="text"
-                              style="margin: 0 5px"
-                              @click="editDelAddress(item)"
-                              >删除
-                            </el-button></el-col
-                          >
-                        </el-row>
-                      </el-form-item>
-                    </el-form>
-                  </el-card>
-                </el-col>
-              </el-row>
-              <el-row
-                ><el-button
-                  size="min"
-                  icon="el-icon-setting"
-                  type="text"
-                  @click="clearNewAddress"
-                  >添加收货人信息</el-button
-                ></el-row
-              >
-              <!--删除收货人信息-->
-              <el-dialog
-                title="提示"
-                :visible.sync="delAddressVisible"
-                width="30%"
-              >
-                <span>确认删除收货地址</span>
-                <span slot="footer" class="dialog-footer">
-                  <el-button @click="delAddressVisible = false"
-                    >取 消</el-button
-                  >
-                  <el-button type="primary" @click="confirmDelAddress"
-                    >确 定</el-button
-                  >
-                </span>
-              </el-dialog>
-              <!--编辑收货人信息-->
-              <el-dialog title="编辑收货人信息" :visible.sync="editInfoVisible">
-                <el-form
-                  :model="editMyAddress"
-                  label-width="120px"
-                  :rules="newAddressRules"
-                >
-                  <el-form-item label="姓名" prop="name">
-                    <el-input
-                      type="text"
-                      style="width: 200px"
-                      v-model="editMyAddress.name"
-                      clearable
-                    ></el-input>
-                  </el-form-item>
-                  <el-form-item label="电话号码" prop="phone">
-                    <el-input
-                      type="text"
-                      style="width: 200px"
-                      v-model="editMyAddress.phone"
-                      clearable
-                    ></el-input>
-                  </el-form-item>
-                  <el-form-item label="详细地址" prop="address">
-                    <el-input
-                      type="textarea"
-                      maxlength="50"
-                      show-word-limit
-                      clearable
-                      style="width: 500px"
-                      rows="5"
-                      v-model="editMyAddress.address"
-                    ></el-input>
-                  </el-form-item>
-                </el-form>
-                <div slot="footer" class="dialog-footer">
-                  <el-button @click="editInfoVisible = false">取消</el-button>
-                  <el-button type="primary" @click="confirmChangeAddress"
-                    >确认编辑</el-button
-                  >
-                </div>
-              </el-dialog>
-              <!--添加收货人信息-->
-              <el-dialog title="添加收货人信息" :visible.sync="addInfoVisible">
-                <el-form
-                  ref="newAddress"
-                  :model="newAddress"
-                  label-width="120px"
-                  :rules="newAddressRules"
-                >
-                  <el-form-item label="姓名" prop="name">
-                    <el-input
-                      type="text"
-                      v-model="newAddress.name"
-                      style="width: 200px"
-                    ></el-input>
-                  </el-form-item>
-                  <el-form-item label="电话号码" prop="phone">
-                    <el-input
-                      type="text"
-                      v-model="newAddress.phone"
-                      style="width: 200px"
-                    ></el-input>
-                  </el-form-item>
-                  <el-form-item label="详细地址" prop="address">
-                    <el-input
-                      type="textarea"
-                      maxlength="50"
-                      show-word-limit
-                      clearable
-                      style="width: 500px"
-                      rows="5"
-                      v-model="newAddress.address"
-                    ></el-input>
-                  </el-form-item>
-                </el-form>
-                <div slot="footer" class="dialog-footer">
-                  <el-button @click="addInfoVisible = false">取消</el-button>
-                  <el-button type="primary" @click="addNewAddress"
-                    >确认新增</el-button
-                  >
-                </div>
-              </el-dialog>
-            </div>
-          </el-row>
-        </el-tab-pane>
-        <el-tab-pane
-          label="我的预约"
-          name="third"
-        >
-          <div
-            style="display: flex; justify-content: center; align-items: center"
-          >
-            <el-form
-              ref="applypersonInfo"
-              :model="applypersonInfo"
-              label-width="80px"
-              :rules="applyRules"
-              label-position="left"
-            >
-              <el-row>
-                <el-col>
-                  <el-form-item label-position="left">
-                    <div>
-                      <h3 style="color: #909399">
-                        注意：在此，您可以申请成为商家。请仔细考虑店铺封面，认真填写店铺名称和申请理由。否则，您将有可能遭到拒绝。
-                      </h3>
-                    </div>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-              <el-row style="margin-top: 20px">
-                <el-col>
-                  <el-form-item label="店铺封面" prop="img">
-                    <el-upload
-                      class="avatar-uploader"
-                      ref="upload"
-                      action="http://47.94.131.208:8888"
-                      :show-file-list="false"
-                      :on-change="changePhotoFile"
-                      :auto-upload="false"
-                      :name="this.applypersonInfo.img"
-                    >
-                      <img
-                        v-if="this.applypersonInfo.img"
-                        :src="this.applypersonInfo.img"
-                        class="avatar"
-                      />
-                      <img v-else :src="this.imgUrl" class="avatar" />
-                      <div class="avatar-uploader-icon">
-                        <i
-                          class="el-icon-warning-outline"
-                          style="margin-right: 5px"
-                        ></i>
-                        <i style="color: #909399">点击图片进行修改</i>
-                      </div>
-                    </el-upload>
-                    <my-cropper
-                      ref="myCropper"
-                      @getFile="getFile"
-                      @upAgain="upAgain"
-                    ></my-cropper>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-              <el-row>
-                <el-col>
-                  <el-form-item label="店铺名称" prop="shop_name">
-                    <el-input
-                      type="text"
-                      v-model="applypersonInfo.shop_name"
-                      maxlength="10"
-                      show-word-limit
-                      style="width: 250px"
-                    ></el-input>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-              <el-row>
-                <el-col>
-                  <el-form-item label="店主名" prop="shopper_name">
-                    <el-input
-                      type="text"
-                      v-model="applypersonInfo.shopper_name"
-                      maxlength="10"
-                      show-word-limit
-                      style="width: 250px"
-                    ></el-input>
-                    <div>
-                      <i
-                        class="el-icon-warning-outline"
-                        style="margin-right: 5px"
-                      ></i>
-                      <i style="color: #909399">请填写申请人的真实姓名</i>
-                    </div>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-              <el-row>
-                <el-col>
-                  <el-form-item label="申请理由" prop="apply_reason">
-                    <el-input
-                      type="textarea"
-                      v-model="applypersonInfo.apply_reason"
-                      maxlength="100"
-                      show-word-limit
-                      clearable
-                      style="width: 500px"
-                      rows="5"
-                    ></el-input>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-              <el-row>
-                <el-col>
-                  <el-form-item>
-                    <el-button type="primary" @click="confirmApply"
-                      >确认申请</el-button
-                    >
-                  </el-form-item>
-                </el-col>
-              </el-row>
-            </el-form>
+            </el-dialog>
           </div>
         </el-tab-pane>
-        <el-tab-pane
-          label="我的借阅"
-          name="fourth"
-        >
-          <el-table
-            v-if="hasApplyHistory == true"
-            :data="applyHistory"
-            style="width: 100%"
-            :default-sort="{ prop: 'create_time', order: 'descending' }"
-          >
-            <el-table-column type="expand">
-              <template slot-scope="props">
-                <el-form label-position="left" inline class="demo-table-expand">
-                  <el-row>
-                    <el-form-item label="申请理由">
-                      <span>{{ props.row.apply_reason }}</span>
-                    </el-form-item>
-                  </el-row>
-                  <el-row>
-                    <el-form-item
-                      label="审核结果"
-                      v-if="props.row.apply_status == 2"
-                    >
-                      <el-tag v-if="props.row.pass_status == 1" type="success"
-                        >已通过</el-tag
-                      >
-                      <el-tag v-if="props.row.pass_status == 2" type="danger"
-                        >已拒绝</el-tag
-                      >
-                    </el-form-item>
-                  </el-row>
-                  <el-row>
-                    <el-form-item
-                      label="审核意见"
-                      v-if="props.row.apply_status == 2"
-                    >
-                      <span>{{ props.row.check_opinion }}</span>
-                    </el-form-item>
-                  </el-row>
-                  <el-row>
-                    <el-form-item
-                      label="存在状态"
-                      v-if="props.row.exist_status != -1"
-                    >
-                      <el-tag v-if="props.row.exist_status == 1" type="success"
-                        >未注销</el-tag
-                      >
-                      <el-tag v-if="props.row.exist_status == 2" type="warning"
-                        >已注销</el-tag
-                      >
-                    </el-form-item>
-                  </el-row>
-                </el-form>
-              </template>
-            </el-table-column>
-            <el-table-column
-              prop="create_time"
-              label="申请时间"
-              sortable
-            ></el-table-column>
-            <el-table-column label="店铺头像">
-              <template slot-scope="scope">
-                <el-popover placement="right" title="" trigger="hover">
-                  <img class="img-max" :src="scope.row.avatar_b" />
-                  <img
-                    class="img-min"
-                    slot="reference"
-                    :src="scope.row.avatar_s"
-                    :alt="scope.row.avatar_s"
-                    style="max-height: 50px; max-width: 130px"
-                  />
-                </el-popover>
-              </template>
-            </el-table-column>
-            <el-table-column
-              prop="shop_name"
-              label="店铺名称"
-            ></el-table-column>
-            <el-table-column
-              prop="shopper_name"
-              label="店主名称"
-            ></el-table-column>
-            <el-table-column prop="apply_status" label="审核状态">
-              <template v-slot="x">
-                <el-tag v-if="x.row.apply_status == 1" type="warning"
-                  >未审核</el-tag
-                >
-                <el-tag v-if="x.row.apply_status == 2" type="success"
-                  >已审核</el-tag
-                >
-                <el-tag v-if="x.row.apply_status == 3" type="info"
-                  >已取消</el-tag
-                >
-              </template>
-            </el-table-column>
-            <el-table-column label="操作">
-              <template v-slot="x">
-                <el-button
-                  size="medium"
-                  v-if="x.row.apply_status == 1"
-                  type="text"
-                  >撤销</el-button
-                >
-              </template>
-            </el-table-column>
-          </el-table>
-          <div v-if="hasApplyHistory==false">
+        <el-tab-pane label="我的收藏" name="second">
+          <div v-if="hasCollected == false">
             <el-row>
               <el-col :offset="9">
                 <img
@@ -705,14 +135,91 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-col :offset="11">
-                <p style="margin-left: 0px; color: grey">还没有申请过店铺哦~</p>
+              <el-col :offset="10">
+                <p style="color: grey">您还没有收藏任何书籍哦~</p>
               </el-col>
             </el-row>
           </div>
         </el-tab-pane>
-        <el-tab-pane label="消息" name="fifth">
-          
+        <el-tab-pane label="我的预约" name="third">
+         <div v-if="hasOrdered == false">
+            <el-row>
+              <el-col :offset="9">
+                <img
+                  src="../assets/empty_grey.png"
+                  style="height: 220px; margin: 50px"
+                />
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :offset="10">
+                <p style="color: grey">您还没有预约任何书籍哦~</p>
+              </el-col>
+            </el-row>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="我的借阅" name="fourth">
+          <div v-if="hasBorrowed == true">
+          </div> 
+          <div v-if="hasBorrowed == false">
+            <el-row>
+              <el-col :offset="9">
+                <img
+                  src="../assets/empty_grey.png"
+                  style="height: 220px; margin: 50px"
+                />
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :offset="10">
+                <p style="color: grey">您还没有借阅任何书籍哦~</p>
+              </el-col>
+            </el-row>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane name="fifth" label="我的借阅历史">
+          <div v-if="hasBorrowedHistory == true">
+          </div> 
+          <div v-if="hasBorrowedHistory == false">
+            <el-row>
+              <el-col :offset="9">
+                <img
+                  src="../assets/empty_grey.png"
+                  style="height: 220px; margin: 50px"
+                />
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :offset="10">
+                <p style="color: grey">您的借阅历史为空~</p>
+              </el-col>
+            </el-row>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane name="sixth" label="我的违规记录">
+          <div v-if="hasViolated == true">
+          </div> 
+          <div v-if="hasViolated == false">
+            <el-row>
+              <el-col :offset="9">
+                <img
+                  src="../assets/empty_grey.png"
+                  style="height: 220px; margin: 50px"
+                />
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :offset="10">
+                <p style="color: grey">您还没有任何违规记录哦~</p>
+              </el-col>
+            </el-row>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane name="seventh">
+          <span slot="label"
+            >消息<el-badge :value="1" class="message" type="primary" :max="99">
+            </el-badge>
+          </span>
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -720,30 +227,37 @@
 </template>
 
 <script>
-import MyCropper from "./cropper.vue";
 import axios from "axios";
 import { Message } from "element-ui";
 export default {
   components: {
-    MyCropper,
   },
   data() {
     return {
-      hasApplyHistory: false,
+      //tab方向
+       tabPosition: 'left',
+      hasBorrowed: false,
+      hasCollected:false,
+      hasOrdered:false,
+      hasBorrowHistory:false,
+      hasViolated:false,
       imgUrl: require("../assets/avatar.jpg"),
       orderId: "",
       isLoading: false,
+      //修改密码
+      changePassword: false,
       //收货地址loading
       addressLoading: false,
       activeName: "first",
       //是否上传了头像
       hasShopAvatar: false,
       userInfo: {
-        avatar_s: "",
         username: "",
         name: "",
         password: "",
-        identity: "",
+        checkOrignPass: "",
+        newpass: "",
+        checkpass: "",
       },
       //申请店铺
       applypersonInfo: {
@@ -840,6 +354,42 @@ export default {
           { max: 100, message: "申请理由不得超过100个字", trigger: "blur" },
         ],
       },
+      passwordRules: {
+        newpass: [
+          { required: true, message: "新密码不得为空", trigger: "blur" },
+          { min: 3, message: "密码不得低于3位", trigger: "blur" },
+        ],
+        checkOrignPass: [
+          { required: true, message: "密码不能为空", trigger: "blur" },
+          {
+            validator: (rule, value, callback) => {
+              if (value === "") {
+                callback(new Error("请输入原密码"));
+              } else if (value !== this.userInfo.password) {
+                callback(new Error("原密码不正确"));
+              } else {
+                callback();
+              }
+            },
+            trigger: "blur",
+          },
+        ],
+        checkpass: [
+          { required: true, message: "确认密码", trigger: "blur" },
+          {
+            validator: (rule, value, callback) => {
+              if (value === "") {
+                callback(new Error("请再次输入密码"));
+              } else if (value !== this.userInfo.newpass) {
+                callback(new Error("两次输入密码不一致"));
+              } else {
+                callback();
+              }
+            },
+            trigger: "blur",
+          },
+        ],
+      },
       formdata: new FormData(),
     };
   },
@@ -854,9 +404,9 @@ export default {
       this.$router.push("/#reloaded");
     },
     //跳转资料修改页面
-    gotoChange() {
-      this.$router.push("/change");
-    },
+    // gotoChange() {
+    //   this.$router.push("/change");
+    // },
     gotoShopManager() {
       this.$router.push("/shopManage");
     },
@@ -893,6 +443,31 @@ export default {
     gotoTuikuan() {
       this.id = 6;
       this.$router.push("/userOrder/" + this.id);
+    },
+    //修改密码
+    confirmPass() {
+      this.changePassword = false;
+      this.userInfo.password = this.userInfo.newpass;
+      var formData = new FormData();
+      formData.append("password", this.userInfo.password);
+      formData.append("name", this.userInfo.name);
+      axios({
+        url: this.$store.state.yuming + "/updateUser",
+        method: "POST",
+        data: formData,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }).then((res) => {
+        if (res.data.code == 200) {
+          this.$message({
+            message: "修改密码成功",
+            type: "success",
+          });
+        } else {
+          this.$message.error("修改密码失败");
+        }
+      });
     },
     //获取用户的收货地址
     getUserAddress() {
@@ -1083,9 +658,9 @@ export default {
           const { code, data } = res.data;
           if (code == "200") {
             this.applyHistory = data;
-            this.hasApplyHistory = true;
+            this.hasBorrowHistory = true;
           } else if (code == "3") {
-            this.hasApplyHistory = false;
+            this.hasBorrowHistory = false;
           } else {
             this.$message.error("获取店铺申请历史信息失败");
           }
@@ -1304,5 +879,8 @@ export default {
   margin: 10px 20px;
   width: 200px;
   height: 150px;
+}
+.message {
+  margin-top: 5px;
 }
 </style>

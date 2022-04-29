@@ -33,10 +33,10 @@
               </el-input>
             </div>
           </el-col>
-          <el-col :span="6" v-if="hasRole">
+          <el-col :span="6"  v-if="hasRole">
             <div style="margin-left: 20px">
               <el-row class="collection">
-                <el-col :span="10">
+                <el-col :span="10" :offset="20">
                   <el-badge
                     :max="99"
                     :value="goodsNum"
@@ -167,7 +167,7 @@
                   font-weight: 1000;
                   border-left: solid 1px #e6e6e6;
                 "
-                >2022年出版</el-menu-item
+                >最近3年出版</el-menu-item
               >
               <el-menu-item
                 index="2021"
@@ -177,7 +177,7 @@
                   font-weight: 1000;
                   border-left: solid 1px #e6e6e6;
                 "
-                >2021年出版</el-menu-item
+                >最近5年出版</el-menu-item
               >
               <el-menu-item
                 index="2020"
@@ -187,7 +187,7 @@
                   font-weight: 1000;
                   border-left: solid 1px #e6e6e6;
                 "
-                >2020年出版</el-menu-item
+                >最近10年出版</el-menu-item
               >
               <el-menu-item
                 index="2019"
@@ -198,7 +198,7 @@
                   border-left: solid 1px #e6e6e6;
                   border-bottom: solid 1px #e6e6e6;
                 "
-                >2019年及以前出版</el-menu-item
+                >2012年及以前出版</el-menu-item
               >
             </el-menu>
           </el-aside>
