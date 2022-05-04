@@ -19,19 +19,19 @@ const routes = [
   {
     path: '/person',
     name: 'person',
-    //meta: { userAuth: true },//登录鉴权
+    meta: { userAuth: true },//登录鉴权
     component: () => import('../components/personPage.vue')
   },
   {
     path: '/collection',
     name: 'collection',
-    //meta: { userAuth: true },//登录鉴权
+    meta: { userAuth: true },//登录鉴权
     component: () => import('../components/collection.vue')
   },
   {
     path: '/change',
     name: 'change',
-    //meta: { userAuth: true },//登录鉴权
+    meta: { userAuth: true },//登录鉴权
     component: () => import('../components/userInfoChange.vue')
   },
   {
@@ -47,25 +47,25 @@ const routes = [
   {
     path: '/shopManage',
     name: 'shopManage',
-    //meta: { shopAuth: true },//登录鉴权
+    meta: { shopAuth: true },//登录鉴权
     component: () => import('../components/shopManage/shopManage.vue')
   },
   {
     path: '/bookM',
     name: 'bookM',
-    //meta: { shopAuth: true },//登录鉴权
+    meta: { shopAuth: true },//登录鉴权
     component: () => import('../components/shopManage/bookM.vue')
   },
   {
     path: '/orderM',
     name: 'orderM',
-    //meta: { shopAuth: true },//登录鉴权
+    meta: { shopAuth: true },//登录鉴权
     component: () => import('../components/shopManage/orderM.vue')
   },
   {
     path: '/orderInfo/:order_id',
     name: 'orderInfo',
-    //meta: { shopAuth: true },//登录鉴权
+    meta: { shopAuth: true },//登录鉴权
     component: () => import('../components/shopManage/orderInfo.vue')
   },
   {
@@ -76,37 +76,37 @@ const routes = [
   {
     path: '/adminManage',
     name: 'adminManage',
-    //meta: { adminAuth: true },//登录鉴权
+    meta: { adminAuth: true },//登录鉴权
     component: () => import('../components/admin/adminManage.vue')
   },
   {
     path: '/manageClass',
     name: 'manageClass',
-    //meta: { adminAuth: true },//登录鉴权
+    meta: { adminAuth: true },//登录鉴权
     component: () => import('../components/admin/manageClass.vue')
   },
   {
     path: '/manageMerchant',
     name: 'manageMerchant',
-    //meta: { adminAuth: true },//登录鉴权
+    meta: { adminAuth: true },//登录鉴权
     component: () => import('../components/admin/manageMerchant.vue')
   },
   {
     path: '/manageUser',
     name: 'manageUser',
-    //meta: { adminAuth: true },//登录鉴权
+    meta: { adminAuth: true },//登录鉴权
     component: () => import('../components/admin/manageUser.vue')
   },
   {
     path: '/manageOrder',
     name: 'manageOrder',
-    //meta: { adminAuth: true },//登录鉴权
+    meta: { adminAuth: true },//登录鉴权
     component: () => import('../components/admin/manageOrder.vue')
   },
   {
     path: '/dataVisual',
     name: 'dataVisual',
-    //meta: { adminAuth: true },//登录鉴权
+    meta: { adminAuth: true },//登录鉴权
     component: () => import('../components/admin/dataVisual.vue')
   },
   // {
@@ -118,43 +118,43 @@ const routes = [
   {
     path: '/refundM',
     name: 'refundM',
-    //meta: { shopAuth: true },//登录鉴权
+    meta: { shopAuth: true },//登录鉴权
     component: () => import('../components/shopManage/refundM.vue')
   },
   {
     path: '/refundInfo/:id',
     name: 'refundInfo',
-    //meta: { shopAuth: true },//登录鉴权
+    meta: { shopAuth: true },//登录鉴权
     component: () => import('../components/shopManage/refundInfo.vue')
   },
   {
     path: '/userorder/:orderId',
     name: 'userorder',
-    //meta: { userAuth: true },//登录鉴权
+    meta: { userAuth: true },//登录鉴权
     component: () => import('../views/userOrder.vue')
   },
   {
     path: '/orderDetail/:orderId',
     name: 'orderDetail',
-    //meta: { userAuth: true },//登录鉴权
+    meta: { userAuth: true },//登录鉴权
     component: () => import('../views/orderDetail.vue')
   },
   {
     path: '/refund/:bookId',
     name: 'refund',
-    //meta: { userAuth: true },//登录鉴权
+    meta: { userAuth: true },//登录鉴权
     component: () => import('../views/refund.vue')
   },
   {
     path: '/service/:bookId/:serviceId',
     name: 'service',
-    //meta: { userAuth: true },//登录鉴权
+    meta: { userAuth: true },//登录鉴权
     component: () => import('../views/service.vue')
   },
   {
     path: '/remark/:bookId',
     name: 'remark',
-    //meta: { userAuth: true },//登录鉴权
+    meta: { userAuth: true },//登录鉴权
     component: () => import('../views/remark.vue')
   },
   {
@@ -196,19 +196,9 @@ router.beforeEach((to, from, next) => {
       })
       Message("请登录后再试")
     }
-  } else if (to.meta.shopAuth) {
-    if (store.state.role == 1) {
-      next();
-    } else {
-      next({
-        path: '/',
-        query: { redirect: to.path }
-      })
-      Message("无权限访问")
-    }
-  }
+  } 
   else if (to.meta.adminAuth) {
-    if (store.state.role == 2) {
+    if (store.state.role == 1) {
       next();
     } else {
       next({

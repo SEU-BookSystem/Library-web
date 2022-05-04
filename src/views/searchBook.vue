@@ -111,11 +111,11 @@
                 >
                   <el-menu-item
                     v-for="item in categoryList"
-                    :key="item.main_id"
+                    :key="item.category_id"
                     style="color: rgb(250, 128, 114); font-weight: 1000"
-                    :index="item.main_id"
-                    @click.native="getMainClassBook(item.main_id)"
-                    >{{ item.main_name }}</el-menu-item
+                    :index="item.category_id"
+                    @click.native="getMainClassBook(item.category_id)"
+                    >{{ item.category_name }}</el-menu-item
                   >
                 </el-menu>
               </el-col>
@@ -269,10 +269,10 @@ export default {
       input: this.$store.state.gobalSearchText,
       categoryList: [
         {
-          book_num: 0,
-          main_name: "",
-          main_id: "",
-          second_category: [{ book_num: "", second_name: "", second_id: "" }],
+          num: 0,
+          category_name: "",
+          category_id: "",
+          pid:"",
         },
       ],
       displayList: [],
@@ -463,7 +463,7 @@ export default {
     //获取所有目录
     getAllCategory() {
       axios({
-        url: this.$store.state.yuming + "/category/getAll",
+        url: this.$store.state.yuming + "/category/getMain",
         method: "GET",
       })
         .then((res) => {
@@ -586,7 +586,6 @@ export default {
   font-weight: 1000;
   font-size: 20px;
 }
-
 .el-menu-item.is-active {
   background-color: rgb(231, 241, 252) !important;
 }

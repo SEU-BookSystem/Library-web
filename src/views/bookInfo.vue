@@ -108,11 +108,11 @@
               >
                 <el-menu-item
                   v-for="item in categoryList"
-                  :key="item.main_id"
+                  :key="item.category_id"
                   style="color: rgb(250, 128, 114); font-weight: 1000"
-                  :index="item.main_id"
-                  @click.native="getMainClassBook(item.main_id)"
-                  >{{ item.main_name }}</el-menu-item
+                  :index="item.category_id"
+                  @click.native="getMainClassBook(item.category_id)"
+                  >{{ item.catagory_name }}</el-menu-item
                 >
               </el-menu>
             </el-col>
@@ -187,43 +187,6 @@
             </el-row>
           </el-main>
         </el-container>
-        <div style="font-size: 25px">
-          <el-divider content-position="left"
-            ><span style="font-size: 25px">用户评价</span></el-divider
-          >
-        </div>
-        <el-footer
-            v-if="this.evaluationList.length == 0"
-            style="text-align: center;height:100%"
-          >
-            <img
-              style="width: 200px; height: 200px"
-              src="../assets/empty_grey.png"
-            />
-            <p>暂无评价</p>
-          </el-footer>
-        <el-footer style="height:100%" v-if="this.evaluationList.length!=0">
-          <div v-for="item in evaluationList" :key="item.userName">
-            <el-card style="margin: 20px 0 20px;height:170px">
-              <el-container>
-                <el-aside style="width: 180px; text-align: center">
-                  <el-image class="avatar" :src="item.avatar_s"></el-image>
-                  <p>{{ item.name }}</p>
-                </el-aside>
-                <el-main>
-                  <el-rate
-                    v-model="item.rate"
-                    disabled
-                    score-template="{value}"
-                  >
-                  </el-rate>
-                  <p>{{ item.remark }}</p>
-                  <p>评论时间：{{ item.remark_time }}</p>
-                </el-main>
-              </el-container>
-            </el-card>
-          </div>
-        </el-footer>
       </el-container>
     </div>
   </div>
@@ -246,10 +209,10 @@ export default {
       book: {},
       categoryList: [
         {
-          book_num: 0,
-          main_name: "",
-          main_id: "",
-          second_category: [{ book_num: "", second_name: "", second_id: "" }],
+          num: 0,
+          category_name: "",
+          category_id: "",
+          pid:"",
         },
       ],
       formdata: new FormData(),
@@ -375,9 +338,9 @@ export default {
     //获取这本书的详情
     getBookDetail() {
       axios({
-        url: this.$store.state.yuming + "/book/getDetail",
+        url: this.$store.state.yuming + "/book/getBookItemByReferenceNum",
         method: "GET",
-        params: { book_id: this.id },
+        params: { reference_num: this.id },
       })
         .then((res) => {
           const { code, data } = res.data;
@@ -391,29 +354,10 @@ export default {
           this.$message.error("出现错误，请稍后再试");
         });
     },
-    //获取用户评价
-    getRemark(){
-      axios({
-        url: this.$store.state.yuming + "/book/getRemark",
-        method: "GET",
-        params: { book_id: this.id },
-      })
-        .then((res) => {
-          const { code, data } = res.data;
-          if (code == "200") {
-            this.evaluationList = data;
-          } else {
-            this.$message.error("获取用户评价失败,请刷新");
-          }
-        })
-        .catch(() => {
-          this.$message.error("出现错误，请稍后再试");
-        });
-    },
     //获取所有目录
     getAllCategory() {
       axios({
-        url: this.$store.state.yuming + "/category/getAll",
+        url: this.$store.state.yuming + "/category/getMain",
         method: "GET",
       })
         .then((res) => {
