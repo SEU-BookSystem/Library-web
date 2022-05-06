@@ -482,9 +482,6 @@ export default {
   },
   async created() {
     this.isLoading = true;
-    if (this.$store.state.token) {
-      await this.getGoodsNum();
-    }
     await this.getAllCategory();
     this.searchBook();
     this.isLoading = false;

@@ -8,7 +8,7 @@
               <img
                 height="70px"
                 style="margin: 20px 0"
-                src="../assets/jwbc.png"
+                src="../assets/wads.png"
               />
             </div>
           </el-col>
@@ -35,30 +35,20 @@
           </el-col>
           <el-col :span="6" v-if="hasRole">
             <div style="margin-left: 20px">
-              <el-row class="shopping">
-                <el-col :span="10">
-                  <el-badge
-                    :max="99"
-                    :value="goodsNum"
+              <el-row class="collection">
+                <el-col :span="10" :offset="20">
+                  <el-button
                     style="
-                      display: flex;
-                      justify-content: center;
-                      align-items: center;
+                      margin-right: 30px;
+                      display: block;
+                      background-color: rgb(205, 92, 92);
+                      color: white;
                     "
+                    size="meduim"
+                    icon="el-icon-star-on"
+                    @click.native="gotoCollection"
+                    >我的收藏</el-button
                   >
-                    <el-button
-                      style="
-                        margin-right: 30px;
-                        display: block;
-                        background-color: rgb(205, 92, 92);
-                        color: white;
-                      "
-                      size="meduim"
-                      icon="el-icon-shopping-cart-2"
-                      @click.native="gotoShopCar"
-                      >我的购物车</el-button
-                    >
-                  </el-badge>
                 </el-col>
                 <el-col :span="10" class="pageperson">
                   <el-button
@@ -66,25 +56,27 @@
                     size="meduim"
                     class="pageperson"
                     icon="el-icon-s-custom"
-                    @click.native="gotoPersonPage"
+                    @click="gotoPersonPage"
                     >个人主页</el-button
                   >
                 </el-col>
                 <el-col @click.native="loginOut" style="margin-left: 10px">
-                  <i class="iconfont-tuichu" style="font-size: 20px" />
+                  <i class="icon-tuichu" style="font-size: 20px" />
                 </el-col>
               </el-row>
             </div>
           </el-col>
           <el-col :span="6" v-else>
-            <div style="margin-left: 150px">
+            <div style="margin-left: 80px">
               <el-row class="hasNoRole">
-                <el-col>
-                  <el-button size="meduim" @click="gotoSign">注册</el-button>
-                </el-col>
                 <el-col style="margin: 20px 0">
-                  <el-button size="meduim" class="pageperson" @click="gotoLogin"
-                    >登陆</el-button
+                  <el-button
+                    type="text"
+                    style="margin-left: 30px"
+                    size="meduim"
+                    class="loginword"
+                    @click="gotoLogin"
+                    >亲爱的会员，进行操作前请先登录</el-button
                   >
                 </el-col>
               </el-row>
@@ -96,7 +88,7 @@
     <div>
       <el-container style="margin: 0% 5%">
         <el-header style="padding: 0">
-          <el-row class="rowStyle1">
+          <!-- <el-row class="rowStyle1">
             <el-col class="colStyle2" @click.native="goBackToIndex"
               >全部商品分类</el-col
             >
@@ -116,7 +108,7 @@
                 >
               </el-menu>
             </el-col>
-          </el-row>
+          </el-row> -->
           <el-row style="margin-top: 1%">
             <el-breadcrumb separator-class="el-icon-arrow-right">
               <el-breadcrumb-item
@@ -129,64 +121,59 @@
                 style="cursor: pointer"
                 >{{ book.main_category }}</el-breadcrumb-item
               >
-              <el-breadcrumb-item
-                @click.native="getSecondClassBook(book.second_category_id)"
-                style="cursor: pointer"
-                >{{ book.second_category }}</el-breadcrumb-item
-              >
               <el-breadcrumb-item>{{ book.book_name }}</el-breadcrumb-item>
             </el-breadcrumb>
           </el-row>
         </el-header>
-        <el-container style="margin-top: 3%">
-          <el-aside width="25%">
-            <img class="imgStyle3" :src="book.image_b" />
+        <el-divider></el-divider>
+        <el-container style="margin-top: 1%">
+          <el-aside width="20%">
+            <img class="imgStyle3" :src="book.image" />
           </el-aside>
-          <el-main
-            ><el-link
-              :underline="false"
-              @click.native="goToShopIndex(book.shop_id)"
-              style="color: #FF7F50;font-size:17px"
-              >所属店铺：{{ book.shop_name }}</el-link
-            >
-            <h2>{{ book.book_name }}</h2>
-            <p style="color: gray; margin: 0%">
+          <el-main style="padding: 0px 20px">
+            <h2 style="margin: 0px; margin-bottom: 10px">
+              {{ book.book_name }}
+            </h2>
+            <p style="color: gray; margin-top: 8%">
               {{ book.author }}
+            </p>
+            <p style="color: gray; margin: 10px 0px">
+              {{ book.publisher }}
+            </p>
+            <p style="color: gray; margin: 10px 0px">
               {{ this.dateFormat(book.print_time) }}出版
-              {{ book.press }}
             </p>
             <p>
               {{ book.detail }}
             </p>
-            <p style="color: red; font-weight: 1000; margin: 0%;font-size:17px">
-              价格：￥{{ book.price }}
-            </p>
-            <p v-if="book.repertory > 0">库存：{{ book.repertory }}</p>
-            <p v-if="book.repertory <= 0">库存不足</p>
-            <el-row
-              :gutter="20"
-              type="flex"
-              style="padding: 10px 0; margin: 5% 0%"
-            >
-              <el-col :span="5"
-                ><el-input-number v-model="num" :min="1"></el-input-number
-              ></el-col>
-              <el-col :span="4"
-                ><el-button
-                  type="primary"
-                  class="el-icon-shopping-cart-2"
-                  @click.native="addShoppingTrolley"
-                  >加入购物车</el-button
-                ></el-col
-              >
-              <el-col :span="4"
-                ><el-button type="danger" @click.native="buy"
-                  >立即购买</el-button
-                ></el-col
-              >
-            </el-row>
           </el-main>
         </el-container>
+        <el-divider content-position="center"><h2>借阅书籍</h2></el-divider>
+        <el-table :data="bookList" style="width: 100%">
+          <el-table-column prop="bar_code" label="条码号" width="180">
+          </el-table-column>
+          <el-table-column prop="reference_num" label="索书号" width="180">
+          </el-table-column>
+          <el-table-column prop="address" label="地址"> </el-table-column>
+          <el-table-column prop="status" label="状态">
+            <template slot-scope="scope">
+              <div v-if="scope.row.status == 1">未上架</div>
+              <div v-if="scope.row.status == 2">可借</div>
+              <div v-if="scope.row.status == 3">已借</div>
+              <div v-if="scope.row.status == 4">被预约</div>
+            </template></el-table-column
+          >
+        </el-table>
+        <div style="display: flex; justify-content: flex-end; margin: 2%">
+          <el-button @click="orderDialog = true" round>我要预约</el-button>
+        </div>
+        <el-dialog title="预约书籍" :visible.sync="orderDialog" width="30%">
+          <span>是否预约书籍《{{ this.book.book_name }}》？</span>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="dialogVisible = false">取 消</el-button>
+            <el-button type="primary" @click="orderBook">确 定</el-button>
+          </span>
+        </el-dialog>
       </el-container>
     </div>
   </div>
@@ -194,25 +181,27 @@
 <script>
 import axios from "axios";
 import moment from "moment";
-import { Message } from "element-ui";
 export default {
   data() {
     return {
       input: "",
       isLoading: false,
       dataLoading: false,
+      orderDialog: false,
+      borrowDialog: false,
       activeIndex1: "",
+      username: "",
       num: 1,
       evaluationList: [],
       goodsNum: "",
-      id: this.$route.params.id,
+      reference_num: this.$route.params.reference_num,
       book: {},
-      categoryList: [
+      bookList: [
         {
-          num: 0,
-          category_name: "",
-          category_id: "",
-          pid:"",
+          bar_code: "",
+          reference_num: "",
+          address: "",
+          status: "",
         },
       ],
       formdata: new FormData(),
@@ -224,6 +213,9 @@ export default {
     },
     hasLogin() {
       return this.$store.state.token;
+    },
+    hasUsername(){
+      return this.$store.state.username;
     },
   },
   methods: {
@@ -256,91 +248,47 @@ export default {
       this.$store.commit("gobalSearchText", this.input);
       this.$router.push("/searchBook");
     },
-    //加入购物车
-    addShoppingTrolley() {
-      this.formdata.append("book_id", this.id);
-      this.formdata.append("sum", this.num);
+    //预约书籍
+    orderBook() {
       axios({
-        url: this.$store.state.yuming + "/cartitem/addCartItem",
+        url: this.$store.state.yuming + "/book/addReserve",
         method: "POST",
-        data: this.formdata,
-      }).then((res) => {
-        if (res.data.code == 200 && this.num <= this.book.repertory) {
-          this.$message({
-            message: "加入购物车成功",
-            type: "success",
-          });
-          this.dataLoading = true;
-          this.getGoodsNum();
-          this.dataLoading = false;
-          this.num = 1;
-          this.formdata=new FormData();
-        } else if (this.num > this.book.repertory) {
-          this.$message.warning("库存不足");
-          this.num = 1;
-          this.formdata=new FormData();
-        } else {
-          this.$message.warning("加入购物车失败");
-          this.num = 1;
-          this.formdata=new FormData();
-        }
-      });
-    },
-    //直接购买
-    buy() {
-      if (this.$store.state.token != "" && this.num <= this.book.repertory) {
-        this.$router.push(`/shopping/${this.id}/${this.num}`);
-      } else if (this.$store.state.token == "") {
-        this.$message.warning({
-          message: "请登录后再购买",
-          type: "error",
-        });
-      } else if (this.num > this.book.repertory) {
-        this.$message.warning({
-          message: "库存不足",
-          type: "error",
-        });
-      }
-    },
-    //时间格式化
-    dateFormat(date) {
-      return moment(date).format("YYYY-MM-DD");
-    },
-    //获取购物车中商品数量
-    getGoodsNum() {
-      axios({
-        url: this.$store.state.yuming + "/cartitem/getNum",
-        method: "GET",
+        params: {
+          reference_num: this.reference_num,
+          username: this.$store.state.username,
+        },
       })
         .then((res) => {
-          const { code, data } = res.data;
+          const { code } = res.data;
           if (code == "200") {
-            this.goodsNum = data;
-          } else {
-            this.$message.error("获取店铺状态失败,请刷新");
+            this.$message({
+              showClose: true,
+              message: "预约成功！",
+            });
+          } else if (code == "25") {
+            this.$message.error("书籍不可预约");
+          } else if (code == "26") {
+            this.$message.error("借阅数量已达最大值");
           }
         })
         .catch(() => {
           this.$message.error("出现错误，请稍后再试");
         });
     },
+    //时间格式化
+    dateFormat(date) {
+      return moment(date).format("YYYY-MM-DD");
+    },
     //点击导航栏或者面包屑，进入另一个页面并根据所选的一级分类来获取图书并分页展示
     getMainClassBook(id) {
       this.$router.push({ path: "/classSort", query: { activeIndexMain: id } });
     },
-    //点击面包屑，进入另一个页面并根据所选的二级分类来获取图书并分页展示
-    getSecondClassBook(id) {
-      this.$router.push({
-        path: "/classSort",
-        query: { activeIndexMain: "", activeIndexSecond: id },
-      });
-    },
-    //获取这本书的详情
+    //获取这种书的详情
     getBookDetail() {
       axios({
-        url: this.$store.state.yuming + "/book/getBookItemByReferenceNum",
+        url: this.$store.state.yuming + "/book/getBookByReferenceNum",
         method: "GET",
-        params: { reference_num: this.id },
+        params: { reference_num: this.reference_num },
       })
         .then((res) => {
           const { code, data } = res.data;
@@ -354,49 +302,55 @@ export default {
           this.$message.error("出现错误，请稍后再试");
         });
     },
-    //获取所有目录
-    getAllCategory() {
+    //获取这本书
+    getBookNum() {
       axios({
-        url: this.$store.state.yuming + "/category/getMain",
+        url: this.$store.state.yuming + "/book/getBookItemByReferenceNum",
         method: "GET",
+        params: { reference_num: this.reference_num },
       })
         .then((res) => {
           const { code, data } = res.data;
           if (code == "200") {
-            this.categoryList = data;
+            this.bookList = data;
+          } else {
+            this.$message.error("获取图书本数失败,请刷新");
           }
         })
         .catch(() => {
-          Message({
-            type: "error",
-            message: "出现错误，请稍后再试",
-          });
+          this.$message.error("出现错误，请稍后再试");
         });
     },
   },
   async created() {
     this.isLoading = true;
-    if (this.$store.state.token) {
-      await this.getGoodsNum();
-    }
-    this.getBookDetail();
-    this.getAllCategory();
-    this.getRemark();
+    await this.getBookDetail();
+    await this.getBookNum();
     this.isLoading = false;
   },
 };
 </script>
 <style acoped>
+.el-header {
+  height: 30px !important;
+}
 .imgStyle3 {
-  width:100%;
+  width: 100%;
   height: auto;
-  max-height: 440px;
+  max-height: 350px;
 }
 .rowStyle1 {
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: rgb(205, 92, 92);
+}
+.colStyle3 {
+  text-align: center;
+  font-weight: 1000;
+  width: 21.93%;
+  color: white;
+  cursor: pointer;
 }
 .colStyle2 {
   text-align: center;
@@ -420,6 +374,12 @@ export default {
   margin-right: 5%;
 }
 .shopping {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px;
+}
+.collection {
   display: flex;
   justify-content: center;
   align-items: center;

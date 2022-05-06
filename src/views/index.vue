@@ -37,15 +37,7 @@
             <div style="margin-left: 20px">
               <el-row class="collection">
                 <el-col :span="10" :offset="20">
-                  <el-badge
-                    :max="99"
-                    :value="goodsNum"
-                    style="
-                      display: flex;
-                      justify-content: center;
-                      align-items: center;
-                    "
-                  >
+                  
                     <el-button
                       style="
                         margin-right: 30px;
@@ -58,7 +50,7 @@
                       @click.native="gotoCollection"
                       >我的收藏</el-button
                     >
-                  </el-badge>
+                 
                 </el-col>
                 <el-col :span="10" class="pageperson">
                   <el-button
@@ -161,7 +153,7 @@
               </div>
               <el-menu-item
                 index="2022"
-                @click.native="getYearBook('2022')"
+                @click.native="getYearBook('2020')"
                 style="
                   color: rgb(233, 150, 122);
                   font-weight: 1000;
@@ -171,7 +163,7 @@
               >
               <el-menu-item
                 index="2021"
-                @click.native="getYearBook('2021')"
+                @click.native="getYearBook('2018')"
                 style="
                   color: rgb(233, 150, 122);
                   font-weight: 1000;
@@ -181,7 +173,7 @@
               >
               <el-menu-item
                 index="2020"
-                @click.native="getYearBook('2020')"
+                @click.native="getYearBook('2012')"
                 style="
                   color: rgb(233, 150, 122);
                   font-weight: 1000;
@@ -191,7 +183,7 @@
               >
               <el-menu-item
                 index="2019"
-                @click.native="getYearBeforeBook('2029')"
+                @click.native="getYearBeforeBook('2012')"
                 style="
                   color: rgb(233, 150, 122);
                   font-weight: 1000;
@@ -220,9 +212,7 @@
               <el-col :span="7">
                 <el-card
                   class="cStyle"
-                  v-for="item in todaySalesChampion"
-                  :key="item.id"
-                  @click.native="goToBookInfo(item.id)"
+                  @click.native="goToBookInfo(todaySalesChampion.reference_num)"
                 >
                   <el-row style="height: 40px; margin: 0% 5% 5%"
                     ><el-col :span="4"
@@ -245,8 +235,8 @@
                   <el-row style="height: 270px">
                     <el-image
                       class="tscStyle"
-                      :src="item.image_b"
-                      @click.native="goToBookInfo(item.id)"
+                      :src="this.todaySalesChampion.image"
+                      @click.native="goToBookInfo(todaySalesChampion.reference_num)"
                     ></el-image>
                   </el-row>
                   <el-row style="text-align: center">
@@ -254,15 +244,15 @@
                       :underline="false"
                       class="book-name"
                       style="color: black; margin: 1%"
-                      @click="goToBookInfo(item.id)"
-                      :title="item.book_name"
-                      >{{ item.book_name | ellipsis1 }}</el-link
+                      @click="goToBookInfo(todaySalesChampion.reference_num)"
+                      :title="this.todaySalesChampion.book_name"
+                      >{{ this.todaySalesChampion.book_name | ellipsis1 }}</el-link
                     >
                     <p
                       style="color: rgb(128, 192, 192); margin: 0%"
-                      :title="item.author"
+                      :title="this.todaySalesChampion.author"
                     >
-                      {{ item.author | ellipsis1 }}
+                      {{ this.todaySalesChampion.author | ellipsis1 }}
                     </p>
                   </el-row>
                 </el-card>
@@ -434,14 +424,12 @@ export default {
       activeIndex2: "",
       isLoading: false,
       input: "",
-      todaySalesChampion: [
-        {
-          author: "",
-          book_name: "",
-          image_b: "",
-          id: "",
-        },
-      ],
+      todaySalesChampion:{
+        book_num: "",
+        author: "",
+        image: "",
+        reference_num:"",
+      },
       categoryList: [
         {
           book_num: 0,
@@ -508,32 +496,21 @@ export default {
     handleSelect2() {
       this.activeIndex1 = " ";
     },
-    goToBookInfo(id) {
-      this.$router.push(`/bookInfo/${id}`);
+    goToBookInfo(reference_num) {
+      this.$router.push(`/bookInfo/${reference_num}`);
     },
     //获取今日销量冠军
     getTodaySalesChampion() {
       axios({
-        url: this.$store.state.yuming + "/book/getPage",
+        url: this.$store.state.yuming + "/book/getMaxBook",
         method: "GET",
-        params: {
-          page_num: 1,
-          book_num: 1,
-          style: 1,
-          main_category_id: "",
-          second_category_id: "",
-          year: "",
-          year_before: "",
-          year_after: "",
-          shop_id: "",
-        },
       })
         .then((res) => {
           const { code, data } = res.data;
           if (code == "200") {
             this.todaySalesChampion = data;
           } else {
-            this.$message.error("获取新书信息失败，请刷新");
+            this.$message.error("获取本周借阅冠军信息失败，请刷新");
           }
         })
         .catch(() => {
@@ -627,24 +604,6 @@ export default {
         },
       });
     },
-    //获取购物车中商品数量
-    getGoodsNum() {
-      axios({
-        url: this.$store.state.yuming + "/cartitem/getNum",
-        method: "GET",
-      })
-        .then((res) => {
-          const { code, data } = res.data;
-          if (code == "200") {
-            this.goodsNum = data;
-          } else {
-            this.$message.error("获取店铺状态失败,请刷新");
-          }
-        })
-        .catch(() => {
-          this.$message.error("出现错误，请稍后再试");
-        });
-    },
     //获取所有目录
     getAllCategory() {
       axios({
@@ -675,9 +634,6 @@ export default {
   },
   async created() {
     this.isLoading = true;
-    if (this.$store.state.token) {
-      await this.getGoodsNum();
-    }
     await this.getAllCategory();
     await this.getTodaySalesChampion();
     await this.getNewBook();

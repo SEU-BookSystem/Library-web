@@ -18,7 +18,7 @@ export default new Vuex.Store({
     unfinishedRoute: {},
     roleHasLoad: false,
     role: {},
-    phonenum: "",
+    username: "",
     setToken: {},
     detToken: {},
     yuming:"http://47.100.78.158:8088",
