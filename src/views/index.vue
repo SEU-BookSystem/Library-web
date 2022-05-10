@@ -33,24 +33,22 @@
               </el-input>
             </div>
           </el-col>
-          <el-col :span="6"  v-if="hasRole">
+          <el-col :span="6" v-if="hasRole">
             <div style="margin-left: 20px">
               <el-row class="collection">
                 <el-col :span="10" :offset="20">
-                  
-                    <el-button
-                      style="
-                        margin-right: 30px;
-                        display: block;
-                        background-color: rgb(205, 92, 92);
-                        color: white;
-                      "
-                      size="meduim"
-                      icon="el-icon-star-on"
-                      @click.native="gotoCollection"
-                      >我的收藏</el-button
-                    >
-                 
+                  <el-button
+                    style="
+                      margin-right: 30px;
+                      display: block;
+                      background-color: rgb(205, 92, 92);
+                      color: white;
+                    "
+                    size="meduim"
+                    icon="el-icon-star-on"
+                    @click.native="gotoCollection"
+                    >我的收藏</el-button
+                  >
                 </el-col>
                 <el-col :span="10" class="pageperson">
                   <el-button
@@ -99,33 +97,43 @@
             <el-menu>
               <el-menu-item
                 index="2022"
-                @click.native="getYearBook('2022')"
+                @click.native="getMainClassBook(0)"
                 style="
                   color: rgb(233, 150, 122);
                   font-weight: 1000;
                   border-left: solid 1px #e6e6e6;
                 "
-                >图书</el-menu-item
+                >社科</el-menu-item
               >
               <el-menu-item
                 index="2022"
-                @click.native="getYearBook('2022')"
+                @click.native="getMainClassBook(1)"
                 style="
                   color: rgb(233, 150, 122);
                   font-weight: 1000;
                   border-left: solid 1px #e6e6e6;
                 "
-                >期刊</el-menu-item
+                >文学</el-menu-item
               >
               <el-menu-item
                 index="2022"
-                @click.native="getYearBook('2022')"
+                @click.native="getMainClassBook(2)"
                 style="
                   color: rgb(233, 150, 122);
                   font-weight: 1000;
                   border-left: solid 1px #e6e6e6;
                 "
-                >外文书籍</el-menu-item
+                >自然科学</el-menu-item
+              >
+              <el-menu-item
+                index="2022"
+                @click.native="getMainClassBook(3)"
+                style="
+                  color: rgb(233, 150, 122);
+                  font-weight: 1000;
+                  border-left: solid 1px #e6e6e6;
+                "
+                >其他</el-menu-item
               >
               <el-menu-item
                 index="2022"
@@ -200,7 +208,7 @@
                 <el-carousel
                   :interval="5000"
                   arrow="never"
-                  height="400px"
+                  height="300px"
                   class="carouselStyle"
                 >
                   <el-carousel-item v-for="item in photoList" :key="item.Name">
@@ -232,11 +240,13 @@
                       </p></el-col
                     >
                   </el-row>
-                  <el-row style="height: 270px">
+                  <el-row style="height: 170px">
                     <el-image
                       class="tscStyle"
-                      :src="this.todaySalesChampion.image"
-                      @click.native="goToBookInfo(todaySalesChampion.reference_num)"
+                      :src="changeUrl(this.todaySalesChampion.image)"
+                      @click.native="
+                        goToBookInfo(todaySalesChampion.reference_num)
+                      "
                     ></el-image>
                   </el-row>
                   <el-row style="text-align: center">
@@ -246,7 +256,9 @@
                       style="color: black; margin: 1%"
                       @click="goToBookInfo(todaySalesChampion.reference_num)"
                       :title="this.todaySalesChampion.book_name"
-                      >{{ this.todaySalesChampion.book_name | ellipsis1 }}</el-link
+                      >{{
+                        this.todaySalesChampion.book_name | ellipsis1
+                      }}</el-link
                     >
                     <p
                       style="color: rgb(128, 192, 192); margin: 0%"
@@ -262,95 +274,27 @@
               <img src="../assets/xssj.png" style="width: 100%; height: 60px" />
             </el-row>
             <el-row class="rowStyle" type="flex">
-              <el-col :span="6" v-for="book in newBookList" :key="book.id">
-                <el-card
+              <div
+                v-for="book in newBookList"
+                :key="book.reference_num"
+                style="margin-left: 10px"
+              >
+                <el-container
                   style="width: 90%; margin: 5%"
                   @click.native="goToBookInfo(book.id)"
                   class="card"
                 >
-                  <el-container>
-                    <el-header
-                      style="
-                        width: 100%;
-                        height: 150px;
-                        align-items: center;
-                        margin-top: 10px;
-                      "
-                    >
-                      <el-image
-                        class="imgStyle1"
-                        :src="book.image_b"
-                        @click.native="goToBookInfo(book.id)"
-                      >
-                      </el-image>
-                    </el-header>
-                    <el-main
-                      style="
-                        color: black;
-                        padding-top: 0;
-                        text-align: center;
-                        padding-bottom: 10px;
-                      "
-                    >
-                      <el-link
-                        :underline="false"
-                        class="book-name"
-                        @click="goToBookInfo(book.id)"
-                        :title="book.book_name"
-                        >{{ book.book_name | ellipsis0 }}</el-link
-                      >
-                      <p
-                        style="color: rgb(128, 192, 192); margin: 0%"
-                        :title="book.author"
-                      >
-                        {{ book.author | ellipsis0 }}
-                      </p>
-                      <p style="color: red; font-weight: 1000; margin: 0%">
-                        ￥{{ book.price }}
-                      </p>
-                    </el-main>
-                  </el-container>
-                </el-card>
-              </el-col>
-            </el-row>
-          </el-main> </el-container
-        ><el-footer style="margin: 3% 0% 0.5%; padding: 0px">
-          <el-row style="margin: 0% 0% 0.5%"
-            ><el-menu
-              :default-active="activeIndex1"
-              class="el-menu-demo"
-              mode="horizontal"
-              @select="handleSelect1"
-            >
-              <el-menu-item
-                v-for="item in categoryList"
-                :key="item.main_id"
-                style="color: rgb(250, 128, 114); font-weight: 1000"
-                :index="item.main_id"
-                @click.native="getClassOneBook(item.main_id)"
-                >{{ item.main_name }}</el-menu-item
-              >
-            </el-menu>
-          </el-row>
-          <el-row class="rowStyle" type="flex">
-            <el-col :span="4" v-for="book in displayList" :key="book.id">
-              <el-card
-                style="width: 90%; margin: 5%"
-                @click.native="goToBookInfo(book.id)"
-                class="card"
-              >
-                <el-container>
                   <el-header
                     style="
                       width: 100%;
                       height: 150px;
                       align-items: center;
-                      margin-top: 10px;
+                      margin-top: 20px;
                     "
                   >
                     <el-image
-                      class="imgStyle4"
-                      :src="book.image_b"
+                      class="imgStyle1"
+                      :src="changeUrl(book.image)"
                       @click.native="goToBookInfo(book.id)"
                     >
                     </el-image>
@@ -368,20 +312,207 @@
                       class="book-name"
                       @click="goToBookInfo(book.id)"
                       :title="book.book_name"
-                      >{{ book.book_name | ellipsis2 }}</el-link
+                      >{{ book.book_name | ellipsis0 }}</el-link
                     >
                     <p
                       style="color: rgb(128, 192, 192); margin: 0%"
                       :title="book.author"
                     >
-                      {{ book.author | ellipsis2 }}
-                    </p>
-                    <p style="color: red; font-weight: 1000; margin: 0%">
-                      ￥{{ book.price }}
+                      {{ book.author | ellipsis0 }}
                     </p>
                   </el-main>
                 </el-container>
-              </el-card>
+              </div>
+            </el-row>
+          </el-main> </el-container
+        ><el-footer style="padding: 0px">
+          <!-- <el-row style="margin: 0% 0% 0.5%"
+            ><el-menu
+              :default-active="activeIndex1"
+              class="el-menu-demo"
+              mode="horizontal"
+              @select="handleSelect1"
+            >
+              <el-menu-item
+                v-for="item in categoryList"
+                :key="item.main_id"
+                style="color: rgb(250, 128, 114); font-weight: 1000"
+                :index="item.main_id"
+                @click.native="getClassOneBook(item.main_id)"
+                >{{ item.main_name }}</el-menu-item
+              >
+            </el-menu>
+          </el-row> -->
+          <el-divider></el-divider>
+          <el-row style="display: flex; align-items: center">
+            <el-col :span="5" :offset="1"><h2>好书推荐</h2></el-col>
+            <el-col :span="17" style="display: flex; justify-content: flex-end">
+              <div @mouseover="choose = 1" style="margin:0px 10px">
+                <el-button round @click="choose = 1">图书</el-button>
+              </div>
+              <div @mouseover="choose = 2" style="margin:0px 10px">
+                <el-button round @mouseover="choose = 2" @click="choose = 2"
+                  >期刊</el-button
+                >
+              </div>
+              <div @mouseover="choose = 3" style="margin:0px 10px">
+                <el-button round @mouseover="choose = 3" @click="choose = 3"
+                  >全部</el-button
+                >
+              </div>
+            </el-col>
+          </el-row>
+          <el-row class="rowStyle" type="flex" v-if="choose == 1">
+            <el-col
+              :span="4"
+              v-for="book in hotBookList"
+              :key="book.reference_num"
+            >
+              <el-container
+                style="width: 90%; margin: 5%"
+                @click.native="goToBookInfo(book.reference_num)"
+                class="card"
+              >
+                <el-header
+                  style="
+                    width: 100%;
+                    height: 150px;
+                    align-items: center;
+                    margin-top: 20px;
+                  "
+                >
+                  <el-image
+                    class="imgStyle4"
+                    :src="changeUrl(book.image)"
+                    @click.native="goToBookInfo(book.reference_num)"
+                  >
+                  </el-image>
+                </el-header>
+                <el-main
+                  style="
+                    color: black;
+                    padding-top: 0;
+                    text-align: center;
+                    padding-bottom: 10px;
+                  "
+                >
+                  <el-link
+                    :underline="false"
+                    class="book-name"
+                    @click="goToBookInfo(book.reference_num)"
+                    :title="book.book_name"
+                    >{{ book.book_name | ellipsis2 }}</el-link
+                  >
+                  <p
+                    style="color: rgb(128, 192, 192); margin: 0%"
+                    :title="book.author"
+                  >
+                    {{ book.author | ellipsis2 }}
+                  </p>
+                </el-main>
+              </el-container>
+            </el-col>
+          </el-row>
+          <el-row class="rowStyle" type="flex" v-if="choose == 2">
+            <el-col
+              :span="4"
+              v-for="book in hotJournalList"
+              :key="book.reference_num"
+            >
+              <el-container
+                style="width: 90%; margin: 5%"
+                @click.native="goToBookInfo(book.reference_num)"
+                class="card"
+              >
+                <el-header
+                  style="
+                    width: 100%;
+                    height: 150px;
+                    align-items: center;
+                    margin-top: 20px;
+                  "
+                >
+                  <el-image
+                    class="imgStyle4"
+                    :src="changeUrl(book.image)"
+                    @click.native="goToBookInfo(book.reference_num)"
+                  >
+                  </el-image>
+                </el-header>
+                <el-main
+                  style="
+                    color: black;
+                    padding-top: 0;
+                    text-align: center;
+                    padding-bottom: 10px;
+                  "
+                >
+                  <el-link
+                    :underline="false"
+                    class="book-name"
+                    @click="goToBookInfo(book.reference_num)"
+                    :title="book.book_name"
+                    >{{ book.book_name | ellipsis2 }}</el-link
+                  >
+                  <p
+                    style="color: rgb(128, 192, 192); margin: 0%"
+                    :title="book.author"
+                  >
+                    {{ book.author | ellipsis2 }}
+                  </p>
+                </el-main>
+              </el-container>
+            </el-col>
+          </el-row>
+          <el-row class="rowStyle" type="flex" v-if="choose == 3">
+            <el-col
+              :span="4"
+              v-for="book in hotAllBookList"
+              :key="book.reference_num"
+            >
+              <el-container
+                style="width: 90%; margin: 5%"
+                @click.native="goToBookInfo(book.reference_num)"
+                class="card"
+              >
+                <el-header
+                  style="
+                    width: 100%;
+                    height: 150px;
+                    align-items: center;
+                    margin-top: 20px;
+                  "
+                >
+                  <el-image
+                    class="imgStyle4"
+                    :src="changeUrl(book.image)"
+                    @click.native="goToBookInfo(book.reference_num)"
+                  >
+                  </el-image>
+                </el-header>
+                <el-main
+                  style="
+                    color: black;
+                    padding-top: 0;
+                    text-align: center;
+                    padding-bottom: 10px;
+                  "
+                >
+                  <el-link
+                    :underline="false"
+                    class="book-name"
+                    @click="goToBookInfo(book.reference_num)"
+                    :title="book.book_name"
+                    >{{ book.book_name | ellipsis2 }}</el-link
+                  >
+                  <p
+                    style="color: rgb(128, 192, 192); margin: 0%"
+                    :title="book.author"
+                  >
+                    {{ book.author | ellipsis2 }}
+                  </p>
+                </el-main>
+              </el-container>
             </el-col>
           </el-row>
         </el-footer>
@@ -397,8 +528,8 @@ export default {
     //限制文本显示字数,超出部分用...代替
     ellipsis0(value) {
       if (!value) return "";
-      if (value.length > 10) {
-        return value.slice(0, 10) + "..."; //0:下标,从第一个字开始显示,15:显示字数,多余用...代替
+      if (value.length > 9) {
+        return value.slice(0, 9) + "..."; //0:下标,从第一个字开始显示,15:显示字数,多余用...代替
       }
       return value;
     },
@@ -419,16 +550,17 @@ export default {
   },
   data() {
     return {
+      choose: 1,
       goodsNum: "",
       activeIndex1: "",
       activeIndex2: "",
       isLoading: false,
       input: "",
-      todaySalesChampion:{
+      todaySalesChampion: {
         book_num: "",
         author: "",
         image: "",
-        reference_num:"",
+        reference_num: "",
       },
       categoryList: [
         {
@@ -445,7 +577,9 @@ export default {
         { Img: require("../assets/photo3.jpg") },
       ],
       newBookList: [],
-      displayList: [],
+      hotBookList: [],
+      hotJournalList: [],
+      hotAllBookList: [],
     };
   },
   computed: {
@@ -457,6 +591,13 @@ export default {
     },
   },
   methods: {
+    //豆瓣图片加载
+    changeUrl(_url) {
+      if (_url !== undefined) {
+        let _u = _url.substring(7); //_u:提取http://后面的部分
+        return "https://images.weserv.nl/?url=" + _u;
+      }
+    },
     goToSearch() {
       this.$store.commit("gobalSearchText", this.input);
       this.$router.push("/searchBook");
@@ -483,9 +624,9 @@ export default {
       this.activeIndex1 = "1";
       this.activeIndex2 = " ";
       this.currentPage = 1;
-      this.displayList = this.Lists.filter(
-        (item) => item.ClassOne == "网络文学"
-      );
+      // this.displayList = this.Lists.filter(
+      //   (item) => item.ClassOne == "网络文学"
+      // );
     },
     handleCurrentChange(val) {
       this.currentPage = val;
@@ -517,21 +658,13 @@ export default {
           this.$message.error("出现错误，请稍后再试");
         });
     },
-    //获取最新上架的12本书（可能会改本数）
+    //获取最新上架的书
     getNewBook() {
       axios({
-        url: this.$store.state.yuming + "/book/getPage",
+        url: this.$store.state.yuming + "/book/getNewBook",
         method: "GET",
         params: {
-          page_num: 1,
-          book_num: 16,
-          style: 2,
-          main_category_id: "",
-          second_category_id: "",
-          year: "",
-          year_before: "",
-          year_after: "",
-          shop_id: "",
+          num: 5,
         },
       })
         .then((res) => {
@@ -546,29 +679,66 @@ export default {
           this.$message.error("出现错误，请稍后再试");
         });
     },
-    //获取某一个一级分类下的销量最好的18本书，在最下方的板块
-    getClassOneBook(id) {
+    //获取销量最好的6本图书
+    getHotBook() {
       axios({
-        url: this.$store.state.yuming + "/book/getPage",
+        url: this.$store.state.yuming + "/book/getHotBook",
         method: "GET",
         params: {
-          page_num: 1,
-          book_num: 18,
-          style: 1,
-          main_category_id: id,
-          second_category_id: "",
-          year: "",
-          year_before: "",
-          year_after: "",
-          shop_id: "",
+          num: 6,
+          category: 0,
         },
       })
         .then((res) => {
           const { code, data } = res.data;
           if (code == "200") {
-            this.displayList = data;
+            this.hotBookList = data;
           } else {
-            this.$message.error("获取图书信息失败，请刷新");
+            this.$message.error("获取最热图书信息失败，请刷新");
+          }
+        })
+        .catch(() => {
+          this.$message.error("出现错误，请稍后再试");
+        });
+    },
+    //获取销量最好的6本期刊
+    getHotJournal() {
+      axios({
+        url: this.$store.state.yuming + "/book/getHotBook",
+        method: "GET",
+        params: {
+          num: 6,
+          category: 1,
+        },
+      })
+        .then((res) => {
+          const { code, data } = res.data;
+          if (code == "200") {
+            this.hotJournalList = data;
+          } else {
+            this.$message.error("获取最热期刊信息失败，请刷新");
+          }
+        })
+        .catch(() => {
+          this.$message.error("出现错误，请稍后再试");
+        });
+    },
+    //获取销量最好的6本图书
+    getHotAllBook() {
+      axios({
+        url: this.$store.state.yuming + "/book/getHotBook",
+        method: "GET",
+        params: {
+          num: 6,
+          category: 2,
+        },
+      })
+        .then((res) => {
+          const { code, data } = res.data;
+          if (code == "200") {
+            this.hotAllBookList = data;
+          } else {
+            this.$message.error("获取全部最热图书信息失败，请刷新");
           }
         })
         .catch(() => {
@@ -578,13 +748,6 @@ export default {
     //点击左侧导航栏，进入另一个页面并根据所选的一级分类来获取图书并分页展示
     getMainClassBook(id) {
       this.$router.push({ path: "/classSort", query: { activeIndexMain: id } });
-    },
-    //点击左侧导航栏，进入另一个页面并根据所选的二级分类来获取图书并分页展示
-    getSecondClassBook(id) {
-      this.$router.push({
-        path: "/classSort",
-        query: { activeIndexMain: "", activeIndexSecond: id },
-      });
     },
     //通过年份来分页
     getYearBook(year) {
@@ -634,9 +797,11 @@ export default {
   },
   async created() {
     this.isLoading = true;
-    await this.getAllCategory();
     await this.getTodaySalesChampion();
     await this.getNewBook();
+    await this.getHotBook();
+    await this.getHotJournal();
+    await this.getHotAllBook();
     await this.mounted();
     this.isLoading = false;
   },
@@ -660,7 +825,8 @@ body {
   cursor: pointer;
 }
 .imgStyle4 {
-  width: 100%;
+  margin-left: 15px;
+  width: 80%;
   height: 150px;
   cursor: pointer;
 }
@@ -697,13 +863,13 @@ body {
   border-radius: 10px;
 }
 .cStyle {
-  height: 400px;
+  height: 300px;
   padding: 0px;
   text-align: center;
 }
 .tscStyle {
   height: 100%;
-  width: 80%;
+  width: 60%;
 }
 .el-menu-item.is-active {
   background-color: rgb(231, 241, 252) !important;
