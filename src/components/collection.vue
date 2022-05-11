@@ -37,7 +37,11 @@
         <header>
           <el-card class="collection-header-card">
             <el-row>
-              <el-col :span="1" class="collection-table-item" style="margin-left: 10px">
+              <el-col
+                :span="1"
+                class="collection-table-item"
+                style="margin-left: 10px"
+              >
                 <el-checkbox
                   v-model="checkAll"
                   class="myRedCheckBox"
@@ -45,18 +49,18 @@
                 ></el-checkbox>
               </el-col>
               <!-- <el-col :span="1" class="collection-table-item">全选</el-col> -->
-              <el-col :span="2" class="collection-table-item"
-                >条码号</el-col
-              >
+              <el-col :span="2" class="collection-table-item">条码号</el-col>
               <el-col :span="2" class="collection-table-item">索书号</el-col>
               <el-col :span="11" class="collection-table-item">书籍信息</el-col>
-              <el-col :span="1" :offset="4" class="collection-table-item" >操作</el-col>
+              <el-col :span="1" :offset="4" class="collection-table-item"
+                >操作</el-col
+              >
             </el-row>
           </el-card>
         </header>
-        <div class="collection-table-container">      
-            <div v-for="(item, index) in bookList" :key="index">
-              <el-card style="margin: 20px 0">
+        <div class="collection-table-container">
+          <div v-for="(item, index) in bookList" :key="index">
+            <el-card style="margin: 20px 0">
               <div class="collection-books">
                 <el-row
                   v-for="(books, idx) in item.books"
@@ -71,11 +75,19 @@
                       class="myRedCheckBox"
                     ></el-checkbox>
                   </el-col>
-                  <el-col :span="2" style="margin: 25px 0" class="collection-table-item">
-                    <div>{{ books.bar_code}}</div>
+                  <el-col
+                    :span="2"
+                    style="margin: 25px 0"
+                    class="collection-table-item"
+                  >
+                    <div>{{ books.bar_code }}</div>
                   </el-col>
-                  <el-col :span="2" style="margin: 25px 0" class="collection-table-item">
-                    <div>{{ books.reference_num}}</div>
+                  <el-col
+                    :span="2"
+                    style="margin: 25px 0"
+                    class="collection-table-item"
+                  >
+                    <div>{{ books.reference_num }}</div>
                   </el-col>
                   <el-col :span="2">
                     <img :src="books.image_b" style="height: 70px" />
@@ -91,7 +103,7 @@
                     <el-popconfirm
                       confirm-button-text="确认"
                       cancel-button-text="取消"
-                      confirm-button-type=text
+                      confirm-button-type="text"
                       @confirm="delBook(books.cartItem_id)"
                       title="您确认要预约此书吗？"
                     >
@@ -109,7 +121,7 @@
                     <el-popconfirm
                       confirm-button-text="确认"
                       cancel-button-text="取消"
-                      confirm-button-type=text
+                      confirm-button-type="text"
                       icon="el-icon-info"
                       icon-color="rgb(221, 68, 65)"
                       @confirm="delBook(books.cartItem_id)"
@@ -127,8 +139,8 @@
                   </el-col>
                 </el-row>
               </div>
-            
-          </el-card></div>
+            </el-card>
+          </div>
         </div>
         <footer>
           <el-card>
@@ -144,7 +156,9 @@
                   @change="check_all"
                 ></el-checkbox>
               </el-col>
-              <el-col :span="11" class="collection-table-footer-item">全选</el-col>
+              <el-col :span="11" class="collection-table-footer-item"
+                >全选</el-col
+              >
               <el-col :span="6" class="collection-table-footer-item"
                 >已选<span style="color: rgb(221, 68, 65)">
                   {{ totalNumber }} </span
@@ -168,7 +182,8 @@
                 style="margin: 12px"
               >
                 <el-button
-                 type="danger" plain
+                  type="danger"
+                  plain
                   size="medium"
                   class="table-button"
                   @click="multiDelBook"
@@ -205,8 +220,8 @@
               </el-row>
             </el-card>
           </header> -->
-          <!--从购物车生成订单-->
-          <!-- <div class="collection-table-container" v-if="isDirectBuy == false">
+      <!--从购物车生成订单-->
+      <!-- <div class="collection-table-container" v-if="isDirectBuy == false">
             <div v-for="(item, index) in bookList" :key="index">
               <el-card style="margin: 20px 0" v-if="vifShopName(item)">
                 <el-row style="margin: 10px">
@@ -252,8 +267,8 @@
               </el-card>
             </div>
           </div> -->
-          <!--从图书详情页直接购买-->
-          <!-- <div class="collection-table-container" v-if="isDirectBuy == true">
+      <!--从图书详情页直接购买-->
+      <!-- <div class="collection-table-container" v-if="isDirectBuy == true">
             <div>
               <el-card style="margin: 20px 0">
                 <el-row style="margin: 10px">
@@ -296,8 +311,8 @@
           </div>
           <footer>
             <el-card> -->
-              <!--从购物车生成订单-->
-              <!-- <el-row v-if="isDirectBuy == false">
+      <!--从购物车生成订单-->
+      <!-- <el-row v-if="isDirectBuy == false">
                 <el-col
                   :span="18"
                   :offset="1"
@@ -328,8 +343,8 @@
                   >
                 </el-col>
               </el-row> -->
-              <!--从图书详情页直接购买-->
-              <!-- <el-row v-if="isDirectBuy == true">
+      <!--从图书详情页直接购买-->
+      <!-- <el-row v-if="isDirectBuy == true">
                 <el-col
                   :span="18"
                   :offset="1"
@@ -367,7 +382,7 @@
     </div>
 
     <!--完成订单-->
-    <div v-if="page == 2" style="completeOrder">
+    <!-- <div v-if="page == 2" style="completeOrder">
       <el-row
         ><el-col :span="8" :offset="8">
           <el-card>
@@ -391,7 +406,7 @@
           </el-card>
         </el-col></el-row
       >
-    </div>
+    </div> -->
   </div>
   <!--</div>-->
 </template>
@@ -437,30 +452,7 @@ export default {
       //购物车图书
       isCollectionListEmpty: false,
       isDirectBuy: false,
-      bookList: [
-        {
-          shop_id: "1",
-          shop_name: "横溢图书专营店",
-          this_all: false,
-          books: [
-            {
-              book_id: "11",
-              cartItem_id: "123",
-              bar_code:"123456",
-              reference_num:"A126.52",
-              image_b: require("../assets/youbenshi.jpg"),
-              book_name:
-                "【新华书店正版图书】有本事 冯唐2021新作无所畏写给想靠真本事立身成事年轻人 写给人生转折点的前行之作文学散文随笔",
-              author: "冯唐",
-              press: "东南大学出版社",
-              price: 50,
-              sum: 2,
-              repertory: 19,
-              check_one: false,
-            },
-          ],
-        },
-      ],
+      bookList: [{}],
       checkAll: false,
       cpmylist: [],
       //收货地址
@@ -559,32 +551,21 @@ export default {
       this.$router.go(-1);
     },
     //跳转全部订单页面
-    gotoOrder() {
-      this.$router.push("/userOrder/1");
-    },
+    // gotoOrder() {
+    //   this.$router.push("/userOrder/1");
+    // },
     //选择所有的购物车商品
     check_all() {
-      this.bookList.forEach((shop) => {
-        shop.this_all = this.checkAll;
-        shop.books.forEach((book) => {
+        this.bookList.forEach((book) => {
           book.check_one = this.checkAll;
         });
-      });
-    },
-    //选择某商家所有商品
-    check_shop(shop) {
-      shop.books.forEach((book) => {
-        book.check_one = shop.this_all;
-      });
     },
     //结算
     settlement() {
-      this.bookList.forEach((shop) => {
-        shop.books.forEach((book) => {
+       this.bookList.forEach((book) => {
           if (book.check_one == true) {
-            this.cpmylist.push(book.book_id);
+            this.cpmylist.push(book.reference_num);
           }
-        });
       });
       if (this.cpmylist.length == 0) {
         alert("请选择商品哦！");
@@ -593,182 +574,163 @@ export default {
       }
     },
     //结算页面是否显示店铺名
-    vifShopName(shop) {
-      var len = 0;
-      shop.books.forEach((book) => {
-        if (book.check_one == true) {
-          len = len + 1;
-        }
-      });
-      if (len != 0) return true;
-      else return false;
-    },
-    //获取用户的收货地址
-    getUserAddress() {
-      axios({
-        url: this.$store.state.yuming + "/user/address/getAll",
-        method: "GET",
-        params: {
-          id: this.newAddress.id,
-          address: this.newAddress.address,
-          phone: this.newAddress.phone,
-          name: this.newAddress.name,
-        },
-      }).then((res) => {
-        if (res.data.code == 200) {
-          this.myAddressList = res.data.data;
-        } else {
-          this.$message.error("获取收货地址失败，请重试");
-        }
-      });
-    },
+    // vifShopName(shop) {
+    //   var len = 0;
+    //   shop.books.forEach((book) => {
+    //     if (book.check_one == true) {
+    //       len = len + 1;
+    //     }
+    //   });
+    //   if (len != 0) return true;
+    //   else return false;
+    // },
     //清空newAddress
-    clearNewAddress() {
-      this.newAddress.name = "";
-      this.newAddress.address = "";
-      this.newAddress.phone = "";
-      this.addInfoVisible = true;
-    },
+    // clearNewAddress() {
+    //   this.newAddress.name = "";
+    //   this.newAddress.address = "";
+    //   this.newAddress.phone = "";
+    //   this.addInfoVisible = true;
+    // },
     //新增收货地址
-    addNewAddress() {
-      this.addInfoVisible = false;
-      axios({
-        url: this.$store.state.yuming + "/user/address/add",
-        method: "POST",
-        params: {
-          address: this.newAddress.address,
-          phone: this.newAddress.phone,
-          name: this.newAddress.name,
-        },
-      }).then((res) => {
-        if (res.data.code == 200) {
-          this.addressLoading = true;
-          this.getUserAddress();
-          this.addressLoading = false;
-          this.$message({
-            message: "新增成功",
-            type: "success",
-          });
-        } else {
-          this.$message.error("新增失败，请重试");
-        }
-      });
-    },
+    // addNewAddress() {
+    //   this.addInfoVisible = false;
+    //   axios({
+    //     url: this.$store.state.yuming + "/user/address/add",
+    //     method: "POST",
+    //     params: {
+    //       address: this.newAddress.address,
+    //       phone: this.newAddress.phone,
+    //       name: this.newAddress.name,
+    //     },
+    //   }).then((res) => {
+    //     if (res.data.code == 200) {
+    //       this.addressLoading = true;
+    //       this.getUserAddress();
+    //       this.addressLoading = false;
+    //       this.$message({
+    //         message: "新增成功",
+    //         type: "success",
+    //       });
+    //     } else {
+    //       this.$message.error("新增失败，请重试");
+    //     }
+    //   });
+    // },
     //编辑收货地址
-    editAddress(e) {
-      this.editInfoVisible = true;
-      this.editMyAddress.id = e.id;
-      this.editMyAddress.name = e.name;
-      this.editMyAddress.phone = e.phone;
-      this.editMyAddress.address = e.address;
-    },
+    // editAddress(e) {
+    //   this.editInfoVisible = true;
+    //   this.editMyAddress.id = e.id;
+    //   this.editMyAddress.name = e.name;
+    //   this.editMyAddress.phone = e.phone;
+    //   this.editMyAddress.address = e.address;
+    // },
     //确认编辑收货地址
-    confirmChangeAddress() {
-      this.editInfoVisible = false;
-      axios({
-        url: this.$store.state.yuming + "/user/address/update",
-        method: "POST",
-        params: {
-          addressId: this.editMyAddress.id,
-          address: this.editMyAddress.address,
-          name: this.editMyAddress.name,
-          phone: this.editMyAddress.phone,
-        },
-      }).then((res) => {
-        if (res.data.code == 200) {
-          this.addressLoading = true;
-          this.getUserAddress();
-          this.addressLoading = false;
-          this.$message({
-            message: "编辑成功",
-            type: "success",
-          });
-        } else {
-          this.$message.error("编辑失败，请重试");
-        }
-      });
-    },
+    // confirmChangeAddress() {
+    //   this.editInfoVisible = false;
+    //   axios({
+    //     url: this.$store.state.yuming + "/user/address/update",
+    //     method: "POST",
+    //     params: {
+    //       addressId: this.editMyAddress.id,
+    //       address: this.editMyAddress.address,
+    //       name: this.editMyAddress.name,
+    //       phone: this.editMyAddress.phone,
+    //     },
+    //   }).then((res) => {
+    //     if (res.data.code == 200) {
+    //       this.addressLoading = true;
+    //       this.getUserAddress();
+    //       this.addressLoading = false;
+    //       this.$message({
+    //         message: "编辑成功",
+    //         type: "success",
+    //       });
+    //     } else {
+    //       this.$message.error("编辑失败，请重试");
+    //     }
+    //   });
+    // },
     //预备删除地址
-    editDelAddress(e) {
-      this.delAddressId = e.id;
-      this.delAddressVisible = true;
-    },
+    // editDelAddress(e) {
+    //   this.delAddressId = e.id;
+    //   this.delAddressVisible = true;
+    // },
     //确认删除地址
-    confirmDelAddress() {
-      this.delAddressVisible = false;
-      axios({
-        url: this.$store.state.yuming + "/user/address/delete",
-        method: "DELETE",
-        params: {
-          addressId: this.delAddressId,
-        },
-      })
-        .then((res) => {
-          const { code } = res.data;
-          if (code == "200") {
-            this.addressLoading = true;
-            this.getUserAddress();
-            this.addressLoading = false;
-            if (this.delAddressId == this.radio) {
-              this.radio = "";
-            }
-            this.$message({
-              message: "删除成功",
-              type: "success",
-            });
-          } else {
-            this.$message.error("删除失败,请重试");
-          }
-        })
-        .catch(() => {
-          Message({
-            type: "error",
-            message: "出现错误，请稍后再试",
-          });
-        });
-    },
-    //设置默认地址
-    setDefaultAddress(e) {
-      axios({
-        url: this.$store.state.yuming + "/user/address/setDefault",
-        method: "POST",
-        params: {
-          addressId: e.id,
-        },
-      })
-        .then((res) => {
-          const { code } = res.data;
-          if (code == "200") {
-            this.addressLoading = true;
-            this.getUserAddress();
-            this.addressLoading = false;
-          } else {
-            this.$message.error("设置默认地址失败,请重试");
-          }
-        })
-        .catch(() => {
-          Message({
-            type: "error",
-            message: "出现错误，请稍后再试",
-          });
-        });
-    },
-    //获取用户的购物车信息
+    // confirmDelAddress() {
+    //   this.delAddressVisible = false;
+    //   axios({
+    //     url: this.$store.state.yuming + "/user/address/delete",
+    //     method: "DELETE",
+    //     params: {
+    //       addressId: this.delAddressId,
+    //     },
+    //   })
+    //     .then((res) => {
+    //       const { code } = res.data;
+    //       if (code == "200") {
+    //         this.addressLoading = true;
+    //         this.getUserAddress();
+    //         this.addressLoading = false;
+    //         if (this.delAddressId == this.radio) {
+    //           this.radio = "";
+    //         }
+    //         this.$message({
+    //           message: "删除成功",
+    //           type: "success",
+    //         });
+    //       } else {
+    //         this.$message.error("删除失败,请重试");
+    //       }
+    //     })
+    //     .catch(() => {
+    //       Message({
+    //         type: "error",
+    //         message: "出现错误，请稍后再试",
+    //       });
+    //     });
+    // },
+    // //设置默认地址
+    // setDefaultAddress(e) {
+    //   axios({
+    //     url: this.$store.state.yuming + "/user/address/setDefault",
+    //     method: "POST",
+    //     params: {
+    //       addressId: e.id,
+    //     },
+    //   })
+    //     .then((res) => {
+    //       const { code } = res.data;
+    //       if (code == "200") {
+    //         this.addressLoading = true;
+    //         this.getUserAddress();
+    //         this.addressLoading = false;
+    //       } else {
+    //         this.$message.error("设置默认地址失败,请重试");
+    //       }
+    //     })
+    //     .catch(() => {
+    //       Message({
+    //         type: "error",
+    //         message: "出现错误，请稍后再试",
+    //       });
+    //     });
+    // },
+    //获取用户的收藏信息
     getAll() {
       axios({
-        url: this.$store.state.yuming + "/cartitem/getAll",
+        url: this.$store.state.yuming + "/collection/getByUser",
         method: "GET",
         params: {},
       })
         .then((res) => {
-          const { code, data } = res.data;
+          const { code, data ,num} = res.data;
           if (code == "200") {
             this.bookList = data;
-            if (data == null) {
-              this.isBookListEmpty = true;
+            if (num==0) {
+              this.isCollectionListEmpty = true;
             }
           } else {
-            this.$message.error("获取购物车信息失败");
+            this.$message.error("获取收藏夹信息失败");
           }
         })
         .catch(() => {
@@ -778,37 +740,37 @@ export default {
           });
         });
     },
-    //更新购物车中图书信息（仅可修改数量
-    updateCartItem(currentValue, id) {
-      axios({
-        url: this.$store.state.yuming + "/cartitem/updateCartItem",
-        method: "POST",
-        params: {
-          book_id: id,
-          sum: currentValue,
-        },
-      })
-        .then((res) => {
-          const { code } = res.data;
-          if (code == "200") {
-            /*this.shoppingLoading = true;
-            this.getAll();
-            this.shoppingLoading = false;*/
-          } else {
-            this.$message.error("更新图书数量失败,请重试");
-          }
-        })
-        .catch(() => {
-          Message({
-            type: "error",
-            message: "出现错误，请稍后再试",
-          });
-        });
-    },
-    //单次删除购物车
+    // //更新购物车中图书信息（仅可修改数量
+    // updateCartItem(currentValue, id) {
+    //   axios({
+    //     url: this.$store.state.yuming + "/cartitem/updateCartItem",
+    //     method: "POST",
+    //     params: {
+    //       book_id: id,
+    //       sum: currentValue,
+    //     },
+    //   })
+    //     .then((res) => {
+    //       const { code } = res.data;
+    //       if (code == "200") {
+    //         /*this.shoppingLoading = true;
+    //         this.getAll();
+    //         this.shoppingLoading = false;*/
+    //       } else {
+    //         this.$message.error("更新图书数量失败,请重试");
+    //       }
+    //     })
+    //     .catch(() => {
+    //       Message({
+    //         type: "error",
+    //         message: "出现错误，请稍后再试",
+    //       });
+    //     });
+    // },
+    //单次删除书籍
     delBook(id) {
       axios({
-        url: this.$store.state.yuming + "/cartitem/delete",
+        url: this.$store.state.yuming + "/collection/multiDelete",
         method: "DELETE",
         params: {
           cartItem_id: id,
@@ -835,18 +797,16 @@ export default {
           });
         });
     },
-    //批量删除购物车
+    //批量删除收藏
     multiDelBook() {
       var multiDelBookId = [];
-      this.bookList.forEach((shop) => {
-        shop.books.forEach((book) => {
+        this.bookList.forEach((book) => {
           if (book.check_one == true) {
-            multiDelBookId.push(book.cartItem_id);
+            multiDelBookId.push(book.reference_num);
           }
-        });
       });
       axios({
-        url: this.$store.state.yuming + "/cartitem/multiDelete",
+        url: this.$store.state.yuming + "/collection/multiDelete",
         method: "DELETE",
         params: {
           CartItem_Ids: multiDelBookId,
@@ -942,30 +902,30 @@ export default {
         this.page = 2;
       }
     },
-    //直接购买获取图书详情
-    getDetail() {
-      axios({
-        url: this.$store.state.yuming + "/book/getDetail",
-        method: "GET",
-        params: {
-          book_id: this.directBuyBookId,
-        },
-      })
-        .then((res) => {
-          const { code, data } = res.data;
-          if (code == "200") {
-            this.book = data;
-          } else {
-            this.$message.error("获取图书详情失败");
-          }
-        })
-        .catch(() => {
-          Message({
-            type: "error",
-            message: "出现错误，请稍后再试",
-          });
-        });
-    },
+    // //直接购买获取图书详情
+    // getDetail() {
+    //   axios({
+    //     url: this.$store.state.yuming + "/book/getDetail",
+    //     method: "GET",
+    //     params: {
+    //       book_id: this.directBuyBookId,
+    //     },
+    //   })
+    //     .then((res) => {
+    //       const { code, data } = res.data;
+    //       if (code == "200") {
+    //         this.book = data;
+    //       } else {
+    //         this.$message.error("获取图书详情失败");
+    //       }
+    //     })
+    //     .catch(() => {
+    //       Message({
+    //         type: "error",
+    //         message: "出现错误，请稍后再试",
+    //       });
+    //     });
+    // },
     //直接购买
     addDirect() {
       //处理地址
@@ -1018,43 +978,41 @@ export default {
           });
       }
     },
-    //支付
-    alipay() {
-      axios({
-        url: this.$store.state.yuming + "/alipay",
-        method: "GET",
-        params: {
-          order_id: this.orderId,
-          subject: this.subject,
-          total_amount: this.totalAmount,
-          body: this.body,
-        },
-      }).then((res) => {
-        let divForm = document.getElementsByTagName("divform");
-        if (divForm.length) {
-          document.body.removeChild(divForm[0]);
-        }
-        const div = document.createElement("divform");
-        div.innerHTML = res.data; // data就是接口返回的form 表单字符串
-        document.body.appendChild(div);
-        document.forms[0].setAttribute("target", "_blank"); // 新开窗口跳转
-        document.forms[0].submit();
-      });
+    // //支付
+    // alipay() {
+    //   axios({
+    //     url: this.$store.state.yuming + "/alipay",
+    //     method: "GET",
+    //     params: {
+    //       order_id: this.orderId,
+    //       subject: this.subject,
+    //       total_amount: this.totalAmount,
+    //       body: this.body,
+    //     },
+    //   }).then((res) => {
+    //     let divForm = document.getElementsByTagName("divform");
+    //     if (divForm.length) {
+    //       document.body.removeChild(divForm[0]);
+    //     }
+    //     const div = document.createElement("divform");
+    //     div.innerHTML = res.data; // data就是接口返回的form 表单字符串
+    //     document.body.appendChild(div);
+    //     document.forms[0].setAttribute("target", "_blank"); // 新开窗口跳转
+    //     document.forms[0].submit();
+    //   });
 
-      this.page = 2;
-    },
+    //   this.page = 2;
+    // },
   },
   async created() {
     this.isLoading = true;
-    if (this.$route.params.bookid != 0) {
-      this.isDirectBuy = true;
-      this.page = 1;
-      this.directBuyBookId = this.$route.params.bookid;
-      this.directBuyNum = this.$route.params.num;
-      await this.getDetail();
-    }
+    // if (this.$route.params.bookid != 0) {
+    //   this.isDirectBuy = true;
+    //   this.page = 1;
+    //   this.directBuyBookId = this.$route.params.bookid;
+    //   this.directBuyNum = this.$route.params.num;
+    // }
     await this.getAll();
-    await this.getUserAddress();
     this.isLoading = false;
   },
 };
@@ -1128,7 +1086,6 @@ export default {
 }
 .collection-table-action {
   font-size: 13px;
-  
 }
 .collection-table-footer-item {
   margin: 20px 0;

@@ -161,7 +161,7 @@
               </div>
               <el-menu-item
                 index="2022"
-                @click.native="getYearBook('2020')"
+                @click.native="getYearBook('2022','2020')"
                 style="
                   color: rgb(233, 150, 122);
                   font-weight: 1000;
@@ -171,7 +171,7 @@
               >
               <el-menu-item
                 index="2021"
-                @click.native="getYearBook('2018')"
+                @click.native="getYearBook('2022','2018')"
                 style="
                   color: rgb(233, 150, 122);
                   font-weight: 1000;
@@ -181,7 +181,7 @@
               >
               <el-menu-item
                 index="2020"
-                @click.native="getYearBook('2012')"
+                @click.native="getYearBook('2022','2013')"
                 style="
                   color: rgb(233, 150, 122);
                   font-weight: 1000;
@@ -542,8 +542,8 @@ export default {
     },
     ellipsis2(value) {
       if (!value) return "";
-      if (value.length > 7) {
-        return value.slice(0, 7) + "..."; //0:下标,从第一个字开始显示,15:显示字数,多余用...代替
+      if (value.length > 6) {
+        return value.slice(0, 6) + "..."; //0:下标,从第一个字开始显示,15:显示字数,多余用...代替
       }
       return value;
     },
@@ -750,10 +750,10 @@ export default {
       this.$router.push({ path: "/classSort", query: { activeIndexMain: id } });
     },
     //通过年份来分页
-    getYearBook(year) {
+    getYearBook(endyear,beginyear) {
       this.$router.push({
         path: "classSort",
-        query: { activeIndexMain: "", activeIndexSecond: "", year: year },
+        query: { activeIndexMain: "", endyear: endyear,beginyear: beginyear},
       });
     },
     getYearBeforeBook(year) {
@@ -761,9 +761,7 @@ export default {
         path: "classSort",
         query: {
           activeIndexMain: "",
-          activeIndexSecond: "",
-          year: "",
-          year_before: year,
+          beforeyear: year,
         },
       });
     },

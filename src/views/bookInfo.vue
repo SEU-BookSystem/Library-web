@@ -88,27 +88,6 @@
     <div>
       <el-container style="margin: 0% 5%">
         <el-header style="padding: 0">
-          <!-- <el-row class="rowStyle1">
-            <el-col class="colStyle2" @click.native="goBackToIndex"
-              >全部商品分类</el-col
-            >
-            <el-col>
-              <el-menu
-                :default-active="activeIndex1"
-                class="el-menu-demo"
-                mode="horizontal"
-              >
-                <el-menu-item
-                  v-for="item in categoryList"
-                  :key="item.category_id"
-                  style="color: rgb(250, 128, 114); font-weight: 1000"
-                  :index="item.category_id"
-                  @click.native="getMainClassBook(item.category_id)"
-                  >{{ item.catagory_name }}</el-menu-item
-                >
-              </el-menu>
-            </el-col>
-          </el-row> -->
           <el-row style="margin-top: 1%">
             <el-breadcrumb separator-class="el-icon-arrow-right">
               <el-breadcrumb-item
@@ -128,7 +107,7 @@
         <el-divider></el-divider>
         <el-container style="margin-top: 1%">
           <el-aside width="20%">
-            <img class="imgStyle3" :src="book.image" />
+            <img class="imgStyle3" :src="changeUrl(book.image)" />
           </el-aside>
           <el-main style="padding: 0px 20px">
             <h2 style="margin: 0px; margin-bottom: 10px">
@@ -165,6 +144,7 @@
           >
         </el-table>
         <div style="display: flex; justify-content: flex-end; margin: 2%">
+          <el-button @click="collectionDialog = true" round>加入收藏</el-button>
           <el-button @click="orderDialog = true" round>我要预约</el-button>
         </div>
         <el-dialog title="预约书籍" :visible.sync="orderDialog" width="30%">
@@ -172,6 +152,13 @@
           <span slot="footer" class="dialog-footer">
             <el-button @click="dialogVisible = false">取 消</el-button>
             <el-button type="primary" @click="orderBook">确 定</el-button>
+          </span>
+        </el-dialog>
+        <el-dialog title="收藏书籍" :visible.sync="collectionDialog" width="30%">
+          <span>是否收藏书籍《{{ this.book.book_name }}》？</span>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="dialogVisible = false">取 消</el-button>
+            <el-button type="primary" @click="collectionBook">确 定</el-button>
           </span>
         </el-dialog>
       </el-container>
@@ -188,7 +175,7 @@ export default {
       isLoading: false,
       dataLoading: false,
       orderDialog: false,
-      borrowDialog: false,
+      collectionDialog: false,
       activeIndex1: "",
       username: "",
       num: 1,
@@ -219,17 +206,21 @@ export default {
     },
   },
   methods: {
-    gotoSign() {
-      this.$router.push("/sign");
+    //豆瓣图片加载
+    changeUrl(_url) {
+      if (_url !== undefined) {
+        let _u = _url.substring(7); //_u:提取http://后面的部分
+        return "https://images.weserv.nl/?url=" + _u;
+      }
     },
-    gotoLogin() {
-      this.$router.push("/login");
+    gotoCollection() {
+      this.$router.push("/collection");
     },
     gotoPersonPage() {
       this.$router.push("/person");
     },
-    gotoShopCar() {
-      this.$router.push("/shopping/0/0");
+    gotoLogin() {
+      this.$router.push("/login");
     },
     loginOut() {
       this.isLoading = true;
@@ -263,16 +254,47 @@ export default {
           if (code == "200") {
             this.$message({
               showClose: true,
-              message: "预约成功！",
+              message: "预约成功！"
             });
+            this.orderDialog=false;
           } else if (code == "25") {
             this.$message.error("书籍不可预约");
+            this.orderDialog=false;
           } else if (code == "26") {
             this.$message.error("借阅数量已达最大值");
+            this.orderDialog=false;
           }
         })
         .catch(() => {
           this.$message.error("出现错误，请稍后再试");
+          this.orderDialog=false
+        });
+    },
+    //收藏书籍
+    collectionBook() {
+      axios({
+        url: this.$store.state.yuming + "/collection/add",
+        method: "POST",
+        params: {
+          reference_num: this.reference_num
+        },
+      })
+        .then((res) => {
+          const { code } = res.data;
+          if (code == "200") {
+            this.$message({
+              showClose: true,
+              message: "收藏成功！",
+            });
+            this.collectionDialog=false
+          } else if (code == "19") {
+            this.$message.error("书籍已在收藏夹中！");
+             this.collectionDialog=false;
+          } 
+        })
+        .catch(() => {
+          this.$message.error("出现错误，请稍后再试");
+           this.collectionDialog=false;
         });
     },
     //时间格式化

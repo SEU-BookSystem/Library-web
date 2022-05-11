@@ -15,58 +15,58 @@
             <el-button type="text" @click.native="loginOut">退出登录</el-button>
           </div>
           <div class="aM-item" style="font-size: 15px">
-            在此处，您可以选择使用 分类管理、商家管理、用户管理、订单管理功能。
+            在此处，您可以选择使用 违规管理、借阅管理、书籍管理、读者管理功能。
           </div>
             </el-main>
           </el-container>
         </el-card>
       </div>
-            <div><el-button type="text" @click="gotoDataVisual">
+            <div>
         <el-card class="aM-box-card1" style="background-color: #3d678a;height:60px">
           <el-row style="color: white">
             <el-col style="text-align:center">
-              <el-row style="font-size: 20px;margin:2px">数据可视化</el-row>
+              <el-row style="font-size: 20px;margin:2px"></el-row>
             </el-col>
           </el-row>
-        </el-card></el-button>
+        </el-card>
       </div>
       <div class="aM-box2">
         <el-button type="text" @click="gotoClass">
         <el-card class="aM-box-card2">
-          <i class="iconfont-fenlei" style="font-size: 50px; margin: 50px"/>
+          <i class="icon-xitongquanxian" style="font-size: 50px; margin: 50px"/>
           <div class="aM-text aM-item">
-            分类管理
+            违规管理
           </div>
-          <i style="color: #909399">添加、修改、删除一、二级书籍分类。</i>
-        </el-card>
-        </el-button>
-        <el-button type="text" @click="gotoMerchant">
-        <el-card class="aM-box-card2">
-          <i class="iconfont-shangpu" style="font-size: 50px; margin: 50px"/>
-          <div class="aM-text aM-item">
-            商家管理
-          </div>
-          <i style="color: #909399">处理用户成为商家的申请。</i>
-        </el-card>
-        </el-button>
-      </div>
-      <div class="aM-box2">
-        <el-button type="text" @click="gotoUser">
-        <el-card class="aM-box-card2">
-          <i class="iconfont-yonghu" style="font-size: 50px; margin: 50px"/>
-          <div class="aM-text aM-item">
-            用户管理
-          </div>
-          <i style="color: #909399">查看、查找、编辑、注销用户信息。</i>
+          <i style="color: #909399">处理违规行为。</i>
         </el-card>
         </el-button>
         <el-button type="text" @click="gotoOrder">
         <el-card class="aM-box-card2">
-          <i class="iconfont-dingdanlan-copy" style="font-size: 50px; margin: 50px"/>
+          <i class="icon-piciguanli" style="font-size: 50px; margin: 50px"/>
           <div class="aM-text aM-item">
-            订单管理
+            借阅管理
           </div>
-          <i style="color: #909399">查看、查找、编辑、取消订单。</i>
+          <i style="color: #909399">查看、查找、添加、编辑、删除读者信息。</i>
+        </el-card>
+        </el-button>
+      </div>
+      <div class="aM-box2">
+        <el-button type="text" @click="gotoMerchant">
+        <el-card class="aM-box-card2">
+          <i class="icon-wenxianliutong" style="font-size: 50px; margin: 50px"/>
+          <div class="aM-text aM-item">
+            书籍管理
+          </div>
+          <i style="color: #909399">查看、查找、添加、编辑、删除书籍信息。</i>
+        </el-card>
+        </el-button>
+        <el-button type="text" @click="gotoUser">
+        <el-card class="aM-box-card2">
+          <i class="icon-duzheguanli" style="font-size: 50px; margin: 50px"/>
+          <div class="aM-text aM-item">
+            读者管理
+          </div>
+          <i style="color: #909399">查看、查找、添加、编辑、注销读者信息。</i>
         </el-card>
         </el-button>
       </div>
