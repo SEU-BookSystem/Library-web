@@ -123,7 +123,7 @@
               {{ this.dateFormat(book.print_time) }}出版
             </p>
             <p>
-              {{ book.detail }}
+              {{ book.detail | ellipsis }}
             </p>
           </el-main>
         </el-container>
@@ -154,7 +154,11 @@
             <el-button type="primary" @click="orderBook">确 定</el-button>
           </span>
         </el-dialog>
-        <el-dialog title="收藏书籍" :visible.sync="collectionDialog" width="30%">
+        <el-dialog
+          title="收藏书籍"
+          :visible.sync="collectionDialog"
+          width="30%"
+        >
           <span>是否收藏书籍《{{ this.book.book_name }}》？</span>
           <span slot="footer" class="dialog-footer">
             <el-button @click="dialogVisible = false">取 消</el-button>
@@ -169,6 +173,16 @@
 import axios from "axios";
 import moment from "moment";
 export default {
+  filters: {
+    //限制文本显示字数,超出部分用...代替
+    ellipsis(value) {
+      if (!value) return "";
+      if (value.length > 300) {
+        return value.slice(0, 300) + "..."; //0:下标,从第一个字开始显示,50:显示字数,多余用...代替
+      }
+      return value;
+    },
+  },
   data() {
     return {
       input: "",
@@ -201,7 +215,7 @@ export default {
     hasLogin() {
       return this.$store.state.token;
     },
-    hasUsername(){
+    hasUsername() {
       return this.$store.state.username;
     },
   },
@@ -253,21 +267,21 @@ export default {
           const { code } = res.data;
           if (code == "200") {
             this.$message({
-              showClose: true,
-              message: "预约成功！"
+              message: "预约成功！",
+              type: "success"
             });
-            this.orderDialog=false;
+            this.orderDialog = false;
           } else if (code == "25") {
             this.$message.error("书籍不可预约");
-            this.orderDialog=false;
+            this.orderDialog = false;
           } else if (code == "26") {
             this.$message.error("借阅数量已达最大值");
-            this.orderDialog=false;
+            this.orderDialog = false;
           }
         })
         .catch(() => {
           this.$message.error("出现错误，请稍后再试");
-          this.orderDialog=false
+          this.orderDialog = false;
         });
     },
     //收藏书籍
@@ -276,25 +290,26 @@ export default {
         url: this.$store.state.yuming + "/collection/add",
         method: "POST",
         params: {
-          reference_num: this.reference_num
+          reference_num: this.reference_num,
+          username: this.$store.state.username,
         },
       })
         .then((res) => {
           const { code } = res.data;
           if (code == "200") {
             this.$message({
-              showClose: true,
               message: "收藏成功！",
+              type: "success",
             });
-            this.collectionDialog=false
+            this.collectionDialog = false;
           } else if (code == "19") {
             this.$message.error("书籍已在收藏夹中！");
-             this.collectionDialog=false;
-          } 
+            this.collectionDialog = false;
+          }
         })
         .catch(() => {
           this.$message.error("出现错误，请稍后再试");
-           this.collectionDialog=false;
+          this.collectionDialog = false;
         });
     },
     //时间格式化
@@ -413,6 +428,20 @@ export default {
   align-items: center;
   margin: 20px;
   margin-left: 50px;
+}
+.loginword:hover {
+  display: flex;
+  justify-content: center;
+  margin: 22px;
+  font-size: 15px;
+  color: #409eff;
+}
+.loginword {
+  display: flex;
+  justify-content: center;
+  margin: 22px;
+  font-size: 15px;
+  color: rgb(86, 85, 87);
 }
 .pageperson {
   display: flex;

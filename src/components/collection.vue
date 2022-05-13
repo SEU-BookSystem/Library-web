@@ -33,7 +33,7 @@
       >
     </div>
     <div style="margin: 0 10%">
-      <div v-if="isCollectionListEmpty == false" v-loading="shoppingLoading">
+      <div v-if="isCollectionListEmpty == false">
         <header>
           <el-card class="collection-header-card">
             <el-row>
@@ -45,13 +45,11 @@
                 <el-checkbox
                   v-model="checkAll"
                   class="myRedCheckBox"
-                  @change="check_all"
+                  @change="collection_check_all"
                 ></el-checkbox>
               </el-col>
-              <!-- <el-col :span="1" class="collection-table-item">全选</el-col> -->
-              <el-col :span="2" class="collection-table-item">条码号</el-col>
               <el-col :span="2" class="collection-table-item">索书号</el-col>
-              <el-col :span="11" class="collection-table-item">书籍信息</el-col>
+              <el-col :span="13" class="collection-table-item">书籍信息</el-col>
               <el-col :span="1" :offset="4" class="collection-table-item"
                 >操作</el-col
               >
@@ -59,15 +57,14 @@
           </el-card>
         </header>
         <div class="collection-table-container">
-          <div v-for="(item, index) in bookList" :key="index">
+          <div>
             <el-card style="margin: 20px 0">
               <div class="collection-books">
                 <el-row
-                  v-for="(books, idx) in item.books"
+                  v-for="(books, idx) in bookList"
                   :key="idx"
                   style="margin: 10px"
                 >
-                  <!--<el-divider v-if="idx!=0"></el-divider>-->
                   <el-col :span="1">
                     <el-checkbox
                       style="margin: 25px 0"
@@ -80,31 +77,32 @@
                     style="margin: 25px 0"
                     class="collection-table-item"
                   >
-                    <div>{{ books.bar_code }}</div>
-                  </el-col>
-                  <el-col
-                    :span="2"
-                    style="margin: 25px 0"
-                    class="collection-table-item"
-                  >
                     <div>{{ books.reference_num }}</div>
                   </el-col>
                   <el-col :span="2">
-                    <img :src="books.image_b" style="height: 70px" />
+                    <img
+                      @click="goToBookInfo(books.reference_num)"
+                      :src="changeUrl(books.image)"
+                      style="height: 70px"
+                    />
                   </el-col>
-                  <el-col :span="9">
-                    <div style="margin-right: 30px" class="shopping-book-name">
+                  <el-col :span="11">
+                    <div
+                      style="margin-right: 30px"
+                      class="collection-book"
+                      @click="goToBookInfo(books.reference_num)"
+                    >
                       {{ books.book_name }}
                     </div>
                     <div class="book-detail">作者：{{ books.author }}</div>
-                    <div class="book-detail">出版社：{{ books.press }}</div>
+                    <div class="book-detail">出版社：{{ books.publisher }}</div>
                   </el-col>
                   <el-col :span="1" :offset="4">
                     <el-popconfirm
                       confirm-button-text="确认"
                       cancel-button-text="取消"
                       confirm-button-type="text"
-                      @confirm="delBook(books.cartItem_id)"
+                      @confirm="orderBook(books.reference_num)"
                       title="您确认要预约此书吗？"
                     >
                       <el-button
@@ -115,7 +113,6 @@
                         >预约</el-button
                       >
                     </el-popconfirm>
-                    <!--<div style="margin:15px 0"><el-button type="text" class="table-button">删除</el-button></div>-->
                   </el-col>
                   <el-col :span="2">
                     <el-popconfirm
@@ -124,7 +121,7 @@
                       confirm-button-type="text"
                       icon="el-icon-info"
                       icon-color="rgb(221, 68, 65)"
-                      @confirm="delBook(books.cartItem_id)"
+                      @confirm="delBook(books.collection_id)"
                       title="您确认要删除该收藏吗？"
                     >
                       <el-button
@@ -135,7 +132,6 @@
                         >删除</el-button
                       >
                     </el-popconfirm>
-                    <!--<div style="margin:15px 0"><el-button type="text" class="table-button">删除</el-button></div>-->
                   </el-col>
                 </el-row>
               </div>
@@ -172,7 +168,7 @@
                 <el-button
                   size="medium"
                   class="table-button"
-                  @click="multiDelBook"
+                  @click="multiOrderBook"
                   >批量预约</el-button
                 >
               </el-col>
@@ -194,221 +190,8 @@
           </el-card>
         </footer>
       </div>
-
-      <!--填写订单-->
-      <!-- <div v-if="page == 1">
-        <el-divider></el-divider>
-        <div style="margin: 20px 0">
-          <el-row>
-            <h3>送货清单</h3>
-          </el-row>
-          <header>
-            <el-card class="collection-header-card">
-              <el-row>
-                <el-col :span="14" class="collection-table-item"
-                  >商品信息</el-col
-                >
-                <el-col :span="4" class="collection-table-item"
-                  >价格</el-col
-                >
-                <el-col :span="4" class="collection-table-item"
-                  >数量</el-col
-                >
-                <el-col :span="2" class="collection-table-item"
-                  >小计</el-col
-                >
-              </el-row>
-            </el-card>
-          </header> -->
-      <!--从购物车生成订单-->
-      <!-- <div class="collection-table-container" v-if="isDirectBuy == false">
-            <div v-for="(item, index) in bookList" :key="index">
-              <el-card style="margin: 20px 0" v-if="vifShopName(item)">
-                <el-row style="margin: 10px">
-                  <el-col class="shopping-shop-name"
-                    ><i class="el-icon-goods"></i> {{ item.shop_name }}</el-col
-                  >
-                </el-row>
-                <div
-                  class="collection-books"
-                  v-for="(books, idx) in item.books"
-                  :key="idx"
-                >
-                  <el-row style="margin: 10px" v-if="books.check_one">
-                   
-                    <el-col :span="2">
-                      <img :src="books.image_b" style="height: 70px" />
-                    </el-col>
-                    <el-col :span="9">
-                      <div
-                        style="margin-right: 30px"
-                        class="shopping-book-name"
-                      >
-                        {{ books.book_name }}
-                      </div>
-                      <div class="book-detail">作者：{{ books.author }}</div>
-                      <div class="book-detail">出版社：{{ books.press }}</div>
-                    </el-col>
-                    <el-col :span="4" :offset="3">
-                      <div style="margin: 25px 0" class="table-unitprice">
-                        ¥{{ books.price.toFixed(2) }}
-                      </div>
-                    </el-col>
-                    <el-col :span="2">
-                      <div style="margin: 20px 0">{{ books.sum }}</div>
-                    </el-col>
-                    <el-col :span="2" :offset="2">
-                      <div style="margin: 25px 0" class="table-price">
-                        ¥{{ (books.price * books.sum).toFixed(2) }}
-                      </div>
-                    </el-col>
-                  </el-row>
-                </div>
-              </el-card>
-            </div>
-          </div> -->
-      <!--从图书详情页直接购买-->
-      <!-- <div class="collection-table-container" v-if="isDirectBuy == true">
-            <div>
-              <el-card style="margin: 20px 0">
-                <el-row style="margin: 10px">
-                  <el-col class="shopping-shop-name"
-                    ><i class="el-icon-goods"></i> {{ book.shop_name }}</el-col
-                  >
-                </el-row>
-                <div class="collection-books">
-                  <el-row style="margin: 10px">
-                    <el-col :span="2"
-                      ><img :src="book.image_b" style="height: 70px"
-                    /></el-col>
-                    <el-col :span="9">
-                      <div
-                        style="margin-right: 30px"
-                        class="shopping-book-name"
-                      >
-                        {{ book.book_name }}
-                      </div>
-                      <div class="book-detail">作者：{{ book.author }}</div>
-                      <div class="book-detail">出版社：{{ book.press }}</div>
-                    </el-col>
-                    <el-col :span="4" :offset="3">
-                      <div style="margin: 25px 0" class="table-unitprice">
-                        ¥{{ book.price.toFixed(2) }}
-                      </div>
-                    </el-col>
-                    <el-col :span="2">
-                      <div style="margin: 20px 0">{{ directBuyNum }}</div>
-                    </el-col>
-                    <el-col :span="2" :offset="2">
-                      <div style="margin: 25px 0" class="table-price">
-                        ¥{{ (book.price * directBuyNum).toFixed(2) }}
-                      </div>
-                    </el-col>
-                  </el-row>
-                </div>
-              </el-card>
-            </div>
-          </div>
-          <footer>
-            <el-card> -->
-      <!--从购物车生成订单-->
-      <!-- <el-row v-if="isDirectBuy == false">
-                <el-col
-                  :span="18"
-                  :offset="1"
-                  class="collection-table-footer-item"
-                  >共<span style="color: rgb(221, 68, 65)">
-                    {{ totalNumber }} </span
-                  >件商品</el-col
-                >
-                <el-col
-                  :span="3"
-                  class="collection-table-footer-item"
-                  style="margin-top: 14px"
-                  >实付：<span class="table-totalprice"
-                    >¥{{ totalPrice.toFixed(2) }}</span
-                  ></el-col
-                >
-                <el-col
-                  :span="2"
-                  class="collection-table-footer-item"
-                  style="margin-top: 9px"
-                >
-                  <el-button
-                    size="max"
-                    type="danger"
-                    :round="true"
-                    @click="addCartItem"
-                    >提交订单</el-button
-                  >
-                </el-col>
-              </el-row> -->
-      <!--从图书详情页直接购买-->
-      <!-- <el-row v-if="isDirectBuy == true">
-                <el-col
-                  :span="18"
-                  :offset="1"
-                  class="collection-table-footer-item"
-                  >共<span style="color: rgb(221, 68, 65)">
-                    {{ directBuyNum }} </span
-                  >件商品</el-col
-                >
-                <el-col
-                  :span="3"
-                  class="collection-table-footer-item"
-                  style="margin-top: 14px"
-                  >实付：<span class="table-totalprice"
-                    >¥{{ (book.price * directBuyNum).toFixed(2) }}</span
-                  ></el-col
-                >
-                <el-col
-                  :span="2"
-                  class="collection-table-footer-item"
-                  style="margin-top: 9px"
-                >
-                  <el-button
-                    size="max"
-                    type="danger"
-                    :round="true"
-                    @click="addDirect"
-                    >提交订单</el-button
-                  >
-                </el-col>
-              </el-row>
-            </el-card>
-          </footer>
-        </div>
-      </div> -->
     </div>
-
-    <!--完成订单-->
-    <!-- <div v-if="page == 2" style="completeOrder">
-      <el-row
-        ><el-col :span="8" :offset="8">
-          <el-card>
-            <el-row class="orderFinish">
-              <img src="../assets/avatar.jpg" height="200px" />
-            </el-row>
-            <el-row class="orderFinish">
-              <p>提交订单成功</p>
-            </el-row>
-            <el-row class="orderFinish">
-              <p>请您尽快完成付款...</p>
-            </el-row>
-            <el-row class="orderFinish">
-              <el-button size="medium" :round="true" @click="gotoOrder"
-                >查看订单</el-button
-              >
-              <el-button size="medium" :round="true" @click="gotoHome"
-                >回到主页</el-button
-              >
-            </el-row>
-          </el-card>
-        </el-col></el-row
-      >
-    </div> -->
   </div>
-  <!--</div>-->
 </template>
 
 
@@ -427,93 +210,20 @@ export default {
       page: 0,
       //loading
       isLoading: false,
-      addressLoading: false,
-      shoppingLoading: false,
-      //选择的地址id
-      radio: "",
-      //从图书详情页直接购买
-      directBuyBookId: "",
-      directBuyNum: 0,
-      book: {
-        //店铺
-        shop_id: "",
-        shop_name: "",
-        //图书
-        book_id: "",
-        cartItem_id: "",
-        image_b: "",
-        book_name: "",
-        author: "",
-        press: "",
-        price: 0,
-        sum: 0,
-        repertory: 0,
-      },
       //购物车图书
       isCollectionListEmpty: false,
-      isDirectBuy: false,
-      bookList: [{}],
-      checkAll: false,
-      cpmylist: [],
-      //收货地址
-      editInfoVisible: false,
-      addInfoVisible: false,
-      delAddressVisible: false,
-      delAddressId: "",
-      newAddress: {
-        id: "",
-        name: "",
-        phone: "",
-        address: "",
-        status: "",
-      },
-      editMyAddress: {
-        id: "",
-        name: "",
-        phone: "",
-        address: "",
-        status: "",
-      },
-      myAddressList: [
-        /*{
-          id: "1",
-          name: "甲",
-          phone: "12345678910",
-          address: "摩尔庄园",
-          status: 0,
-        },*/
+      bookList: [
+        {
+          reference_num: "",
+          book_name: "",
+          author: "",
+          publisher: "",
+          image: "",
+          collection_id: "",
+          check_one: false,
+        },
       ],
-      newAddressRules: {
-        phone: [
-          { required: true, message: "电话号码不得为空", trigger: "blur" },
-          {
-            validator: (rule, value, callback) => {
-              if (!value) {
-                callback(new Error("请输入电话号码"));
-              } else if (!/^1\d{10}$/.test(value)) {
-                callback(new Error("请输入正确的11位手机号码"));
-              } else {
-                callback();
-              }
-            },
-            trigger: "blur",
-          },
-        ],
-        name: [
-          { required: true, message: "姓名不得为空", trigger: "blur" },
-          { max: 10, message: "姓名不得超过十个字", trigger: "blur" },
-        ],
-        address: [
-          { required: true, message: "地址不得为空", trigger: "blur" },
-          { max: 50, message: "地址不得超过五十个字", trigger: "blur" },
-        ],
-      },
-      //支付
-      orderId: "",
-      subject: "",
-      totalAmount: 0,
-      body: "",
-      oneBookName: "",
+      checkAll: false,
       totalNum: 0,
     };
   },
@@ -521,27 +231,20 @@ export default {
     // 总数
     totalNumber() {
       var number_total = 0;
-      this.bookList.forEach((shop) => {
-        shop.this_all = this.checkAll;
-        shop.books.forEach((book) => {
-          if (book.check_one == true) number_total += book.sum;
-        });
+      this.bookList.forEach((book) => {
+        if (book.check_one == true) number_total = number_total + 1;
       });
       return number_total;
     },
-    // 总价
-    totalPrice() {
-      var price_total = 0;
-      this.bookList.forEach((shop) => {
-        shop.this_all = this.checkAll;
-        shop.books.forEach((book) => {
-          if (book.check_one == true) price_total += book.sum * book.price;
-        });
-      });
-      return price_total;
-    },
   },
   methods: {
+    //豆瓣图片加载
+    changeUrl(_url) {
+      if (_url !== undefined) {
+        let _u = _url.substring(7); //_u:提取http://后面的部分
+        return "https://images.weserv.nl/?url=" + _u;
+      }
+    },
     //回到主页
     gotoHome() {
       this.$router.push("/#reloaded");
@@ -550,172 +253,15 @@ export default {
     goback() {
       this.$router.go(-1);
     },
-    //跳转全部订单页面
-    // gotoOrder() {
-    //   this.$router.push("/userOrder/1");
-    // },
-    //选择所有的购物车商品
+    goToBookInfo(reference_num) {
+      this.$router.push(`/bookInfo/${reference_num}`);
+    },
     check_all() {
-        this.bookList.forEach((book) => {
-          book.check_one = this.checkAll;
-        });
-    },
-    //结算
-    settlement() {
-       this.bookList.forEach((book) => {
-          if (book.check_one == true) {
-            this.cpmylist.push(book.reference_num);
-          }
+      this.bookList.forEach((book) => {
+        book.check_one = this.checkAll;
       });
-      if (this.cpmylist.length == 0) {
-        alert("请选择商品哦！");
-      } else {
-        this.page = 1;
-      }
     },
-    //结算页面是否显示店铺名
-    // vifShopName(shop) {
-    //   var len = 0;
-    //   shop.books.forEach((book) => {
-    //     if (book.check_one == true) {
-    //       len = len + 1;
-    //     }
-    //   });
-    //   if (len != 0) return true;
-    //   else return false;
-    // },
-    //清空newAddress
-    // clearNewAddress() {
-    //   this.newAddress.name = "";
-    //   this.newAddress.address = "";
-    //   this.newAddress.phone = "";
-    //   this.addInfoVisible = true;
-    // },
-    //新增收货地址
-    // addNewAddress() {
-    //   this.addInfoVisible = false;
-    //   axios({
-    //     url: this.$store.state.yuming + "/user/address/add",
-    //     method: "POST",
-    //     params: {
-    //       address: this.newAddress.address,
-    //       phone: this.newAddress.phone,
-    //       name: this.newAddress.name,
-    //     },
-    //   }).then((res) => {
-    //     if (res.data.code == 200) {
-    //       this.addressLoading = true;
-    //       this.getUserAddress();
-    //       this.addressLoading = false;
-    //       this.$message({
-    //         message: "新增成功",
-    //         type: "success",
-    //       });
-    //     } else {
-    //       this.$message.error("新增失败，请重试");
-    //     }
-    //   });
-    // },
-    //编辑收货地址
-    // editAddress(e) {
-    //   this.editInfoVisible = true;
-    //   this.editMyAddress.id = e.id;
-    //   this.editMyAddress.name = e.name;
-    //   this.editMyAddress.phone = e.phone;
-    //   this.editMyAddress.address = e.address;
-    // },
-    //确认编辑收货地址
-    // confirmChangeAddress() {
-    //   this.editInfoVisible = false;
-    //   axios({
-    //     url: this.$store.state.yuming + "/user/address/update",
-    //     method: "POST",
-    //     params: {
-    //       addressId: this.editMyAddress.id,
-    //       address: this.editMyAddress.address,
-    //       name: this.editMyAddress.name,
-    //       phone: this.editMyAddress.phone,
-    //     },
-    //   }).then((res) => {
-    //     if (res.data.code == 200) {
-    //       this.addressLoading = true;
-    //       this.getUserAddress();
-    //       this.addressLoading = false;
-    //       this.$message({
-    //         message: "编辑成功",
-    //         type: "success",
-    //       });
-    //     } else {
-    //       this.$message.error("编辑失败，请重试");
-    //     }
-    //   });
-    // },
-    //预备删除地址
-    // editDelAddress(e) {
-    //   this.delAddressId = e.id;
-    //   this.delAddressVisible = true;
-    // },
-    //确认删除地址
-    // confirmDelAddress() {
-    //   this.delAddressVisible = false;
-    //   axios({
-    //     url: this.$store.state.yuming + "/user/address/delete",
-    //     method: "DELETE",
-    //     params: {
-    //       addressId: this.delAddressId,
-    //     },
-    //   })
-    //     .then((res) => {
-    //       const { code } = res.data;
-    //       if (code == "200") {
-    //         this.addressLoading = true;
-    //         this.getUserAddress();
-    //         this.addressLoading = false;
-    //         if (this.delAddressId == this.radio) {
-    //           this.radio = "";
-    //         }
-    //         this.$message({
-    //           message: "删除成功",
-    //           type: "success",
-    //         });
-    //       } else {
-    //         this.$message.error("删除失败,请重试");
-    //       }
-    //     })
-    //     .catch(() => {
-    //       Message({
-    //         type: "error",
-    //         message: "出现错误，请稍后再试",
-    //       });
-    //     });
-    // },
-    // //设置默认地址
-    // setDefaultAddress(e) {
-    //   axios({
-    //     url: this.$store.state.yuming + "/user/address/setDefault",
-    //     method: "POST",
-    //     params: {
-    //       addressId: e.id,
-    //     },
-    //   })
-    //     .then((res) => {
-    //       const { code } = res.data;
-    //       if (code == "200") {
-    //         this.addressLoading = true;
-    //         this.getUserAddress();
-    //         this.addressLoading = false;
-    //       } else {
-    //         this.$message.error("设置默认地址失败,请重试");
-    //       }
-    //     })
-    //     .catch(() => {
-    //       Message({
-    //         type: "error",
-    //         message: "出现错误，请稍后再试",
-    //       });
-    //     });
-    // },
-    //获取用户的收藏信息
+
     getAll() {
       axios({
         url: this.$store.state.yuming + "/collection/getByUser",
@@ -723,10 +269,10 @@ export default {
         params: {},
       })
         .then((res) => {
-          const { code, data ,num} = res.data;
+          const { code, data, num } = res.data;
           if (code == "200") {
             this.bookList = data;
-            if (num==0) {
+            if (num == 0) {
               this.isCollectionListEmpty = true;
             }
           } else {
@@ -740,48 +286,94 @@ export default {
           });
         });
     },
-    // //更新购物车中图书信息（仅可修改数量
-    // updateCartItem(currentValue, id) {
-    //   axios({
-    //     url: this.$store.state.yuming + "/cartitem/updateCartItem",
-    //     method: "POST",
-    //     params: {
-    //       book_id: id,
-    //       sum: currentValue,
-    //     },
-    //   })
-    //     .then((res) => {
-    //       const { code } = res.data;
-    //       if (code == "200") {
-    //         /*this.shoppingLoading = true;
-    //         this.getAll();
-    //         this.shoppingLoading = false;*/
-    //       } else {
-    //         this.$message.error("更新图书数量失败,请重试");
-    //       }
-    //     })
-    //     .catch(() => {
-    //       Message({
-    //         type: "error",
-    //         message: "出现错误，请稍后再试",
-    //       });
-    //     });
-    // },
-    //单次删除书籍
-    delBook(id) {
+    //单本预约
+    orderBook(id) {
       axios({
-        url: this.$store.state.yuming + "/collection/multiDelete",
-        method: "DELETE",
+        url: this.$store.state.yuming + "/collection/addReserve",
+        method: "POST",
         params: {
-          cartItem_id: id,
+          reference_nums: id,
+          username: this.$store.state.username,
+        },
+      })
+        .then((res) => {
+          const { code} = res.data;
+          if (code == "200") {
+            this.$message({
+              message: "预约成功！",
+              type: "success",
+            });
+          } else if (code == "26") {
+            this.$message.error("借阅和预约书籍数量已达到最大值！");
+          } else if (code == "25") {
+            this.$message({
+              dangerouslyUseHTMLString: true,
+              message: "书籍{{data}}",
+            });
+          } else {
+            this.$message.error("预约失败，请重试");
+          }
+        })
+        .catch(() => {
+          Message({
+            type: "error",
+            message: "出现错误，请稍后再试",
+          });
+        });
+    },
+    //批量预约
+    multiOrderBook() {
+      var multiOrderBookId = [];
+      this.bookList.forEach((book) => {
+        if (book.check_one == true) {
+          multiOrderBookId.push(book.reference_num);
+        }
+      });
+      axios({
+        url: this.$store.state.yuming + "/collection/addReserve",
+        method: "POST",
+        params: {
+          reference_nums: multiOrderBookId,
+          username: this.$store.state.username,
+        },
+        paramsSerializer: (params) => {
+          return qs.stringify(params, { indices: false });
         },
       })
         .then((res) => {
           const { code } = res.data;
           if (code == "200") {
-            this.shoppingLoading = true;
+            this.$message({
+              message: "批量预约成功",
+              type: "success",
+            });
+          } else if (code == "26") {
+            this.$message.error("借阅和预约书籍数量已达到最大值！");
+          } else {
+            this.$message.error("批量预约失败,请重试");
+          }
+        })
+        .catch(() => {
+          Message({
+            type: "error",
+            message: "出现错误，请稍后再试",
+          });
+        });
+    },
+    delBook(id) {
+      axios({
+        url: this.$store.state.yuming + "/collection/delete",
+        method: "DELETE",
+        params: {
+          collection_id: id,
+        },
+      })
+        .then((res) => {
+          const { code } = res.data;
+          if (code == "200") {
+            this.isLoading = true;
             this.getAll();
-            this.shoppingLoading = false;
+            this.isLoading = false;
             this.$message({
               message: "删除成功",
               type: "success",
@@ -800,16 +392,16 @@ export default {
     //批量删除收藏
     multiDelBook() {
       var multiDelBookId = [];
-        this.bookList.forEach((book) => {
-          if (book.check_one == true) {
-            multiDelBookId.push(book.reference_num);
-          }
+      this.bookList.forEach((book) => {
+        if (book.check_one == true) {
+          multiDelBookId.push(book.collection_id);
+        }
       });
       axios({
         url: this.$store.state.yuming + "/collection/multiDelete",
         method: "DELETE",
         params: {
-          CartItem_Ids: multiDelBookId,
+          collection_ids: multiDelBookId,
         },
         paramsSerializer: (params) => {
           return qs.stringify(params, { indices: false });
@@ -818,13 +410,13 @@ export default {
         .then((res) => {
           const { code } = res.data;
           if (code == "200") {
-            this.shoppingLoading = true;
-            this.getAll();
-            this.shoppingLoading = false;
             this.$message({
-              message: "删除成功",
+              message: "批量删除成功",
               type: "success",
             });
+            this.isLoading = true;
+            this.getAll();
+            this.isLoading = false;
           } else {
             this.$message.error("删除失败,请重试");
           }
@@ -836,196 +428,15 @@ export default {
           });
         });
     },
-    //从购物车生成订单
-    addCartItem() {
-      var multiDelBookId = [];
-      (this.totalAmount = 0),
-        //处理图书
-        this.bookList.forEach((shop) => {
-          shop.books.forEach((book) => {
-            if (book.check_one == true) {
-              multiDelBookId.push(book.cartItem_id);
-              this.totalAmount += book.price * book.sum;
-              this.totalNum += 1;
-              this.oneBookName = book.book_name;
-            }
-          });
-        });
-      this.subject = this.oneBookName + "等" + this.totalNum + "本书";
-      //处理地址
-      if (this.radio == "") {
-        if (this.myAddressList == "") {
-          //没有选择地址也没有地址的情况
-          this.$message.error("请添加收货人信息");
-        } else if (this.myAddressList[0].status == 0) {
-          //没有选择地址也没有默认地址的情况
-          this.$message.error("请选择收货人信息");
-        } else {
-          //没有选择地址但有默认地址的情况
-          this.radio = this.myAddressList[0].id;
-        }
-      }
-      if (this.radio != "") {
-        axios({
-          url: this.$store.state.yuming + "/order/addCatiItem",
-          method: "POST",
-          params: {
-            CartItem_Ids: multiDelBookId,
-            address_id: this.radio,
-          },
-          paramsSerializer: (params) => {
-            return qs.stringify(params, { indices: false });
-          },
-        })
-          .then((res) => {
-            const { code, data } = res.data;
-            if (code == "200") {
-              this.shoppingLoading = true;
-              this.getAll();
-              this.shoppingLoading = false;
-              this.orderId = data;
-              this.alipay();
-              this.$message({
-                message: "提交订单成功",
-                type: "success",
-              });
-            } else {
-              this.$message.error("提交订单失败,请重试");
-            }
-          })
-          .catch(() => {
-            Message({
-              type: "error",
-              message: "出现错误，请稍后再试",
-            });
-          });
-        this.page = 2;
-      }
-    },
-    // //直接购买获取图书详情
-    // getDetail() {
-    //   axios({
-    //     url: this.$store.state.yuming + "/book/getDetail",
-    //     method: "GET",
-    //     params: {
-    //       book_id: this.directBuyBookId,
-    //     },
-    //   })
-    //     .then((res) => {
-    //       const { code, data } = res.data;
-    //       if (code == "200") {
-    //         this.book = data;
-    //       } else {
-    //         this.$message.error("获取图书详情失败");
-    //       }
-    //     })
-    //     .catch(() => {
-    //       Message({
-    //         type: "error",
-    //         message: "出现错误，请稍后再试",
-    //       });
-    //     });
-    // },
-    //直接购买
-    addDirect() {
-      //处理地址
-      if (this.radio == "") {
-        if (this.myAddressList == "") {
-          //没有选择地址也没有地址的情况
-          this.$message.error("请添加收货人信息");
-        } else if (this.myAddressList[0].status == 0) {
-          //没有选择地址也没有默认地址的情况
-          this.$message.error("请选择收货人信息");
-        } else {
-          //没有选择地址但有默认地址的情况
-          this.radio = this.myAddressList[0].id;
-        }
-      }
-      if (this.radio != "") {
-        axios({
-          url: this.$store.state.yuming + "/order/addDirect",
-          method: "POST",
-          params: {
-            book_id: this.directBuyBookId,
-            sum: this.directBuyNum,
-            address_id: this.radio,
-            shop_id: this.book.shop_id,
-          },
-        })
-          .then((res) => {
-            const { code, data } = res.data;
-            if (code == "200") {
-              this.shoppingLoading = true;
-              this.getAll();
-              this.shoppingLoading = false;
-              this.orderId = data;
-              this.subject = this.book.book_name;
-              this.totalAmount = this.book.price * this.directBuyNum;
-              this.alipay();
-              this.$message({
-                message: "提交订单成功",
-                type: "success",
-              });
-            } else {
-              this.$message.error("提交订单失败,请重试");
-            }
-          })
-          .catch(() => {
-            Message({
-              type: "error",
-              message: "出现错误，请稍后再试",
-            });
-          });
-      }
-    },
-    // //支付
-    // alipay() {
-    //   axios({
-    //     url: this.$store.state.yuming + "/alipay",
-    //     method: "GET",
-    //     params: {
-    //       order_id: this.orderId,
-    //       subject: this.subject,
-    //       total_amount: this.totalAmount,
-    //       body: this.body,
-    //     },
-    //   }).then((res) => {
-    //     let divForm = document.getElementsByTagName("divform");
-    //     if (divForm.length) {
-    //       document.body.removeChild(divForm[0]);
-    //     }
-    //     const div = document.createElement("divform");
-    //     div.innerHTML = res.data; // data就是接口返回的form 表单字符串
-    //     document.body.appendChild(div);
-    //     document.forms[0].setAttribute("target", "_blank"); // 新开窗口跳转
-    //     document.forms[0].submit();
-    //   });
-
-    //   this.page = 2;
-    // },
   },
   async created() {
     this.isLoading = true;
-    // if (this.$route.params.bookid != 0) {
-    //   this.isDirectBuy = true;
-    //   this.page = 1;
-    //   this.directBuyBookId = this.$route.params.bookid;
-    //   this.directBuyNum = this.$route.params.num;
-    // }
     await this.getAll();
     this.isLoading = false;
   },
 };
 </script>
 <style>
-.divider {
-  background-color: rgb(221, 68, 65);
-  height: 0.5%;
-  width: 100%;
-  background-size: cover;
-  position: absolute;
-}
-
 .header {
   display: flex;
   justify-content: flex-start;
@@ -1044,7 +455,6 @@ export default {
   font-size: 30px;
   width: 200px;
 }
-
 .orderFinish {
   display: flex;
   justify-content: center;
@@ -1059,28 +469,9 @@ export default {
 .clearfix:after {
   clear: both;
 }
-
-.shopping-table-header {
-  text-align: center;
-  margin: 20px 0;
-  background: rgb(245, 245, 245);
-  color: #303133;
-  height: 40px;
-  border: 1px solid rgb(221, 221, 221);
-}
-
 .collection-table-container {
   margin: 20px 0;
 }
-
-.shopping-table-footer {
-  margin: 30px 0;
-  background: rgb(245, 245, 245);
-  color: #303133;
-  height: 60px;
-  border: 1px solid rgb(221, 221, 221);
-}
-
 .collection-table-item {
   font-size: 13px;
 }
@@ -1092,11 +483,7 @@ export default {
   font-size: 13px;
 }
 
-.shopping-shop-name {
-  font-size: 14px;
-  font-weight: 600;
-}
-.shopping-book-name {
+.collection-book {
   font-size: 13px;
 }
 .book-detail {

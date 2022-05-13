@@ -48,7 +48,7 @@ export default new Vuex.Store({
       state.role = {}
       state.gobalSearchText = ""
       state.gobalSearchType = ""
-      state.phonenum = ""
+      state.username = ""
       state.roleHasLoad = false
     },
     clearCacheWithoutRoute(state) {
@@ -61,8 +61,8 @@ export default new Vuex.Store({
     token(state, payload) {
       state.token = payload
     },
-    phonenum(state, payload) {
-      state.phonenum = payload
+    username(state, payload) {
+      state.username = payload
     },
     roleHasLoad(state, payload) {
       state.roleHasLoad = payload
