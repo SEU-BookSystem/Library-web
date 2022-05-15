@@ -163,6 +163,11 @@ const routes = [
     component: () => import('../views/classSort.vue')
   },
   {
+    path: '/categorySearch/:categoryId',
+    name: 'categorySearch',
+    component: () => import('../views/categorySearch.vue')
+  },
+  {
     path: '/shopInfo',
     name: 'shopInfo',
     meta: { shopAuth: true },

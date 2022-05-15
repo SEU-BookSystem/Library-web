@@ -124,7 +124,11 @@
             </el-dialog>
           </div>
         </el-tab-pane>
-        <el-tab-pane label="我的收藏" name="second" v-loading="collectionLoading">
+        <el-tab-pane
+          label="我的收藏"
+          name="second"
+          v-loading="collectionLoading"
+        >
           <div v-if="hasCollected == false">
             <el-row>
               <el-col :offset="9">
@@ -135,7 +139,7 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-col :offset="10">
+              <el-col :offset="11">
                 <p style="color: grey">您还没有收藏任何书籍哦~</p>
               </el-col>
             </el-row>
@@ -194,7 +198,7 @@
                         <img
                           @click="goToBookInfo(books.reference_num)"
                           :src="changeUrl(books.image)"
-                          style="height: 70px"
+                          style="height: 70px;max-width:70px"
                         />
                       </el-col>
                       <el-col :span="11">
@@ -209,6 +213,7 @@
                         <div class="book-detail">
                           出版社：{{ books.publisher }}
                         </div>
+                        <div class="book-detail">价格：{{ books.price }}</div>
                       </el-col>
                       <el-col :span="1" :offset="4">
                         <el-popconfirm
@@ -315,14 +320,272 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-col :offset="10">
+              <el-col :offset="11">
                 <p style="color: grey">您还没有预约任何书籍哦~</p>
               </el-col>
             </el-row>
           </div>
+          <div v-if="hasOrdered == true">
+            <header>
+              <el-card class="collection-header-card">
+                <el-row>
+                  <el-col
+                    :span="1"
+                    class="collection-table-item"
+                    style="margin-left: 10px"
+                  >
+                    <el-checkbox
+                      v-model="orderCheckAll"
+                      class="myRedCheckBox"
+                      @change="order_check_all"
+                    ></el-checkbox>
+                  </el-col>
+                  <el-col :span="3" class="collection-table-item"
+                    >预约时间</el-col
+                  >
+                  <el-col :span="2" class="collection-table-item"
+                    >索书号</el-col
+                  >
+                  <el-col :span="2" class="collection-table-item"
+                    >条码号</el-col
+                  >
+                  <el-col :span="9" class="collection-table-item"
+                    >书籍信息</el-col
+                  >
+                  <el-col :span="1" :offset="4" class="collection-table-item"
+                    >操作</el-col
+                  >
+                </el-row>
+              </el-card>
+            </header>
+            <div class="collection-table-container">
+              <div>
+                <el-card style="margin: 20px 0">
+                  <div class="collection-books">
+                    <el-row
+                      v-for="(books, idx) in orderList"
+                      :key="idx"
+                      style="margin: 10px"
+                    >
+                      <el-col :span="1">
+                        <el-checkbox
+                          style="margin: 25px 0"
+                          v-model="books.check_one"
+                          class="myRedCheckBox"
+                        ></el-checkbox>
+                      </el-col>
+                      <el-col
+                        :span="3"
+                        style="margin: 25px 0"
+                        class="collection-table-item"
+                      >
+                        <div>{{ books.start_time }}</div>
+                      </el-col>
+                      <el-col
+                        :span="2"
+                        style="margin: 25px 0"
+                        class="collection-table-item"
+                      >
+                        <div>{{ books.reference_num }}</div>
+                      </el-col>
+                      <el-col
+                        :span="2"
+                        style="margin: 25px 0"
+                        class="collection-table-item"
+                      >
+                        <div>{{ books.bar_code }}</div>
+                      </el-col>
+                      <el-col :span="2">
+                        <img
+                          @click="goToBookInfo(books.reference_num)"
+                          :src="changeUrl(books.image)"
+                          style="height: 70px;max-width:70px"
+                        />
+                      </el-col>
+                      <el-col :span="7">
+                        <div
+                          style="margin-right: 30px"
+                          class="collection-book"
+                          @click="goToBookInfo(books.reference_num)"
+                        >
+                          {{ books.book_name }}
+                        </div>
+                        <div class="book-detail">作者：{{ books.author }}</div>
+                        <div class="book-detail">
+                          出版社：{{ books.publisher }}
+                        </div>
+                        <div class="book-detail">价格：{{ books.price }}</div>
+                      </el-col>
+                      <el-col :span="2" :offset="4">
+                        <el-popconfirm
+                          confirm-button-text="确认"
+                          cancel-button-text="取消"
+                          confirm-button-type="text"
+                          @confirm="delOneOrder(books.lend_id)"
+                          title="您确认要预约此书吗？"
+                        >
+                          <el-button
+                            slot="reference"
+                            type="text"
+                            class="table-button"
+                            style="margin: 15px 0px"
+                            >取消预约</el-button
+                          >
+                        </el-popconfirm>
+                      </el-col>
+                    </el-row>
+                  </div>
+                </el-card>
+              </div>
+            </div>
+            <footer>
+              <el-card>
+                <el-row>
+                  <el-col
+                    :span="1"
+                    style="margin-left: 10px"
+                    class="collection-table-footer-item"
+                  >
+                    <el-checkbox
+                      v-model="orderCheckAll"
+                      class="myRedCheckBox"
+                      @change="order_check_all"
+                    ></el-checkbox>
+                  </el-col>
+                  <el-col :span="11" class="collection-table-footer-item"
+                    >全选</el-col
+                  >
+                  <el-col :span="8" class="collection-table-footer-item"
+                    >已选<span style="color: rgb(221, 68, 65)">
+                      {{ order_totalNum }} </span
+                    >本书籍</el-col
+                  >
+                  <el-col
+                    :span="2"
+                    class="collection-table-footer-item"
+                    style="margin: 12px"
+                  >
+                    <el-button
+                      size="medium"
+                      class="table-button"
+                      @click="multiDelOrder"
+                      >批量取消预约</el-button
+                    >
+                  </el-col>
+                </el-row>
+              </el-card>
+            </footer>
+          </div>
         </el-tab-pane>
         <el-tab-pane label="我的借阅" name="fourth">
-          <div v-if="hasBorrowed == true"></div>
+          <div v-if="hasBorrowed == true">
+            <header>
+              <el-card class="collection-header-card">
+                <el-row>
+                  <el-col
+                    :span="3"
+                    class="collection-table-item"
+                    style="margin-left: 10px"
+                    >借书时间</el-col
+                  >
+                  <el-col :span="3" class="collection-table-item"
+                    >预计还书时间</el-col
+                  >
+                  <el-col :span="2" class="collection-table-item"
+                    >索书号</el-col
+                  >
+                  <el-col :span="2" class="collection-table-item"
+                    >条码号</el-col
+                  >
+                  <el-col :span="10" class="collection-table-item"
+                    >书籍信息</el-col
+                  >
+                  <el-col :span="2" class="collection-table-item"
+                    >状态</el-col
+                  >
+                </el-row>
+              </el-card>
+            </header>
+            <div class="collection-table-container">
+              <div>
+                <el-card style="margin: 20px 0">
+                  <div class="collection-books">
+                    <el-row
+                      v-for="(books, idx) in borrowList"
+                      :key="idx"
+                      style="margin: 10px"
+                    >
+                      <el-col
+                        :span="3"
+                        style="margin: 25px 0"
+                        class="collection-table-item"
+                      >
+                        <div>{{ books.start_time }}</div>
+                      </el-col>
+                      <el-col
+                        :span="3"
+                        style="margin: 25px 0"
+                        class="collection-table-item"
+                      >
+                        <div>{{ books.end_time }}</div>
+                      </el-col>
+                      <el-col
+                        :span="2"
+                        style="margin: 25px 0"
+                        class="collection-table-item"
+                      >
+                        <div>{{ books.reference_num }}</div>
+                      </el-col>
+                      <el-col
+                        :span="2"
+                        style="margin: 25px 0"
+                        class="collection-table-item"
+                      >
+                        <div>{{ books.bar_code }}</div>
+                      </el-col>
+                      <el-col :span="2">
+                        <img
+                          @click="goToBookInfo(books.reference_num)"
+                          :src="changeUrl(books.image)"
+                          style="height: 70px;max-width:70px"
+                        />
+                      </el-col>
+                      <el-col :span="7">
+                        <div
+                          style="margin-right: 30px"
+                          class="collection-book"
+                          @click="goToBookInfo(books.reference_num)"
+                        >
+                          {{ books.book_name }}
+                        </div>
+                        <div class="book-detail">作者：{{ books.author }}</div>
+                        <div class="book-detail">
+                          出版社：{{ books.publisher }}
+                        </div>
+                        <div class="book-detail">价格：{{ books.price }}</div>
+                      </el-col>
+                      <el-col
+                        :span="3"
+                        style="margin: 25px 0"
+                        class="collection-table-item"
+                        v-if="books.status==1"
+                      >
+                        <div style="margin-left:20px">正常</div>
+                      </el-col>
+                      <el-col
+                        :span="3"
+                        style="margin: 25px 0"
+                        class="collection-table-item"
+                        v-if="books.status==2"
+                      >
+                        <div style="margin-left:20px">逾期</div>
+                      </el-col>
+                    </el-row>
+                  </div>
+                </el-card>
+              </div>
+            </div>
+          </div>
           <div v-if="hasBorrowed == false">
             <el-row>
               <el-col :offset="9">
@@ -333,14 +596,125 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-col :offset="10">
+              <el-col :offset="11">
                 <p style="color: grey">您还没有借阅任何书籍哦~</p>
               </el-col>
             </el-row>
           </div>
         </el-tab-pane>
         <el-tab-pane name="fifth" label="我的借阅历史">
-          <div v-if="hasBorrowedHistory == true"></div>
+          <div v-if="hasBorrowedHistory == true">
+            <header>
+              <el-card class="collection-header-card">
+                <el-row>
+                  <el-col
+                    :span="3"
+                    class="collection-table-item"
+                    style="margin-left: 10px"
+                    >借书时间</el-col
+                  >
+                  <el-col :span="3" class="collection-table-item"
+                    >还书时间</el-col
+                  >
+                  <el-col :span="2" class="collection-table-item"
+                    >索书号</el-col
+                  >
+                  <el-col :span="2" class="collection-table-item"
+                    >条码号</el-col
+                  >
+                  <el-col :span="10" class="collection-table-item"
+                    >书籍信息</el-col
+                  >
+                  <el-col :span="2" class="collection-table-item"
+                    >状态</el-col
+                  >
+                </el-row>
+              </el-card>
+            </header>
+            <div class="collection-table-container">
+              <div>
+                <el-card style="margin: 20px 0">
+                  <div class="collection-books">
+                    <el-row
+                      v-for="(books, idx) in borrowHistoryList"
+                      :key="idx"
+                      style="margin: 10px"
+                    >
+                      <el-col
+                        :span="3"
+                        style="margin: 25px 0"
+                        class="collection-table-item"
+                      >
+                        <div>{{ books.start_time }}</div>
+                      </el-col>
+                      <el-col
+                        :span="3"
+                        style="margin: 25px 0"
+                        class="collection-table-item"
+                      >
+                        <div>{{ books.end_time }}</div>
+                      </el-col>
+                      <el-col
+                        :span="2"
+                        style="margin: 25px 0"
+                        class="collection-table-item"
+                      >
+                        <div>{{ books.reference_num }}</div>
+                      </el-col>
+                      <el-col
+                        :span="2"
+                        style="margin: 25px 0"
+                        class="collection-table-item"
+                      >
+                        <div>{{ books.bar_code }}</div>
+                      </el-col>
+                      <el-col :span="2">
+                        <img
+                          @click="goToBookInfo(books.reference_num)"
+                          :src="changeUrl(books.image)"
+                          style="height: 70px;max-width:70px"
+                        />
+                      </el-col>
+                      <el-col :span="7">
+                        <div
+                          style="margin-right: 30px"
+                          class="collection-book"
+                          @click="goToBookInfo(books.reference_num)"
+                        >
+                          {{ books.book_name }}
+                        </div>
+                        <div class="book-detail">作者：{{ books.author }}</div>
+                        <div class="book-detail">
+                          出版社：{{ books.publisher }}
+                        </div>
+                        <div class="book-detail">价格：{{ books.price }}</div>
+                      </el-col>
+                      <el-col
+                        :span="3"
+                        style="margin: 25px 0"
+                        class="collection-table-item"
+                      >
+                        <div style="margin-left:20px">已还</div>
+                      </el-col>
+                    </el-row>
+                  </div>
+                </el-card>
+              </div>
+            </div>
+            <el-row
+              style="display: flex; justify-content: center; margin: 20px 0"
+            >
+              <el-pagination
+                :current-page="currentBorrowHistoryPage"
+                @current-change="handleCurrentBorrowChange"
+                :page-count="borrowHistoryPageNum"
+                :page-size="10"
+                layout="prev, pager, next, jumper"
+                style="magin-left: 50px"
+              >
+              </el-pagination>
+            </el-row>
+          </div>
           <div v-if="hasBorrowedHistory == false">
             <el-row>
               <el-col :offset="9">
@@ -351,14 +725,138 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-col :offset="10">
+              <el-col :offset="11">
                 <p style="color: grey">您的借阅历史为空~</p>
               </el-col>
             </el-row>
           </div>
         </el-tab-pane>
         <el-tab-pane name="sixth" label="我的违规记录">
-          <div v-if="hasViolated == true"></div>
+          <div v-if="hasViolated == true">
+            <header>
+              <el-card class="collection-header-card">
+                <el-row>
+                  <el-col
+                    :span="3"
+                    class="collection-table-item"
+                    style="margin-left: 10px"
+                    >更新时间</el-col
+                  >
+                  <el-col :span="2" class="collection-table-item"
+                    >索书号</el-col
+                  >
+                  <el-col :span="2" class="collection-table-item"
+                    >条码号</el-col
+                  >
+                  <el-col :span="9" class="collection-table-item"
+                    >书籍信息</el-col
+                  >
+                  <el-col :span="2" class="collection-table-item"
+                    >违规原因</el-col
+                  >
+                  <el-col :span="2" class="collection-table-item"
+                    >处理状态</el-col
+                  >
+                  <el-col :span="3" class="collection-table-item"
+                    >处理意见</el-col
+                  >
+                </el-row>
+              </el-card>
+            </header>
+            <div class="collection-table-container">
+              <div>
+                <el-card style="margin: 20px 0">
+                  <div class="collection-books">
+                    <el-row
+                      v-for="(books, idx) in violateList"
+                      :key="idx"
+                      style="margin: 10px"
+                    >
+                      <el-col
+                        :span="3"
+                        style="margin: 25px 0"
+                        class="collection-table-item"
+                      >
+                        <div>{{ books.update_time }}</div>
+                      </el-col>
+                      <el-col
+                        :span="2"
+                        style="margin: 25px 0"
+                        class="collection-table-item"
+                      >
+                        <div>{{ books.reference_num }}</div>
+                      </el-col>
+                      <el-col
+                        :span="2"
+                        style="margin: 25px 0"
+                        class="collection-table-item"
+                      >
+                        <div>{{ books.bar_code }}</div>
+                      </el-col>
+                      <el-col :span="2">
+                        <img
+                          @click="goToBookInfo(books.reference_num)"
+                          :src="changeUrl(books.image)"
+                          style="height: 70px;max-width:70px"
+                        />
+                      </el-col>
+                      <el-col :span="7">
+                        <div
+                          style="margin-right: 30px"
+                          class="collection-book"
+                          @click="goToBookInfo(books.reference_num)"
+                        >
+                          {{ books.book_name }}
+                        </div>
+                        <div class="book-detail">作者：{{ books.author }}</div>
+                        <div class="book-detail">
+                          出版社：{{ books.publisher }}
+                        </div>
+                        <div class="book-detail">价格：{{ books.price }}</div>
+                      </el-col>
+                      <el-col
+                        :span="2"
+                        style="margin: 25px 0"
+                        class="collection-table-item"
+                      >
+                        <div v-if="books.status==1" style="margin-left:10px">逾期</div>
+                        <div v-if="books.status==2" style="margin-left:10px">书籍损坏</div>
+                        <div v-if="books.status==3" style="margin-left:10px">书籍丢失</div>
+                      </el-col>
+                      <el-col
+                        :span="2"
+                        style="margin: 25px 0"
+                        class="collection-table-item"
+                      >
+                        <div v-if="books.is_handle==0" style="margin-left:10px">未处理</div>
+                        <div v-if="books.is_handle==1" style="margin-left:10px">已处理</div>
+                      </el-col>
+                      <el-col
+                        :span="4"
+                        style="margin: 25px 0"
+                        class="collection-table-item"
+                      >
+                        <div v-if="books.is_handle==1" style="margin-left:10px">{{books.detail| ellipsis}}</div>
+                      </el-col>
+                    </el-row>
+                  </div>
+                </el-card>
+              </div>
+            </div>
+            <el-row
+              style="display: flex; justify-content: center; margin: 20px 0"
+            >
+              <el-pagination
+                :current-page="currentViolatePage"
+                @current-change="handleCurrentViolateChange"
+                :page-count="violatePageNum"
+                :page-size="10"
+                layout="prev, pager, next, jumper"
+                style="magin-left: 50px"
+              >
+              </el-pagination>
+            </el-row>
+          </div>
           <div v-if="hasViolated == false">
             <el-row>
               <el-col :offset="9">
@@ -369,7 +867,7 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-col :offset="10">
+              <el-col :offset="11">
                 <p style="color: grey">您还没有任何违规记录哦~</p>
               </el-col>
             </el-row>
@@ -378,7 +876,7 @@
         <el-tab-pane name="seventh" v-loading="messageLoading">
           <span slot="label"
             >消息<el-badge
-              v-if="hasNoReadMessage==true"
+              v-if="hasNoReadMessage == true"
               :value="unreadMessage"
               class="message"
               type="primary"
@@ -396,13 +894,13 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-col :offset="10">
+              <el-col :offset="11">
                 <p style="color: grey">您还没有通知消息哦~</p>
               </el-col>
             </el-row>
           </div>
           <div v-if="hasMessage == true">
-            <el-row style="margin-bottom: 20px;margin-left: 20px">
+            <el-row style="margin-bottom: 20px; margin-left: 20px">
               <el-button @click="multiReadMessage">一键已读</el-button>
               <el-button @click="multiDelMessage">删除全部</el-button>
             </el-row>
@@ -421,9 +919,10 @@
                 </el-badge
                 ><el-button
                   type="text"
-                  style="padding: 0px; color: black;font-size:15px"
+                  style="padding: 0px; color: black; font-size: 15px"
                   @click="readOneMessage(message.message_id)"
-                  >{{message.content}}</el-button></el-col
+                  >{{ message.content }}</el-button
+                ></el-col
               >
               <el-col :span="4" style="color: gray; font-size: 15px">{{
                 message.send_time
@@ -463,16 +962,21 @@ import axios from "axios";
 import { Message } from "element-ui";
 import qs from "qs";
 export default {
-  components: {},
+  filters: {
+    //限制文本显示字数,超出部分用...代替
+    ellipsis(value) {
+      if (!value) return "";
+      if (value.length > 25) {
+        return value.slice(0, 25) + "..."; //0:下标,从第一个字开始显示,50:显示字数,多余用...代替
+      }
+      return value;
+    },
+  },
   data() {
     return {
       //tab方向
       tabPosition: "left",
       activeName: "first",
-      hasBorrowed: false,
-      hasOrdered: false,
-      hasBorrowedHistory: false,
-      hasViolated: false,
       isLoading: false,
       //修改密码
       changePassword: false,
@@ -489,7 +993,7 @@ export default {
         checkpass: "",
       },
       //我的收藏
-      collectionLoading:false,
+      collectionLoading: false,
       hasCollected: true,
       collectionList: [
         {
@@ -504,6 +1008,30 @@ export default {
       ],
       collectionCheckAll: false,
       collection_totalNum: 0,
+      //我的预约
+      orderLoadings: false,
+      hasOrdered: true,
+      orderList: [
+        {
+          check_one: false,
+        },
+      ],
+      orderCheckAll: false,
+      order_totalNum: 0,
+      //我的正在借阅
+      hasBorrowed: true,
+      borrowLoading: false,
+      borrowList: [{}],
+      //我的借阅历史
+      hasBorrowedHistory: true,
+      currentBorrowHistoryPage: 1,
+      borrowHistoryPageNum: 0,
+      borrowHistoryList: [{}],
+      //我的违规记录
+      hasViolated: true,
+      currentViolatePage: 1,
+      violatePageNum: 0,
+      violateList: [{}],
       //我的消息
       messageLoading: false,
       hasNoReadMessage: true,
@@ -557,6 +1085,14 @@ export default {
     collection_totalNumber() {
       var number_total = 0;
       this.collectionList.forEach((book) => {
+        if (book.check_one == true) number_total = number_total + 1;
+      });
+      return number_total;
+    },
+    // 我的预约
+    order_totalNumber() {
+      var number_total = 0;
+      this.orderList.forEach((book) => {
         if (book.check_one == true) number_total = number_total + 1;
       });
       return number_total;
@@ -643,7 +1179,7 @@ export default {
         },
       })
         .then((res) => {
-          const { code } = res.data;
+          const { code, data } = res.data;
           if (code == "200") {
             this.$message({
               message: "预约成功！",
@@ -653,8 +1189,8 @@ export default {
             this.$message.error("借阅和预约书籍数量已达到最大值！");
           } else if (code == "25") {
             this.$message({
-              dangerouslyUseHTMLString: true,
-              message: "书籍{{data}}",
+              type: "error",
+              message: "书籍" + data + "已达到最大预约（借阅）数量",
             });
           } else {
             this.$message.error("预约失败，请重试");
@@ -687,7 +1223,7 @@ export default {
         },
       })
         .then((res) => {
-          const { code } = res.data;
+          const { code, data } = res.data;
           if (code == "200") {
             this.$message({
               message: "批量预约成功",
@@ -695,6 +1231,11 @@ export default {
             });
           } else if (code == "26") {
             this.$message.error("借阅和预约书籍数量已达到最大值！");
+          } else if (code == "25") {
+            this.$message({
+              type: "error",
+              message: "书籍" + data + "已达到最大预约（借阅）数量",
+            });
           } else {
             this.$message.error("批量预约失败,请重试");
           }
@@ -706,6 +1247,7 @@ export default {
           });
         });
     },
+    //单条取消收藏
     delBook(id) {
       axios({
         url: this.$store.state.yuming + "/collection/delete",
@@ -717,9 +1259,9 @@ export default {
         .then((res) => {
           const { code } = res.data;
           if (code == "200") {
-            this.isLoading = true;
-            this.getAll();
-            this.isLoading = false;
+            this.collectionLoading = true;
+            this.getAllCollection();
+            this.collectionLoading = false;
             this.$message({
               message: "删除成功",
               type: "success",
@@ -775,35 +1317,204 @@ export default {
         });
     },
     //我的预约
-    // order_check_all() {
-    //   this.orderList.forEach((book) => {
-    //     book.check_one = this.orderCheckAll;
-    //   });
-    // },
-    // getAllOrder() {
-    //   axios({
-    //     url: this.$store.state.yuming + "/collection/getByUser",
-    //     method: "GET",
-    //     params: {},
-    //   })
-    //     .then((res) => {
-    //       const { code, data, num } = res.data;
-    //       if (code == "200") {
-    //         this.collectionList = data;
-    //         if (num == 0) {
-    //           this.hasCollected = false;
-    //         }
-    //       } else {
-    //         this.$message.error("获取收藏夹信息失败");
-    //       }
-    //     })
-    //     .catch(() => {
-    //       Message({
-    //         type: "error",
-    //         message: "出现错误，请稍后再试",
-    //       });
-    //     });
-    // },
+    order_check_all() {
+      this.orderList.forEach((book) => {
+        book.check_one = this.orderCheckAll;
+      });
+    },
+    getAllOrder() {
+      axios({
+        url: this.$store.state.yuming + "/user/borrow/queryBorrowing",
+        method: "GET",
+        params: {
+          borrow_reserve: 0,
+        },
+      })
+        .then((res) => {
+          const { code, data } = res.data;
+          if (code == "200") {
+            this.orderList = data;
+            if (data.length === 0) {
+              this.hasOrdered = false;
+            }
+          } else {
+            this.$message.error("获取正在预约的书籍信息失败");
+          }
+        })
+        .catch(() => {
+          Message({
+            type: "error",
+            message: "出现错误，请稍后再试",
+          });
+        });
+    },
+    //单条取消预约
+    delOneOrder(id) {
+      axios({
+        url: this.$store.state.yuming + "/reserve/cancel",
+        method: "POST",
+        params: {
+          lend_id: id,
+        },
+      })
+        .then((res) => {
+          const { code } = res.data;
+          if (code == 200) {
+            this.orderLoading = true;
+            this.getAllOrder();
+            this.orderLoading = false;
+            this.$message({
+              message: "取消预约成功",
+              type: "success",
+            });
+          } else {
+            this.$message.error("取消预约失败,请重试");
+          }
+        })
+        .catch(() => {
+          Message({
+            type: "error",
+            message: "出现错误，请稍后再试",
+          });
+        });
+    },
+    //批量删除收藏
+    multiDelOrder() {
+      var multiDelOrderId = [];
+      this.orderList.forEach((book) => {
+        if (book.check_one == true) {
+          multiDelOrderId.push(book.lend_id);
+        }
+      });
+      axios({
+        url: this.$store.state.yuming + "/reserve/batCancel",
+        method: "POST",
+        params: {
+          lend_ids: multiDelOrderId,
+        },
+        paramsSerializer: (params) => {
+          return qs.stringify(params, { indices: false });
+        },
+      })
+        .then((res) => {
+          const { code } = res.data;
+          if (code == "200") {
+            this.$message({
+              message: "批量取消预约成功",
+              type: "success",
+            });
+            this.orderLoading = true;
+            this.getAllOrder();
+            this.orderLoading = false;
+          } else {
+            this.$message.error("批量取消预约失败,请重试");
+          }
+        })
+        .catch(() => {
+          Message({
+            type: "error",
+            message: "出现错误，请稍后再试",
+          });
+        });
+    },
+    //我的正在借阅
+    getAllBorrow() {
+      axios({
+        url: this.$store.state.yuming + "/user/borrow/queryBorrowing",
+        method: "GET",
+        params: {
+          borrow_reserve: 1,
+        },
+      })
+        .then((res) => {
+          const { code, data } = res.data;
+          if (code == "200") {
+            this.borrowList = data;
+            if (data.length === 0) {
+              this.hasBorrowed = false;
+            }
+          } else {
+            this.$message.error("获取收藏夹信息失败");
+          }
+        })
+        .catch(() => {
+          Message({
+            type: "error",
+            message: "出现错误，请稍后再试",
+          });
+        });
+    },
+    //我的借阅历史
+    //实现借阅历史分页
+    handleCurrentBorrowChange(val) {
+      this.currentBorrowHistoryPage = val;
+      this.getAllBorrowHistory();
+    },
+    //获取用户的借阅历史
+    getAllBorrowHistory() {
+      axios({
+        url: this.$store.state.yuming + "/user/borrow/queryBorrowed",
+        method: "GET",
+        params: {
+          page_num: this.currentBorrowHistoryPage,
+          each_num: 10,
+          borrow_reserve: 1,
+        },
+      })
+        .then((res) => {
+          const { code, data, page_count } = res.data;
+          if (code == "200") {
+            this.borrowHistoryList = data;
+            this.borrowHistoryPageNum = page_count;
+            if (page_count == 0) {
+              this.hasBorrowedHistory = false;
+            }
+          } else {
+            this.$message.error("获取用户借阅历史失败");
+          }
+        })
+        .catch(() => {
+          Message({
+            type: "error",
+            message: "出现错误，请稍后再试",
+          });
+        });
+    },
+    //我的违规记录
+    //实现违规记录分页
+    handleCurrentViolateChange(val) {
+      this.currentViolatePage = val;
+      this.getAllViolate();
+    },
+    //获取用户的借阅历史
+    getAllViolate() {
+      axios({
+        url: this.$store.state.yuming + "/user/punish/query",
+        method: "GET",
+        params: {
+          page_num: this.currentViolatePage,
+          each_num: 10,
+        },
+      })
+        .then((res) => {
+          const { code, data, page_count } = res.data;
+          if (code == "200") {
+            this.violateList = data;
+            this.violatePageNum = page_count;
+            if (page_count == 0) {
+              this.hasViolated = false;
+            }
+          } else {
+            this.$message.error("获取用户违约记录失败");
+          }
+        })
+        .catch(() => {
+          Message({
+            type: "error",
+            message: "出现错误，请稍后再试",
+          });
+        });
+    },
     //我的消息
     //实现消息分页
     handleCurrentMessageChange(val) {
@@ -811,20 +1522,20 @@ export default {
       this.getUserMessage();
     },
     //阅读一条消息
-    readOneMessage(id){
+    readOneMessage(id) {
       axios({
         url: this.$store.state.yuming + "/message/read",
         method: "POST",
         params: {
-           message_id:id
+          message_id: id,
         },
       })
         .then((res) => {
-          const { code} = res.data;
+          const { code } = res.data;
           if (code == "200") {
-            this.messageLoading=true;
+            this.messageLoading = true;
             this.getUserMessage();
-            this.messageLoading=false;        
+            this.messageLoading = false;
           } else {
             this.$message.error("已读失败");
           }
@@ -837,20 +1548,20 @@ export default {
         });
     },
     //已读所有消息
-    multiReadMessage(){
+    multiReadMessage() {
       axios({
         url: this.$store.state.yuming + "/message/readAll",
         method: "POST",
         params: {
-          username: this.$store.state.username
+          username: this.$store.state.username,
         },
       })
         .then((res) => {
-          const { code} = res.data;
+          const { code } = res.data;
           if (code == "200") {
-            this.messageLoading=true;
+            this.messageLoading = true;
             this.getUserMessage();
-            this.messageLoading=false;        
+            this.messageLoading = false;
           } else {
             this.$message.error("已读失败");
           }
@@ -863,20 +1574,20 @@ export default {
         });
     },
     //删除一条消息
-    delOneMessage(id){
+    delOneMessage(id) {
       axios({
         url: this.$store.state.yuming + "/message/delete",
         method: "DELETE",
         params: {
-          message_id: id
+          message_id: id,
         },
       })
         .then((res) => {
-          const { code} = res.data;
+          const { code } = res.data;
           if (code == "200") {
-            this.messageLoading=true;
+            this.messageLoading = true;
             this.getUserMessage();
-            this.messageLoading=false;        
+            this.messageLoading = false;
           } else {
             this.$message.error("删除消息失败，请重试");
           }
@@ -889,20 +1600,20 @@ export default {
         });
     },
     //删除所有消息
-    multiDelMessage(){
+    multiDelMessage() {
       axios({
         url: this.$store.state.yuming + "/message/deleteAll",
         method: "DELETE",
         params: {
-          username: this.$store.state.username
+          username: this.$store.state.username,
         },
       })
         .then((res) => {
-          const { code} = res.data;
+          const { code } = res.data;
           if (code == "200") {
-            this.messageLoading=true;
+            this.messageLoading = true;
             this.getUserMessage();
-            this.messageLoading=false;        
+            this.messageLoading = false;
           } else {
             this.$message.error("删除全部消息失败，请重试");
           }
@@ -956,8 +1667,8 @@ export default {
           const { code, data } = res.data;
           if (code == "200") {
             this.unreadMessage = data;
-            if(data==0){
-              this.hasNoReadMessage=false;
+            if (data == 0) {
+              this.hasNoReadMessage = false;
             }
           } else {
             this.$message.error("获取用户未读信息数目失败");
@@ -995,54 +1706,15 @@ export default {
           });
         });
     },
-    //上传图片触发
-    // handleCrop(file) {
-    //   this.$nextTick(() => {
-    //     this.$refs.myCropper.open(file.raw || file);
-    //   });
-    // },
-    // 点击弹框重新时触发
-    // upAgain() {
-    //   this.$refs["upload"].$refs["upload-inner"].handleClick();
-    // },
-    // getFile(file) {
-    //   this.formdata.append("img", file);
-    //   this.hasShopAvatar = true;
-    // 获取上传图片的本地URL，用于上传前的本地预览
-    //   this.applypersonInfo.img = window.URL.createObjectURL(file);
-    //   this.$refs.myCropper.close();
-    // },
-    // 提取文件后缀名
-    // getSuffix(str) {
-    //   const fileExtension = str.substring(str.lastIndexOf(".") + 1);
-    //   return fileExtension;
-    // },
-    //上传图片时会被调用
-    // changePhotoFile(file) {
-    //   let type = this.getSuffix(file.name);
-    //   const isLt6M = file.size / 1024 / 1024 < 6;
-    //   if (
-    //     type == "JPG" ||
-    //     type == "JPEG" ||
-    //     type == "PNG" ||
-    //     type == "jpg" ||
-    //     type == "png" ||
-    //     type == "jpge"
-    //   ) {
-    //     if (!isLt6M) {
-    //       this.$message.error("上传头像图片大小不能超过 6MB!");
-    //     } else {
-    //       this.handleCrop(file);
-    //     }
-    //   } else {
-    //     this.$message.error("上传头像图片只能是 JPG、JPEG或PNG 格式!");
-    //   }
-    // },
   },
   async created() {
     this.isLoading = true;
     await this.getUserInfo();
     await this.getAllCollection();
+    await this.getAllOrder();
+    await this.getAllBorrow();
+    await this.getAllBorrowHistory();
+    await this.getAllViolate();
     await this.getUserMessage();
     await this.getUnreadMessage();
     this.isLoading = false;

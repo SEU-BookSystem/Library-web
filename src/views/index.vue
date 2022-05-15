@@ -137,7 +137,7 @@
               >
               <el-menu-item
                 index="2022"
-                @click.native="getYearBook('2022')"
+                @click.native="goToCategory"
                 style="
                   color: rgb(233, 150, 122);
                   font-weight: 1000;
@@ -281,7 +281,7 @@
               >
                 <el-container
                   style="width: 90%; margin: 5%"
-                  @click.native="goToBookInfo(book.id)"
+                  @click.native="goToBookInfo(book.reference_num)"
                   class="card"
                 >
                   <el-header
@@ -639,6 +639,9 @@ export default {
     },
     goToBookInfo(reference_num) {
       this.$router.push(`/bookInfo/${reference_num}`);
+    },
+    goToCategory() {
+      this.$router.push("/categorySearch/"+"none");
     },
     //获取今日销量冠军
     getTodaySalesChampion() {

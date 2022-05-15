@@ -113,17 +113,23 @@
             <h2 style="margin: 0px; margin-bottom: 10px">
               {{ book.book_name }}
             </h2>
-            <p style="color: gray; margin-top: 8%">
-              {{ book.author }}
+            <p style="color: gray; margin-top:3%">
+              作者：{{ book.author }}
             </p>
             <p style="color: gray; margin: 10px 0px">
-              {{ book.publisher }}
+              出版社：{{ book.publisher }}
             </p>
             <p style="color: gray; margin: 10px 0px">
-              {{ this.dateFormat(book.print_time) }}出版
+             出版时间： {{ this.dateFormat(book.print_time) }}
             </p>
+            <p style="color: gray; margin: 10px 0px">
+              ISBN：{{ book.isbn}}
+            </p>
+            <p style="color: red; font-weight: 1000; margin: 0%;font-size:15px">
+              价格：{{ book.price }}
+            </p>     
             <p>
-              {{ book.detail | ellipsis }}
+             简介： {{ book.detail | ellipsis }}
             </p>
           </el-main>
         </el-container>

@@ -33,7 +33,7 @@
               </el-input>
             </div>
           </el-col>
-         <el-col :span="6" v-if="hasRole">
+          <el-col :span="6" v-if="hasRole">
             <div style="margin-left: 20px">
               <el-row class="collection">
                 <el-col :span="10" :offset="20">
@@ -95,7 +95,7 @@
               >
               <el-col>
                 <el-menu
-                  :default-active="activeIndex1"
+                  :default-active="activeIndex"
                   class="el-menu-demo"
                   mode="horizontal"
                 >
@@ -104,129 +104,81 @@
                     :key="item.category_id"
                     style="color: rgb(250, 128, 114); font-weight: 1000"
                     :index="item.category_id"
-                    @click.native="getMainClassBook(item.category_id)"
+                    @click.native="changeSearch(item.category_id)"
                     >{{ item.category_name }}</el-menu-item
                   >
                 </el-menu>
               </el-col>
             </el-row>
-            <el-row style="margin: 3% 0%">
-              <el-col :span="3">
-                <el-button
-                  type="text"
-                  @click.native="goToFirst(0)"
-                  :class="{ btn_active: flag === 0 }"
-                  id="Button0"
-                  >全部相关图书</el-button
+            <div v-if="this.displayList.length == 0" style="text-align: center">
+              <img
+                style="width: 200px; height: 200px;margin-top:20px"
+                src="../assets/empty_grey.png"
+              />
+              <p v-if="categoryId!='none'">未找到相关的书籍</p>
+              <p v-if="categoryId =='none'">请选择分类</p>
+            </div>
+            <div v-if="this.displayList.length != 0">
+              <el-row class="rowStyle" type="flex">
+                <el-col
+                  :span="3"
+                  v-for="book in displayList"
+                  :key="book.reference_num"
                 >
-              </el-col>
-              <el-col :span="3">
-                <el-button
-                  type="text"
-                  @click.native="goToFirst(1)"
-                  :class="{ btn_active: flag === 1 }"
-                  id="Button1"
-                  >书名相关图书</el-button
-                >
-              </el-col>
-              <el-col :span="3">
-                <el-button
-                  type="text"
-                  @click.native="goToFirst(2)"
-                  :class="{ btn_active: flag === 2 }"
-                  id="Button2"
-                  >作者相关图书</el-button
-                >
-              </el-col>
-              <el-col :span="3">
-                <el-button
-                  type="text"
-                  @click.native="goToFirst(3)"
-                  :class="{ btn_active: flag === 3 }"
-                  id="Button3"
-                  >出版社相关图书</el-button
-                >
-              </el-col>
-              <el-col :span="3">
-                <el-button
-                  type="text"
-                  @click.native="goToFirst(4)"
-                  :class="{ btn_active: flag === 4 }"
-                  id="Button4"
-                  >图书简介相关图书</el-button
-                >
-              </el-col>
-            </el-row></div
-          ><div
-            v-if="this.displayList.length == 0"
-            style="text-align: center"
-          >
-            <img
-              style="width: 200px; height: 200px"
-              src="../assets/empty_grey.png"
-            />
-            <p>未找到相关的书籍</p>
-          </div>
-          <div v-if="this.displayList.length != 0">
-            <el-row class="rowStyle" type="flex">
-              <el-col
-                :span="3"
-                v-for="book in displayList"
-                :key="book.reference_num"
+                  <el-container
+                    style="width: 100%; margin: 5%"
+                    @click.native="goToBookInfo(book.reference_num)"
+                    class="card"
+                  >
+                    <el-header
+                      style="
+                        width: 100%;
+                        height: 150px;
+                        align-items: center;
+                        margin-top: 20px;
+                      "
+                    >
+                      <el-image
+                        class="imgStyle4"
+                        :src="changeUrl(book.image)"
+                        @click.native="goToBookInfo(book.reference_num)"
+                      >
+                      </el-image>
+                    </el-header>
+                    <el-main
+                      style="
+                        color: black;
+                        padding-top: 0;
+                        text-align: center;
+                        padding-bottom: 10px;
+                      "
+                    >
+                      <el-link
+                        :underline="false"
+                        class="book-name"
+                        @click="goToBookInfo(book.reference_num)"
+                        :title="book.book_name"
+                        >{{ book.book_name | ellipsis }}</el-link
+                      >
+                      <p
+                        style="color: rgb(128, 192, 192); margin: 0%"
+                        :title="book.author"
+                      >
+                        {{ book.author | ellipsis }}
+                      </p>
+                    </el-main>
+                  </el-container>
+                </el-col>
+              </el-row>
+              <el-pagination
+                :current-page="currentPage"
+                @current-change="handleCurrentChange"
+                :page-count="page_count"
+                :page-size="32"
+                layout="prev, pager, next, jumper"
               >
-                <el-container
-                  style="width: 100%; margin: 5%"
-                  @click.native="goToBookInfo(book.reference_num)"
-                  class="card"
-                >
-                  <el-header
-                    style="
-                      width: 100%;
-                      height: 150px;
-                      align-items: center;
-                      margin-top: 20px;
-                    "
-                  >
-                    <el-image
-                      class="imgStyle4"
-                      :src="changeUrl(book.image)"
-                      @click.native="goToBookInfo(book.reference_num)"
-                    >
-                    </el-image>
-                  </el-header>
-                  <el-main
-                    style="
-                      color: black;
-                      padding-top: 0;
-                      text-align: center;
-                      padding-bottom: 10px;
-                    "
-                  >
-                    <el-link
-                      :underline="false"
-                      class="book-name"
-                      @click="goToBookInfo(book.reference_num)"
-                      :title="book.book_name"
-                      >{{ book.book_name | ellipsis }}</el-link
-                    >
-                    <p
-                      style="color: rgb(128, 192, 192); margin: 0%"
-                      :title="book.author"
-                    >
-                      {{ book.author | ellipsis }}
-                    </p>
-                  </el-main>
-                </el-container>
-              </el-col>
-            </el-row>
-            <el-pagination
-              :current-page="currentPage"
-              @current-change="handleCurrentChange"
-              :page-count="page_count"
-              :page-size="32"
-              layout="prev, pager, next, jumper"
-            >
-            </el-pagination>
+              </el-pagination>
+            </div>
           </div>
         </div>
       </div>
@@ -250,20 +202,18 @@ export default {
   },
   data() {
     return {
-      activeIndex1: "",
-      goodsNum: "",
+      categoryId: this.$route.params.categoryId,
+      activeIndex: "",
       currentPage: 1,
-      flag: 0,
-      bookcount: 0,
       isLoading: false,
       dataLoading: false,
-      input: this.$store.state.gobalSearchText,
+      input: "",
       categoryList: [
         {
           num: 0,
           category_name: "",
           category_id: "",
-          pid:"",
+          pid: "",
         },
       ],
       displayList: [],
@@ -295,10 +245,7 @@ export default {
     },
     handleCurrentChange(val) {
       this.currentPage = val;
-      this.handleClick(this.flag);
-    },
-    gotoLogin() {
-      this.$router.push("/login");
+      this.getMainClassBook();
     },
     gotoPersonPage() {
       this.$router.push("/person");
@@ -312,104 +259,35 @@ export default {
       sessionStorage.removeItem("token");
       this.isLoading = false;
     },
-    getMainClassBook(id) {
-      this.$router.push("/categorySearch/"+id);
-    },
-    //加入购物车
-    // addShoppingTrolley(id) {
-    //   this.formdata.append("book_id", id);
-    //   this.formdata.append("sum", 1);
-    //   axios({
-    //     url: this.$store.state.yuming + "/cartitem/addCartItem",
-    //     method: "POST",
-    //     data: this.formdata,
-    //   }).then((res) => {
-    //     if (res.data.code == 200) {
-    //       this.$message({
-    //         message: "加入购物车成功",
-    //         type: "success",
-    //       });
-    //       this.dataLoading = true;
-    //       this.getGoodsNum();
-    //       this.dataLoading = false;
-    //       this.formdata=new FormData();
-    //     } else {
-    //       this.$message.error("加入购物车失败，请重试");
-    //       this.formdata=new FormData();
-    //     }
-    //   });
-    // },
-    //每次切换查询方式回到第一页
-    goToFirst(val) {
-      this.currentPage = 1;
-      this.handleClick(val);
-    },
-    //点击实现本页面的不同搜索方式
-    handleClick(val) {
-      this.flag = val;
-      document.getElementById("Button" + val).blur();
-      //获取查到的书的数据
-      axios({
-        url: this.$store.state.yuming + "/book/fuzzyQuery",
-        method: "GET",
-        params: {
-          page_num: this.currentPage,
-          each_num: 32,
-          queryWhat: val,
-          content: this.input,
-        },
-      })
-        .then((res) => {
-          const { code, data, page_count} = res.data;
-          if (code == "200") {
-            this.displayList = data;
-            this.page_count = page_count;
-          } else {
-            this.$message.error("查询图书失败，请刷新");
-          }
-        })
-        .catch(() => {
-          this.$message.error("出现错误，请稍后再试");
-        });
-    },
-    // getGoodsNum() {
-    //   axios({
-    //     url: this.$store.state.yuming + "/cartitem/getNum",
-    //     method: "GET",
-    //   })
-    //     .then((res) => {
-    //       const { code, data } = res.data;
-    //       if (code == "200") {
-    //         this.goodsNum = data;
-    //       } else {
-    //         this.$message.error("获取店铺状态失败,请刷新");
-    //       }
-    //     })
-    //     .catch(() => {
-    //       this.$message.error("出现错误，请稍后再试");
-    //     });
-    // },
-    //图书模糊查询全部相关图书，即其他页面跳转进来的查询
     searchBook() {
       this.$store.commit("gobalSearchText", this.input);
-      this.flag = 0;
+      this.$router.push("/searchBook");
+    },
+    //本页改变选择的主分类
+    changeSearch(id) {
+      this.categoryId = id;
+      this.isLoading = true;
+      this.getMainClassBook();
+      this.isLoading = false;
+    },
+    //从别的页面跳转过来
+    getMainClassBook() {
       axios({
-        url: this.$store.state.yuming + "/book/fuzzyQuery",
+        url: this.$store.state.yuming + "/book/categoryQuery",
         method: "GET",
         params: {
           page_num: this.currentPage,
           each_num: 32,
-          queryWhat: 0,
-          content: this.input,
+          main_category_id: this.categoryId,
         },
       })
         .then((res) => {
-          const { code, data ,page_count} = res.data;
+          const { code, data, page_count } = res.data;
           if (code == "200") {
             this.displayList = data;
             this.page_count = page_count;
           } else {
-            this.$message.error("查询图书失败，请刷新");
+            this.$message.error("查询此分类下书籍失败，请刷新");
           }
         })
         .catch(() => {
@@ -439,7 +317,7 @@ export default {
   async created() {
     this.isLoading = true;
     await this.getAllCategory();
-    this.searchBook();
+    await this.getMainClassBook();
     this.isLoading = false;
   },
 };
@@ -563,7 +441,7 @@ export default {
 .btn_active {
   color: black;
 }
-.card:hover{
-  box-shadow: 0 0 2px 6px #F3F3F3;
+.card:hover {
+  box-shadow: 0 0 2px 6px #f3f3f3;
 }
 </style>

@@ -45,7 +45,7 @@
                 <el-checkbox
                   v-model="checkAll"
                   class="myRedCheckBox"
-                  @change="collection_check_all"
+                  @change="check_all"
                 ></el-checkbox>
               </el-col>
               <el-col :span="2" class="collection-table-item">索书号</el-col>
@@ -83,7 +83,7 @@
                     <img
                       @click="goToBookInfo(books.reference_num)"
                       :src="changeUrl(books.image)"
-                      style="height: 70px"
+                      style="height: 70px;max-width:70px"
                     />
                   </el-col>
                   <el-col :span="11">
@@ -96,6 +96,7 @@
                     </div>
                     <div class="book-detail">作者：{{ books.author }}</div>
                     <div class="book-detail">出版社：{{ books.publisher }}</div>
+                    <div class="book-detail">价格：{{ books.price }}</div>
                   </el-col>
                   <el-col :span="1" :offset="4">
                     <el-popconfirm
@@ -297,7 +298,7 @@ export default {
         },
       })
         .then((res) => {
-          const { code} = res.data;
+          const { code,data} = res.data;
           if (code == "200") {
             this.$message({
               message: "预约成功！",
@@ -307,8 +308,8 @@ export default {
             this.$message.error("借阅和预约书籍数量已达到最大值！");
           } else if (code == "25") {
             this.$message({
-              dangerouslyUseHTMLString: true,
-              message: "书籍{{data}}",
+              type:"error",
+              message:"书籍"+data+"已达到最大预约（借阅）数量",
             });
           } else {
             this.$message.error("预约失败，请重试");
@@ -341,7 +342,7 @@ export default {
         },
       })
         .then((res) => {
-          const { code } = res.data;
+          const { code ,data} = res.data;
           if (code == "200") {
             this.$message({
               message: "批量预约成功",
@@ -349,6 +350,11 @@ export default {
             });
           } else if (code == "26") {
             this.$message.error("借阅和预约书籍数量已达到最大值！");
+          } else if (code == "25") {
+            this.$message({
+              type:"error",
+              message:"书籍"+data+"已达到最大预约（借阅）数量",
+            });
           } else {
             this.$message.error("批量预约失败,请重试");
           }
