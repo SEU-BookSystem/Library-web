@@ -29,12 +29,6 @@ const routes = [
     component: () => import('../components/collection.vue')
   },
   {
-    path: '/change',
-    name: 'change',
-    meta: { userAuth: true },//登录鉴权
-    component: () => import('../components/userInfoChange.vue')
-  },
-  {
     path: '/',
     name: 'index',
     component: () => import('../views/index.vue')
@@ -67,11 +61,6 @@ const routes = [
     name: 'orderInfo',
     meta: { shopAuth: true },//登录鉴权
     component: () => import('../components/shopManage/orderInfo.vue')
-  },
-  {
-    path: '/shopIndex/:shop_id',
-    name: 'shopIndex',
-    component: () => import('../views/shopIndex.vue')
   },
   {
     path: '/adminManage',
@@ -126,36 +115,6 @@ const routes = [
     name: 'refundInfo',
     meta: { shopAuth: true },//登录鉴权
     component: () => import('../components/shopManage/refundInfo.vue')
-  },
-  {
-    path: '/userorder/:orderId',
-    name: 'userorder',
-    meta: { userAuth: true },//登录鉴权
-    component: () => import('../views/userOrder.vue')
-  },
-  {
-    path: '/orderDetail/:orderId',
-    name: 'orderDetail',
-    meta: { userAuth: true },//登录鉴权
-    component: () => import('../views/orderDetail.vue')
-  },
-  {
-    path: '/refund/:bookId',
-    name: 'refund',
-    meta: { userAuth: true },//登录鉴权
-    component: () => import('../views/refund.vue')
-  },
-  {
-    path: '/service/:bookId/:serviceId',
-    name: 'service',
-    meta: { userAuth: true },//登录鉴权
-    component: () => import('../views/service.vue')
-  },
-  {
-    path: '/remark/:bookId',
-    name: 'remark',
-    meta: { userAuth: true },//登录鉴权
-    component: () => import('../views/remark.vue')
   },
   {
     path: '/classSort',
