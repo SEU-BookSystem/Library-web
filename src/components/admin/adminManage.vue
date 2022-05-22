@@ -2,7 +2,7 @@
   <div class="aM-home">
     <div class="aM-content">
       <div class="aM-header">
-        <img height="70px" style="margin:20px 0" src="../../assets/jwbc.png" />
+        <img height="70px" style="margin:20px 0" src="../../assets/wads.png" />
         <div class="aM-title">后台管理</div>
       </div>
       <div>
@@ -31,7 +31,7 @@
         </el-card>
       </div>
       <div class="aM-box2">
-        <el-button type="text" @click="gotoClass">
+        <el-button type="text" @click="gotoViolate">
         <el-card class="aM-box-card2">
           <i class="icon-xitongquanxian" style="font-size: 50px; margin: 50px"/>
           <div class="aM-text aM-item">
@@ -51,7 +51,7 @@
         </el-button>
       </div>
       <div class="aM-box2">
-        <el-button type="text" @click="gotoMerchant">
+        <el-button type="text" @click="gotoBook">
         <el-card class="aM-box-card2">
           <i class="icon-wenxianliutong" style="font-size: 50px; margin: 50px"/>
           <div class="aM-text aM-item">
@@ -85,11 +85,11 @@ export default {
     gotoHome() {
       this.$router.push("/#reloaded");
     },
-    gotoClass() {
-      this.$router.push("/manageClass");
+    gotoViolate() {
+      this.$router.push("/manageViolate");
     },
-    gotoMerchant() {
-      this.$router.push("/manageMerchant");
+    gotoBook() {
+      this.$router.push("/manageBook");
     },
     gotoUser() {
       this.$router.push("/manageUser");

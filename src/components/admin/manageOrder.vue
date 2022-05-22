@@ -2,152 +2,251 @@
   <div class="home" v-loading="isloading">
     <div class="content">
       <div class="header">
-        <img height="70px" style="margin:20px 0" src="../../assets/jwbc.png" />
+        <img height="70px" style="margin:20px 0" src="../../assets/wads.png" />
         <div class="title">后台管理</div>
       </div>
-      <div style="margin: 10px 0"><el-page-header @back="gotoAdmin" content="订单管理"></el-page-header></div>
-       <div>
+      <div style="margin: 10px 0"><el-page-header @back="gotoAdmin" content="借阅管理"></el-page-header></div>
+      <div>
         <el-card class="box-card1">
           <el-container>
             <el-aside width="35px"><div class="verticalBar2"></div></el-aside>
             <el-main>
           <div style="font-size: 15px padding: 18px 0">
-            在此处，您可以查看、查找、编辑、取消订单。
+            在此处，您可以查看、查找、编辑、删除、添加借阅记录。
           </div>
             </el-main>
           </el-container>
         </el-card>
       </div>
+      <div>
+        <el-card class="box-card1">
+          <el-row v-loading="borrowDataLoading">
+            <el-col :span="8" style="text-align:center">
+              <el-row><h2>{{bookingNum}}</h2></el-row><el-row><span>正在预约</span></el-row>
+            </el-col>
+            <el-col :span="8" style="text-align:center">
+              <el-row><h2>{{lendNum}}</h2></el-row><el-row><span>正在借阅</span></el-row>
+            </el-col>
+              <el-col :span="8" style="text-align:center">
+              <el-row><h2>{{lendedNum}}</h2></el-row><el-row><span>历史借阅</span></el-row>
+            </el-col>
+          </el-row>
+        </el-card>
+      </div>
       <div class="box2">
         <el-card class="box-card1">
-          <el-form label-width="120px">
-            <el-form-item label="买家邮箱搜索：">
+          <template>
+  <el-tabs v-model="activeName">
+<!--
+
+
+
+
+
+----------------------------------------------------分割线----------------------------------------------------
+
+
+
+
+
+-->
+    <el-tab-pane label="正在预约" name="first">
+      <el-col :span="21">
+          <el-form>
+            <el-form-item>
               <el-input
               v-model="searchText"
-              placeholder="输入买家邮箱模糊搜索"
-              @change="search(searchText)"
+              placeholder="输入关键词模糊搜索"
               ></el-input>
             </el-form-item>
           </el-form>
+          </el-col>
+          <el-col :span="3"><div style="margin: 0 20px"><el-button round @click="searchBooking()">搜索</el-button></div></el-col>
           <el-table
-          v-loading="orderDataLoading"
-          :data="orderList"
+          v-loading="borrowDataLoading"
+          :data="bookingList"
           style="width: 100%"
           :default-sort = "{prop: 'create_time', order: 'descending'}">
             <template slot="empty">
               <img src="../../assets/empty_grey.png" style="height:100px;margin-top:30px">
-              <p style="margin-top:0px">暂无订单</p>
+              <p style="margin-top:0px">暂无预约记录</p>
             </template>
-            <el-table-column type="expand">
+            <el-table-column prop="update_time" label="预约时间"></el-table-column>
+            <el-table-column prop="username" label="读者电话"></el-table-column>
+            <el-table-column prop="bar_code" label="书籍条码号"></el-table-column>
+            <el-table-column prop="status" label="借阅状态">
               <template slot-scope="scope">
-                <el-table :data="scope.row.books" border>
-                    <el-table-column prop="book_name" label="书籍名称"></el-table-column>
-                    <el-table-column prop="price" label="单价(元)"></el-table-column>
-                    <el-table-column prop="number" label="数量（本）"></el-table-column>
-                    <el-table-column label="小计(元)">
-                      <template slot-scope="scope_s">
-                        <div>{{scope_s.row.price*scope_s.row.number}}</div>
-                      </template>
-                    </el-table-column>
-                    <el-table-column prop="return_status" label="状态" width="210px">
-                      <template slot-scope="scope_s">
-                        <div v-if="scope_s.row.return_status==-1">正常</div>
-                        <div v-if="scope_s.row.return_status==1">
-                          <el-button type="text" @click="returnPass(scope_s.row.order_book_id)">同意退款</el-button>
-                          <el-button type="text" @click="preReturnFail(scope_s.row.order_book_id)">拒绝退款</el-button>
-                        </div>
-                        <div v-if="scope_s.row.return_status==2">已退款</div>
-                        <div v-if="scope_s.row.return_status==3">已拒绝退款</div>
-                        <div v-if="scope_s.row.return_status==4">
-                          <el-button type="text" @click="exchangePass(scope_s.row.order_book_id)">同意换货</el-button>
-                          <el-button type="text" @click="preExchangeFail(scope_s.row.order_book_id)">拒绝换货</el-button>
-                        </div>
-                        <div v-if="scope_s.row.return_status==5">已换货</div>
-                        <div v-if="scope_s.row.return_status==6">已拒绝换货</div>
-                        <div v-if="scope_s.row.return_status==7">
-                          <el-button type="text" @click="returnAllPass(scope_s.row.order_book_id)">同意退货退款</el-button>
-                          <el-button type="text" @click="preReturnAllFail(scope_s.row.order_book_id)">拒绝退货退款</el-button>
-                        </div>
-                        <div v-if="scope_s.row.return_status==8">已退货退款</div>
-                        <div v-if="scope_s.row.return_status==9">已拒绝退货退款</div>
-                      </template>
-                    </el-table-column>
-                </el-table>
-                <!--<p>总价：{{scope.row.total}}</p>-->
-              </template>
-            </el-table-column>
-            <el-table-column prop="create_time" label="下单时间" sortable></el-table-column>
-            <el-table-column prop="username" label="买家邮箱" width="170px"></el-table-column>
-            <el-table-column prop="shop_name" label="卖家名称">
-            </el-table-column>
-            <el-table-column prop="status" label="订单状态"
-             :filters="[
-              { text: '已取消', value: 1 },
-              { text: '未付款', value: 2 },
-              { text: '未发货', value: 3 },
-              { text: '已发货', value: 4 },
-              { text: '已收货', value: 5 },
-              { text: '已评价', value: 6 },
-            ]"
-            :filter-method="filterState">
-              <template slot-scope="scope">
-                <div v-if="scope.row.status==1">已取消</div>
-                <div v-if="scope.row.status==2">未付款</div>
-                <div v-if="scope.row.status==3">未发货</div>
-                <div v-if="scope.row.status==4">已发货</div>
-                <div v-if="scope.row.status==5">已收货</div>
-                <div v-if="scope.row.status==6">已评价</div>
+                <div v-if="scope.row.status==1">借阅中</div>
+                <div v-if="scope.row.status==2">已逾期</div>
+                <div v-if="scope.row.status==3">已归还</div>
+                <div v-if="scope.row.status==4">预约中</div>
+                <div v-if="scope.row.status==5">预约失败</div>
               </template>
             </el-table-column>
             <el-table-column label="操作">
               <template slot-scope="scope">
-                <el-button size="mini" type="text" @click="preChangeOrderStatus(scope.row.order_id)">编辑订单状态</el-button>
-                <el-button size="mini" type="text" @click="cancelOrder(scope.row.order_id)">取消订单</el-button>
+                <el-button size="mini" type="text" @click="deleteBorrow(scope.row.lend_id)">删除</el-button>
               </template>
             </el-table-column>
           </el-table>
           <el-row style="text-align: center">
-          <el-pagination
-            :current-page="currentPage"
-            @current-change="handleCurrentChange"
-            :total="orderCount"
-            layout="prev, pager, next, jumper"
-          >
-          </el-pagination>
+        <el-pagination
+        :current-page="page_num"
+        @current-change="handleCurrentChange"
+        :page-count="page_count"
+        layout="prev, pager, next, jumper">
+        </el-pagination>
         </el-row>
+        </el-tab-pane>
+<!--
+
+
+
+
+
+----------------------------------------------------分割线----------------------------------------------------
+
+
+
+
+
+-->
+    <el-tab-pane label="正在借阅" name="second">
+      <el-col :span="18">
+          <el-form>
+            <el-form-item>
+              <el-input
+              v-model="searchText_lend"
+              placeholder="输入关键词模糊搜索"
+              ></el-input>
+            </el-form-item>
+          </el-form>
+          </el-col>
+          <el-col :span="3"><div style="margin: 0 20px"><el-button round @click="searchLend()">搜索</el-button></div></el-col>
+          <el-col :span="3"><div style="margin: 0 10px"><el-button round @click="addBorrow()">借书</el-button></div></el-col>
+          <el-table
+          v-loading="borrowDataLoading"
+          :data="lendList"
+          style="width: 100%"
+          :default-sort = "{prop: 'create_time', order: 'descending'}">
+            <template slot="empty">
+              <img src="../../assets/empty_grey.png" style="height:100px;margin-top:30px">
+              <p style="margin-top:0px">暂无借阅记录</p>
+            </template>
+            <el-table-column prop="start_time" label="借阅时间" width='180px'></el-table-column>
+            <el-table-column prop="end_time" label="预期归还时间" width='180px'></el-table-column>
+            <el-table-column prop="username" label="读者电话"></el-table-column>
+            <el-table-column prop="bar_code" label="书籍条码号"></el-table-column>
+            <el-table-column prop="status" label="借阅状态">
+              <template slot-scope="scope">
+                <div v-if="scope.row.status==1">借阅中</div>
+                <div v-if="scope.row.status==2">已逾期</div>
+                <div v-if="scope.row.status==3">已归还</div>
+                <div v-if="scope.row.status==4">预约中</div>
+                <div v-if="scope.row.status==5">预约失败</div>
+              </template>
+            </el-table-column>
+            <el-table-column label="操作">
+              <template slot-scope="scope">
+                <el-button size="mini" type="text" v-if="scope.row.status==1" @click="setBorrowOvertime(scope.row.username, scope.row.lend_id)">逾期</el-button>
+                <el-button size="mini" type="text" @click="lendBook(scope.row.bar_code, scope.row.username)">还书</el-button>
+                <el-button size="mini" type="text" @click="deleteBorrow(scope.row.lend_id)">删除</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+          <el-dialog title="借书" :visible.sync="addBorrowVisible" center width="440px">
+        <el-form ref="newBorrow"
+        :model="newBorrow"
+        label-width="100px"
+        :rules="rules">
+          <el-form-item label="读者电话" prop="username">
+            <el-input v-model="newBorrow.username" autocomplete="off" class="editInput"></el-input>
+          </el-form-item>
+            <el-form-item label="书籍条码号" prop="bar_code">
+          <el-input v-model="newBorrow.bar_code" autocomplete="off" class="editInput"></el-input>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="addBorrowVisible = false">取 消</el-button>
+          <el-button type="primary" @click="borrowBook();addBorrowVisible = false">确 定</el-button>
+        </div>
+      </el-dialog>
+          <el-row style="text-align: center">
+        <el-pagination
+        :current-page="page_num"
+        @current-change="handleCurrentChange_lend"
+        :page-count="page_count_lend"
+        layout="prev, pager, next, jumper">
+        </el-pagination>
+        </el-row>
+    </el-tab-pane>
+<!--
+
+
+
+
+
+----------------------------------------------------分割线----------------------------------------------------
+
+
+
+
+
+-->
+    <el-tab-pane label="历史借阅" name="third">
+            <el-col :span="21">
+          <el-form>
+            <el-form-item>
+              <el-input
+              v-model="searchText_lended"
+              placeholder="输入关键词模糊搜索"
+              ></el-input>
+            </el-form-item>
+          </el-form>
+          </el-col>
+          <el-col :span="3"><div style="margin: 0 20px"><el-button round @click="searchLended()">搜索</el-button></div></el-col>
+          <el-table
+          v-loading="borrowDataLoading"
+          :data="lendedList"
+          style="width: 100%"
+          :default-sort = "{prop: 'create_time', order: 'descending'}">
+            <template slot="empty">
+              <img src="../../assets/empty_grey.png" style="height:100px;margin-top:30px">
+              <p style="margin-top:0px">暂无借阅记录</p>
+            </template>
+            <el-table-column prop="start_time" label="借阅时间" width='180px'></el-table-column>
+            <el-table-column prop="end_time" label="归还时间" width='180px'></el-table-column>
+            <el-table-column prop="username" label="读者电话"></el-table-column>
+            <el-table-column prop="bar_code" label="书籍条码号"></el-table-column>
+            <el-table-column prop="status" label="借阅状态">
+              <template slot-scope="scope">
+                <div v-if="scope.row.status==1">借阅中</div>
+                <div v-if="scope.row.status==2">已逾期</div>
+                <div v-if="scope.row.status==3">已归还</div>
+                <div v-if="scope.row.status==4">预约中</div>
+                <div v-if="scope.row.status==5">预约失败</div>
+              </template>
+            </el-table-column>
+            <el-table-column label="操作">
+              <template slot-scope="scope">
+                <el-button size="mini" type="text" @click="deleteBorrow(scope.row.lend_id)">删除</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+          <el-row style="text-align: center">
+        <el-pagination
+        :current-page="page_num"
+        @current-change="handleCurrentChange_lended"
+        :page-count="page_count_lended"
+        layout="prev, pager, next, jumper">
+        </el-pagination>
+        </el-row>
+    </el-tab-pane>
+  </el-tabs>
+          </template>
         </el-card>
       </div>
     </div>
-    <el-dialog title="编辑订单状态" :visible.sync="editOrderVisible" width="40%">
-      <el-select v-model="orderStatus" filterable placeholder="请选择订单状态">
-        <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
-      </el-select>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="editOrderVisible = false">取 消</el-button>
-        <el-button type="primary" @click="changeOrderStatus">确 定</el-button>
-      </div>
-    </el-dialog>
-    <el-dialog title="拒绝退款" :visible.sync="returnFailVisible">
-      <el-input v-model="checkOpinion" placeholder="请输入拒绝退款理由"></el-input>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="returnFailVisible = false">取 消</el-button>
-        <el-button type="primary" @click="returnFail">确 定</el-button>
-      </div>
-    </el-dialog>
-    <el-dialog title="拒绝换货" :visible.sync="exchangeFailVisible">
-      <el-input v-model="checkOpinion" placeholder="请输入拒绝换货理由"></el-input>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="exchangeFailVisible = false">取 消</el-button>
-        <el-button type="primary" @click="exchangeFail">确 定</el-button>
-      </div>
-    </el-dialog>
-    <el-dialog title="拒绝退货退款" :visible.sync="returnAllFailVisible">
-      <el-input v-model="checkOpinion" placeholder="请输入拒绝退货退款理由"></el-input>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="returnAllFailVisible = false">取 消</el-button>
-        <el-button type="primary" @click="returnAllFail">确 定</el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
@@ -160,63 +259,40 @@ export default {
     return {
       //loading
       isloading: false,
-      orderDataLoading: false,
+      borrowDataLoading: false,
       //模糊搜索
       searchText: "",
-      //分页
-      currentPage: 1,
-      orderCount: 0,
-      orderCountPerPage: 10,
-      //编辑订单状态
-      editOrderVisible: false,
-      orderId: "",
-      orderStatus: "",
-      checkOpinion: "",
-      returnFailVisible: false,
-      exchangeFailVisible: false,
-      returnAllFailVisible: false,
-      options: [{
-          value: 1,
-          label: '已取消'
-        }, {
-          value: 2,
-          label: '未付款'
-        }, {
-          value: 3,
-          label: '未发货'
-        }, {
-          value: 4,
-          label: '已发货'
-        }, {
-          value: 5,
-          label: '已收货'
-        }, {
-          value: 6,
-          label: '已评价'
-        }],
-      //订单
-      orderList:[
-        /*{
-          create_time: "2021-07-15 18:31:30",//下单时间
-          username: "AB",//购买用户
-          shop_name: "CD",//商家名称
-          status: 2,//订单状态 1.已取消 2.未付款 3.未发货 4.已发货 5.已收货 6.已评价
-          total: 1000,
-          order_id: "",
-          books:[
-            {
-              book_image_b: require("../../assets/kuku.png"),//书籍图片
-              book_image_s: require("../../assets/kuku.png"),//书籍图片
-              book_name: "C++入门",//书籍名称
-              price: 100,//书籍单价
-              number: 10,//书籍数量
-              repertory: 100,//库存
-              return_status: -1,//-1.无效 1.申请退款未审核 2.同意 3.拒绝
-              // 4.换货申请未审核 5.换货同意 6.换货拒绝 7.退货退款申请未审核 8.退货退款通过 9.退货退款拒绝
-            },
-          ],
-        },*/
-      ],
+      page_num: 1,
+      each_num: 10,
+      page_count: 0,
+      searchText_lend: "",
+      page_count_lend: 0,
+      searchText_lended: "",
+      page_count_lended: 0,
+      //数据
+      lendNum: 0,
+      lendedNum: 0,
+      bookingNum: 0,
+      activeName: 'first',
+      //预约记录
+      bookingList:[],
+      lendList: [],
+      lendedList: [],
+      //借书
+      newBorrow:{
+        bar_code: '',
+        username: '',
+      },
+      addBorrowVisible: false,
+      //rule
+      rules: {
+        bar_code: [
+          { required: true, message: "书籍条码号不得为空", trigger: "blur" },
+        ],
+        username: [
+          { required: true, message: "读者电话不得为空", trigger: "blur" },
+        ],
+      },
     };
   },
   computed: {
@@ -226,91 +302,106 @@ export default {
     gotoAdmin() {
       this.$router.push("/adminManage");
     },
-    //筛选订单状态
-    filterState(value, row, column) {
-      const property = column["property"];
-      return row[property] === value;
+    //获取预约记录数量
+    getBookingNum() {
+      axios({
+        url: this.$store.state.yuming+"/admin/getBorrowNumByStatus",
+        method: "GET",
+        params: {
+          number: 1,
+        },
+      })
+        .then((res) => {
+          const { code, data } = res.data;
+          if (code == "200") {
+            this.bookingNum = data;
+          } else {
+            this.$message.error("获取正在预约记录数量失败");
+          }
+        })
+        .catch(() => {
+          Message({
+            type: "error",
+            message: "出现错误，请稍后再试",
+          });
+        });
     },
-    //分页
+    //获取正在借阅记录数量
+    getLendNum() {
+      axios({
+        url: this.$store.state.yuming+"/admin/getBorrowNumByStatus",
+        method: "GET",
+        params: {
+          number: 2,
+        },
+      })
+        .then((res) => {
+          const { code, data } = res.data;
+          if (code == "200") {
+            this.lendNum = data;
+          } else {
+            this.$message.error("获取正在借阅记录数量失败");
+          }
+        })
+        .catch(() => {
+          Message({
+            type: "error",
+            message: "出现错误，请稍后再试",
+          });
+        });
+    },
+    //获取历史借阅记录数量
+    getLendedNum() {
+      axios({
+        url: this.$store.state.yuming+"/admin/getBorrowNumByStatus",
+        method: "GET",
+        params: {
+          number: 3,
+        },
+      })
+        .then((res) => {
+          const { code, data } = res.data;
+          if (code == "200") {
+            this.lendedNum = data;
+          } else {
+            this.$message.error("获取历史借阅记录数量失败");
+          }
+        })
+        .catch(() => {
+          Message({
+            type: "error",
+            message: "出现错误，请稍后再试",
+          });
+        });
+    },
+    //预约记录模糊搜索分页
     handleCurrentChange(val) {
-      this.currentPage = val;
-      if(this.searchText=="") {
-        this.getOrderNum();
-        this.getOrder();
-      }
-      else this.searchOrder(this.searchText);
+      this.page_num = val;
+      this.getAllBooking();
     },
-    //模糊查询订单
-    search(username) {
-      this.currentPage = 1;
-      this.searchOrder(username);
-    },
-    searchOrder(username) {
+    //获取所有预约记录
+    getAllBooking() {
       axios({
-        url: this.$store.state.yuming + "/order/fuzzyQuery",
+        url: this.$store.state.yuming+"/admin/borrow/fuzzyQuery",
         method: "GET",
         params: {
-          page_num: this.currentPage,
-          order_num: this.orderCountPerPage,
-          status: 0,
-          content: username,
+          page_num: this.page_num,
+          each_num: this.each_num,
+          queryWhat: '0',
+          content: this.searchText,
+          borrow_reserve: '0',
+          is_history: '0',
         },
       })
         .then((res) => {
-          const { code, data } = res.data;
+          const { code, data, page_count } = res.data;
           if (code == "200") {
-            this.orderList = data;
+            this.bookingList = data;
+            this.page_count = page_count;
+          } else if (code == "3") {
+            this.bookingList = [];
           } else {
-            this.$message.error("查询订单失败，请刷新");
-          }
-        })
-        .catch(() => {
-          this.$message.error("出现错误，请稍后再试");
-        });
-      //获取订单的数目
-      axios({
-        url: this.$store.state.yuming + "/order/fuzzyQueryCount",
-        method: "GET",
-        params: {
-          status: 0,
-          content: username,
-        },
-      })
-        .then((res) => {
-          const { code, data } = res.data;
-          if (code == "200") {
-            this.orderCount = data;
-          } else {
-            this.$message.error("获取订单数量失败，请刷新");
-          }
-        })
-        .catch(() => {
-          this.$message.error("出现错误，请稍后再试");
-        });
-    },
-    //重新加载订单数据
-    reloadOrderData() {
-      this.orderDataLoading = true;
-      this.getOrderNum();
-      this.getOrder();
-      this.orderDataLoading = false;
-    },
-    //获取分页订单总数
-    getOrderNum() {
-      axios({
-        url: this.$store.state.yuming+"/getOrderNum",
-        method: "GET",
-        params: {
-          identity: 2,
-          status: 0,
-        },
-      })
-        .then((res) => {
-          const { code, data } = res.data;
-          if (code == "200") {
-            this.orderCount = data;
-          } else {
-            this.$message.error("获取分页订单总数失败");
+            this.$message.error("获取所有预约记录失败");
           }
         })
         .catch(() => {
@@ -320,24 +411,39 @@ export default {
           });
         });
     },
-    //获取订单分页
-    getOrder() {
+    //模糊查询预约记录
+    searchBooking() {
+      this.page_num = 1;
+      this.reloadBorrowData();
+    },
+    //正在借阅模糊搜索分页
+    handleCurrentChange_lend(val) {
+      this.page_num = val;
+      this.getAllLend();
+    },
+    //获取所有正在借阅
+    getAllLend() {
       axios({
-        url: this.$store.state.yuming+"/getOrder",
+        url: this.$store.state.yuming+"/admin/borrow/fuzzyQuery",
         method: "GET",
         params: {
-          page_num: this.currentPage,
-          order_num: this.orderCountPerPage,
-          status: 0,
-          identity: 2,
+          page_num: this.page_num,
+          each_num: this.each_num,
+          queryWhat: '0',
+          content: this.searchText_lend,
+          borrow_reserve: '1',
+          is_history: '0',
         },
       })
         .then((res) => {
-          const { code, data } = res.data;
+          const { code, data, page_count } = res.data;
           if (code == "200") {
-            this.orderList = data;
+            this.lendList = data;
+            this.page_count_lend = page_count;
+          } else if (code == "3") {
+            this.lendList = [];
           } else {
-            this.$message.error("获取订单分页失败");
+            this.$message.error("获取所有正在借阅失败");
           }
         })
         .catch(() => {
@@ -347,13 +453,61 @@ export default {
           });
         });
     },
-    //取消订单
-    cancelOrder(id) {
+    //模糊查询正在借阅
+    searchLend() {
+      this.page_num = 1;
+      this.reloadBorrowData();
+    },
+    //历史借阅模糊搜索分页
+    handleCurrentChange_lended(val) {
+      this.page_num = val;
+      this.getAllLended();
+    },
+    //获取所有历史借阅
+    getAllLended() {
       axios({
-        url: this.$store.state.yuming+"/order/cancel",
+        url: this.$store.state.yuming+"/admin/borrow/fuzzyQuery",
+        method: "GET",
+        params: {
+          page_num: this.page_num,
+          each_num: this.each_num,
+          queryWhat: '0',
+          content: this.searchText_lended,
+          borrow_reserve: '1',
+          is_history: '1',
+        },
+      })
+        .then((res) => {
+          const { code, data, page_count } = res.data;
+          if (code == "200") {
+            this.lendedList = data;
+            this.page_count_lended = page_count;
+          } else if (code == "3") {
+            this.lendedList = [];
+          } else {
+            this.$message.error("获取所有历史借阅失败");
+          }
+        })
+        .catch(() => {
+          Message({
+            type: "error",
+            message: "出现错误，请稍后再试",
+          });
+        });
+    },
+    //模糊查询正在借阅
+    searchLended() {
+      this.page_num = 1;
+      this.reloadBorrowData();
+    },
+    //设为逾期
+    setBorrowOvertime(USERNAME, lendID) {
+      axios({
+        url: this.$store.state.yuming+"/admin/setBorrowOvertime",
         method: "POST",
         params: {
-          order_id: id,
+          username: USERNAME,
+          lend_id: lendID,
         },
       })
         .then((res) => {
@@ -362,10 +516,10 @@ export default {
             this.reloadOrderData();
             this.$message({
               type: "success",
-              message: "取消成功",
+              message: "设置逾期成功",
         });
           } else {
-            this.$message.error("取消失败");
+            this.$message.error("设置逾期失败");
           }
         })
         .catch(() => {
@@ -375,20 +529,20 @@ export default {
           });
         });
     },
-    //准备编辑订单状态的数据
-    preChangeOrderStatus(id) {
-      this.orderId = id;
-      this.orderStatus = "";
-      this.editOrderVisible = true;
+    //借书
+    addBorrow()
+    {
+      this.newBorrow.bar_code='';
+      this.newBorrow.username='';
+      this.addBorrowVisible=true;
     },
-    //确认编辑订单状态
-    changeOrderStatus() {
+    borrowBook() {
       axios({
-        url: this.$store.state.yuming+"/admin/changeOrderStatus",
+        url: this.$store.state.yuming+"/admin/borrowBook",
         method: "POST",
         params: {
-          order_id:this.orderId,
-          status: this.orderStatus,
+          bar_code: this.newBorrow.bar_code,
+          username: this.newBorrow.username,
         },
       })
         .then((res) => {
@@ -397,10 +551,12 @@ export default {
             this.reloadOrderData();
             this.$message({
               type: "success",
-              message: "编辑订单状态成功",
+              message: "借书成功",
         });
+          } else if (code == "25") {
+            this.$message.error("书籍可被预约、可被借阅数量不足");
           } else {
-            this.$message.error("编辑订单状态失败");
+            this.$message.error("借书失败");
           }
         })
         .catch(() => {
@@ -409,23 +565,27 @@ export default {
             message: "出现错误，请稍后再试",
           });
         });
-      this.editOrderVisible = false;
     },
-    //同意退款
-    returnPass(id) {
+    //还书
+    lendBook(BARCODE, USERNAME) {
       axios({
-        url: this.$store.state.yuming + "/shop/returnPass",
+        url: this.$store.state.yuming+"/admin/lendBook",
         method: "POST",
         params: {
-          order_book_id: id,
+          bar_code: BARCODE,
+          username: USERNAME,
         },
       })
         .then((res) => {
           const { code } = res.data;
           if (code == "200") {
             this.reloadOrderData();
+            this.$message({
+              type: "success",
+              message: "还书成功",
+        });
           } else {
-            this.$message.error("同意退款失败,请重试");
+            this.$message.error("还书失败");
           }
         })
         .catch(() => {
@@ -435,21 +595,36 @@ export default {
           });
         });
     },
-    //同意换货
-    exchangePass(id) {
+    //重新加载借阅记录
+    reloadBorrowData() {
+      this.borrowDataLoading = true;
+      this.getAllBooking();
+      this.getAllLend();
+      this.getAllLended();
+      this.getBookingNum();
+      this.getLendNum();
+      this.getLendedNum();
+      this.borrowDataLoading = false;
+    },
+    //删除借阅记录
+    deleteBorrow(lendID) {
       axios({
-        url: this.$store.state.yuming + "/shop/exchangePass",
-        method: "POST",
+        url: this.$store.state.yuming+"/admin/deleteBorrow",
+        method: "DELETE",
         params: {
-          order_book_id: id,
+          lend_id: lendID,
         },
       })
         .then((res) => {
           const { code } = res.data;
           if (code == "200") {
-            this.reloadOrderData();
+            this.reloadBorrowData();
+            this.$message({
+              type: "success",
+              message: "删除借阅记录成功",
+        });
           } else {
-            this.$message.error("同意换货失败,请重试");
+            this.$message.error("删除借阅记录失败");
           }
         })
         .catch(() => {
@@ -458,129 +633,16 @@ export default {
             message: "出现错误，请稍后再试",
           });
         });
-    },
-    //同意退款退货
-     returnAllPass(id) {
-      axios({
-        url: this.$store.state.yuming + "/shop/returnAllPass",
-        method: "POST",
-        params: {
-          order_book_id: id,
-        },
-      })
-        .then((res) => {
-          const { code } = res.data;
-          if (code == "200") {
-            this.reloadOrderData();
-          } else {
-            this.$message.error("同意退款退货失败,请重试");
-          }
-        })
-        .catch(() => {
-          Message({
-            type: "error",
-            message: "出现错误，请稍后再试",
-          });
-        });
-    },
-    //拒绝退款
-    preReturnFail(id) {
-      this.orderId = id;
-      this.checkOpinion = "";
-      this.returnFailVisible = true;
-    },
-    returnFail() {
-      axios({
-        url: this.$store.state.yuming + "/shop/returnFail",
-        method: "POST",
-        params: {
-          order_book_id: this.orderId,
-          check_opinion: this.checkOpinion,
-        },
-      })
-        .then((res) => {
-          const { code } = res.data;
-          if (code == "200") {
-            this.reloadOrderData();
-          } else {
-            this.$message.error("拒绝退款失败,请重试");
-          }
-        })
-        .catch(() => {
-          Message({
-            type: "error",
-            message: "出现错误，请稍后再试",
-          });
-        });
-      this.returnFailVisible = false;
-    },
-    //拒绝换货
-    preExchangeFail(id) {
-      this.orderId = id;
-      this.checkOpinion = "";
-      this.exchangeFailVisible = true;
-    },
-    exchangeFail() {
-      axios({
-        url: this.$store.state.yuming + "/shop/exchangeFail",
-        method: "POST",
-        params: {
-          order_book_id: this.orderId,
-          check_opinion: this.checkOpinion,
-        },
-      })
-        .then((res) => {
-          const { code } = res.data;
-          if (code == "200") {
-            this.reloadOrderData();
-          } else {
-            this.$message.error("拒绝换货失败,请重试");
-          }
-        })
-        .catch(() => {
-          Message({
-            type: "error",
-            message: "出现错误，请稍后再试",
-          });
-        });
-      this.exchangeFailVisible = false;
-    },
-    //拒绝退款退货
-    preReturnAllFail(id) {
-      this.orderId = id;
-      this.checkOpinion = "";
-      this.returnAllFailVisible = true;
-    },
-    returnAllFail() {
-      axios({
-        url: this.$store.state.yuming + "/shop/returnAllFail",
-        method: "POST",
-        params: {
-          order_book_id: this.orderId,
-          check_opinion: this.checkOpinion,
-        },
-      })
-        .then((res) => {
-          const { code } = res.data;
-          if (code == "200") {
-            this.reloadOrderData();
-          } else {
-            this.$message.error("拒绝退款退货失败,请重试");
-          }
-        })
-        .catch(() => {
-          Message({
-            type: "error",
-            message: "出现错误，请稍后再试",
-          });
-        });
-      this.returnAllFailVisible = false;
     },
   },
   async created() {
     this.isLoading = true;
-    await this.getOrderNum();
-    await this.getOrder();
+    await this.getAllBooking();
+    await this.getAllLend();
+    await this.getAllLended();
+    await this.getBookingNum();
+    await this.getLendNum();
+    await this.getLendedNum();
     this.isLoading = false;
   },
 };

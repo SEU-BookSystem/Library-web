@@ -39,46 +39,22 @@ const routes = [
     component: () => import('../views/bookInfo.vue')
   },
   {
-    path: '/shopManage',
-    name: 'shopManage',
-    meta: { shopAuth: true },//登录鉴权
-    component: () => import('../components/shopManage/shopManage.vue')
-  },
-  {
-    path: '/bookM',
-    name: 'bookM',
-    meta: { shopAuth: true },//登录鉴权
-    component: () => import('../components/shopManage/bookM.vue')
-  },
-  {
-    path: '/orderM',
-    name: 'orderM',
-    meta: { shopAuth: true },//登录鉴权
-    component: () => import('../components/shopManage/orderM.vue')
-  },
-  {
-    path: '/orderInfo/:order_id',
-    name: 'orderInfo',
-    meta: { shopAuth: true },//登录鉴权
-    component: () => import('../components/shopManage/orderInfo.vue')
-  },
-  {
     path: '/adminManage',
     name: 'adminManage',
     meta: { adminAuth: true },//登录鉴权
     component: () => import('../components/admin/adminManage.vue')
   },
   {
-    path: '/manageClass',
-    name: 'manageClass',
+    path: '/manageViolate',
+    name: 'manageViolate',
     meta: { adminAuth: true },//登录鉴权
-    component: () => import('../components/admin/manageClass.vue')
+    component: () => import('../components/admin/manageViolate.vue')
   },
   {
-    path: '/manageMerchant',
-    name: 'manageMerchant',
+    path: '/manageBook',
+    name: 'manageBook',
     meta: { adminAuth: true },//登录鉴权
-    component: () => import('../components/admin/manageMerchant.vue')
+    component: () => import('../components/admin/manageBook.vue')
   },
   {
     path: '/manageUser',
@@ -98,24 +74,6 @@ const routes = [
     meta: { adminAuth: true },//登录鉴权
     component: () => import('../components/admin/dataVisual.vue')
   },
-  // {
-  //   path: '/shopping/:bookid/:num',
-  //   name: 'shopping',
-  //   //meta: { userAuth: true },//登录鉴权
-  //   component: () => import('../components/shopping.vue')
-  // },
-  {
-    path: '/refundM',
-    name: 'refundM',
-    meta: { shopAuth: true },//登录鉴权
-    component: () => import('../components/shopManage/refundM.vue')
-  },
-  {
-    path: '/refundInfo/:id',
-    name: 'refundInfo',
-    meta: { shopAuth: true },//登录鉴权
-    component: () => import('../components/shopManage/refundInfo.vue')
-  },
   {
     path: '/classSort',
     name: 'classSort',
@@ -125,12 +83,6 @@ const routes = [
     path: '/categorySearch/:categoryId',
     name: 'categorySearch',
     component: () => import('../views/categorySearch.vue')
-  },
-  {
-    path: '/shopInfo',
-    name: 'shopInfo',
-    meta: { shopAuth: true },
-    component: () => import('../components/shopManage/shopInfo.vue')
   },
   {
     path: '/searchBook',
